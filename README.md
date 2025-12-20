@@ -259,6 +259,11 @@ npm install
 ng serve
 ```
 
+## Documentation
+
+- **Data model & minimal API:** [docs/data-model.md](docs/data-model.md)
+- **API reference (detailed):** [docs/api.md](docs/api.md)
+
 ---
 
 ## Notes
