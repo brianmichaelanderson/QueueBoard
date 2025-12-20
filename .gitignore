@@ -1,3 +1,8 @@
+# Local env file containing secrets
+.env
+
+# node
+node_modules/
 # macOS
 .DS_Store
 
