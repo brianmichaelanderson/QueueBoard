@@ -1,0 +1,59 @@
+# macOS
+.DS_Store
+
+# Node / Angular
+node_modules/
+npm-debug.log*
+yarn-error.log
+dist/
+client/dist/
+client/out-tsc/
+.angular/
+
+# .env files
+.env
+.env.*.local
+
+# .NET
+bin/
+obj/
+out/
+publish/
+
+# Visual Studio / IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.ide
+
+# VS Code test & history
+.vscode-test/
+.history/
+*.code-workspace
+
+# NuGet
+packages/
+*.nupkg
+
+# Logs, temp
+*.log
+TestResults/
+coverage/
+*.tmp
+
+# Databases
+*.mdf
+*.ldf
+*.sqlite
+*.db
+
+# Secrets / local config (keep canonical appsettings.json in repo)
+secrets.json
+appsettings.*.Local.json
+
+# Docker overrides for local dev
+docker-compose.override.yml
+docker-compose.*.local.yml
