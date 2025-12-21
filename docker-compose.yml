@@ -14,10 +14,11 @@ services:
     restart: unless-stopped
     # Simple TCP-based healthcheck using bash /dev/tcp (avoids sqlcmd dependency)
     healthcheck:
-      test: ['CMD-SHELL', 'bash -c "cat < /dev/tcp/127.0.0.1/1433 >/dev/null 2>&1 || exit 1"']
+      test: ['CMD-SHELL', 'bash -c "echo > /dev/tcp/127.0.0.1/1433 >/dev/null 2>&1 || exit 1"']
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
+      start_period: 30s
 
 volumes:
   mssql-data:
