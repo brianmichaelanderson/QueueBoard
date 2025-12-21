@@ -115,6 +115,7 @@ server/
     appsettings.json
     Controllers/
       QueuesController.cs
+      AgentsController.cs
     DTOs/
       QueueDto.cs
       AgentDto.cs
