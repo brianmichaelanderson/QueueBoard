@@ -268,6 +268,72 @@ ng serve
 - Stopping or recreating containers preserves data. To delete the database files and start
   fresh, remove the volume with `docker-compose down -v` or `docker volume rm queueboard_mssql-data`.
 
+## Running tests / quick checks
+
+- Quick (recommended) — run the HTTP checks script inside the .NET SDK container. This starts the API (so it can access the compose DB), waits for health, and calls `/queues` and `/agents`:
+
+```bash
+docker run --rm --network queueboard_default \
+  --platform linux/amd64 \
+  -v "$(pwd)":/src -w /src --env-file .env \
+  mcr.microsoft.com/dotnet/sdk:10.0 bash -lc "bash /src/scripts/run_http_checks.sh"
+```
+
+- Integration tests (runs the test project inside the SDK container — avoids host NuGet/network issues):
+
+```bash
+docker run --rm --network queueboard_default \
+  --platform linux/amd64 \
+  -v "$(pwd)":/src -w /src --env-file .env \
+  mcr.microsoft.com/dotnet/sdk:10.0 bash -lc "dotnet restore server/QueueBoard.Api && dotnet test server/QueueBoard.Api -v minimal"
+```
+
+- Notes:
+  - The repository includes a lightweight script at `scripts/run_http_checks.sh` used for fast verification of migrations/seed and DTO projections.
+  - Some macOS hosts may experience transient NuGet/vulnerability-metadata errors with `dotnet restore`; using the SDK container avoids that class of issues.
+  - Ensure `.env` is present and the DB service from `docker-compose.yml` is running (so the API can connect) when running either command.
+
+## Scripts
+
+- `scripts/run_http_checks.sh` — quick verification helper. It starts the API (so it can reach the compose DB), waits for health, calls `/queues` and `/agents`, prints truncated responses, then stops the API.
+
+Usage (preferred, runs inside the SDK container):
+
+```bash
+docker run --rm --network queueboard_default \
+  --platform linux/amd64 \
+  -v "$(pwd)":/src -w /src --env-file .env \
+  mcr.microsoft.com/dotnet/sdk:10.0 bash -lc "bash /src/scripts/run_http_checks.sh"
+```
+
+Or run directly on a machine with the .NET SDK available (ensure `.env` and DB are reachable):
+
+```bash
+chmod +x scripts/run_http_checks.sh
+./scripts/run_http_checks.sh
+```
+
+## AsNoTracking guidance
+
+- **What it does:** `.AsNoTracking()` tells EF Core not to track returned entities in the change tracker. This reduces memory usage and slightly improves query performance for read-only scenarios.
+- **When to use:** apply `.AsNoTracking()` on read/list endpoints (especially when projecting to DTOs) where you do not intend to update the returned entities in the same DbContext scope. It is recommended for paging/search endpoints that return lists.
+- **When not to use:** do not use `.AsNoTracking()` if you plan to modify the returned entities and save changes within the same `DbContext` instance — tracking is required to detect and persist updates.
+- **Example (recommended pattern for list endpoints):**
+
+```csharp
+var items = await _db.Queues
+  .AsNoTracking()
+  .Where(q => q.Name.Contains(search))
+  .OrderBy(q => q.Name)
+  .Select(q => new QueueDto(q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt))
+  .ToListAsync();
+```
+
+Applying `.AsNoTracking()` together with projection (`Select(...)`) gives the best performance for read endpoints because EF does not construct tracked entity instances and the query returns only the fields needed by the DTO.
+
+
+
+
 
 ## Documentation
 
