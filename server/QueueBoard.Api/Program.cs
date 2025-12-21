@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QueueBoard.Api;
+using QueueBoard.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,10 +30,22 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Apply migrations and seed DB in development/local environments (automated)
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+// Ensure database is migrated and seeded on startup (idempotent)
+try
+{
+    app.SeedDatabase();
+}
+catch
+{
+    // If seeding fails, let the exception bubble to stop startup so the issue can be addressed.
+    throw;
 }
 
 app.UseHttpsRedirection();

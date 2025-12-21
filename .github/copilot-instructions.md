@@ -1,7 +1,7 @@
 # Copilot Instructions — QueueBoard
 
 Purpose
-- Short orientation for AI coding agents working on QueueBoard: a Buildable-style reference app (ASP.NET Core + EF Core backend, Angular 20 frontend). Start by reading the high-level docs and the outline.
+- Short orientation for AI coding agents working on QueueBoard: a Buildable-style reference app (ASP.NET Core 10 + EF Core backend, Angular 20 frontend). Start by reading the high-level docs and the outline.
 
 Quick files to read
 - [README.md](README.md): overall architecture, run commands, and examples.
