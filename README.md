@@ -117,6 +117,7 @@ server/
       QueuesController.cs
     DTOs/
       QueueDto.cs
+      AgentDto.cs
     Entities/
       Queue.cs
       Agent.cs
@@ -258,6 +259,14 @@ dotnet run
 npm install
 ng serve
 ```
+
+## Data persistence (Docker)
+
+- The SQL Server data is stored in the named Docker volume `queueboard_mssql-data`.
+  The host mountpoint is typically `/var/lib/docker/volumes/queueboard_mssql-data/_data`.
+- Stopping or recreating containers preserves data. To delete the database files and start
+  fresh, remove the volume with `docker-compose down -v` or `docker volume rm queueboard_mssql-data`.
+
 
 ## Documentation
 
