@@ -130,8 +130,7 @@ server/
       Integration/
         WebAppFactoryTests.cs
       Unit/
-  docker/
-    docker-compose.yml
+  docker-compose.yml (repo root)
     sqlserver/Dockerfile
 ```
 
@@ -140,7 +139,7 @@ server/
 - Single API project (`QueueBoard.Api`) holds controllers, DTOs, DbContext, entities, migrations and small services — keeps the layout minimal while preserving separation-of-concerns.
 - Keep EF Core `Migrations/` inside the API project so `dotnet ef` runs naturally from that folder.
 - Integration tests (use `WebApplicationFactory`) belong under `Tests/Integration` while small unit tests live under `Tests/Unit`.
-- Provide a `docker/docker-compose.yml` that brings up a Dockerized SQL Server for local dev/CI; prefer Dockerized SQL Server for full runs and reserve the in-memory provider only for isolated unit tests.
+-- Provide a `docker-compose.yml` at the repository root that brings up a Dockerized SQL Server for local dev/CI; prefer Dockerized SQL Server for full runs and reserve the in-memory provider only for isolated unit tests.
 
 
 ## Routing & Lazy Loading
@@ -182,7 +181,6 @@ Navigating to a feature route triggers loading of that feature's bundle.
 ### Example Endpoints
 
 ```
-GET    /health
 GET    /queues?search=abc&page=1&pageSize=25
 POST   /queues
 PUT    /queues/{id}
@@ -261,12 +259,17 @@ npm install
 ng serve
 ```
 
+### Running with Docker Compose (recommended for local dev)
+
+Running `docker compose up --build -d` from the repo root will start both the `db` and `api` services defined in `docker-compose.yml` (the `api` service maps `${API_PORT:-8080}:8080` by default).
+
+
 ## Data persistence (Docker)
 
-- The SQL Server data is stored in the named Docker volume `queueboard_mssql-data`.
-  The host mountpoint is typically `/var/lib/docker/volumes/queueboard_mssql-data/_data`.
+- The SQL Server data is stored in the named Docker volume `mssql-data` (declared in `docker-compose.yml`).
+  The host mountpoint is typically `/var/lib/docker/volumes/<project>_mssql-data/_data`.
 - Stopping or recreating containers preserves data. To delete the database files and start
-  fresh, remove the volume with `docker-compose down -v` or `docker volume rm queueboard_mssql-data`.
+  fresh, remove the volume with `docker compose down -v` or `docker volume rm <project>_mssql-data`.
 
 ## Running tests / quick checks
 

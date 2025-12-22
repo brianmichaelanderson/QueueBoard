@@ -25,7 +25,7 @@ Project-specific conventions
 - Simple JWT stub for auth in dev: expect an interceptor on the Angular side and protected endpoints on the API (no full auth system).
 
 Integration points and examples
-- HTTP API endpoints (examples): `GET /health`, `GET /queues?search=...&page=1&pageSize=25`, `POST /queues`, `PUT /queues/{id}`.
+- HTTP API endpoints (examples): `GET /queues?search=...&page=1&pageSize=25`, `POST /queues`, `PUT /queues/{id}`.
 - Frontend ↔ API: Angular services using `HttpClient` wrap API calls; interceptors attach the stub JWT token.
 
 How to proceed when changing code

@@ -20,5 +20,22 @@ services:
       retries: 5
       start_period: 30s
 
+  api:
+    # Use the SDK image so we can run `dotnet run` from the checked-out source for local dev.
+    image: mcr.microsoft.com/dotnet/sdk:10.0
+    platform: linux/amd64
+    env_file: .env
+    environment:
+      - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+    volumes:
+      - ./:/src:cached
+    working_dir: /src
+    command: bash -lc "dotnet restore server/QueueBoard.Api && dotnet run --project server/QueueBoard.Api --urls \"${ASPNETCORE_URLS:-http://0.0.0.0:8080}\""
+    ports:
+      - "${API_PORT:-8080}:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+
 volumes:
   mssql-data:

@@ -12,23 +12,22 @@ echo "Starting QueueBoard API... (logs -> $LOG)"
    export DEFAULT_CONNECTION="Server=${DB_HOST},${DB_PORT};User Id=${DB_USER};Password=${SA_PASSWORD};TrustServerCertificate=True;"
    echo "Built DEFAULT_CONNECTION from components"
  fi
+# Ensure the API binds to the configured URL (fallback to 0.0.0.0:8080)
+export ASPNETCORE_URLS="${ASPNETCORE_URLS:-http://0.0.0.0:8080}"
+echo "Using ASPNETCORE_URLS=$ASPNETCORE_URLS"
 
- dotnet run --project server/QueueBoard.Api > "$LOG" 2>&1 &
+dotnet run --project server/QueueBoard.Api --urls "$ASPNETCORE_URLS" > "$LOG" 2>&1 &
 API_PID=$!
 
 trap 'echo "Stopping API..."; kill "$API_PID" 2>/dev/null || true' EXIT
 
-echo "Waiting for API to be healthy (trying ports 5000 and 8080)..."
+echo "Waiting for API to be reachable (port ${API_PORT:-8080})..."
 HEALTH_URL=''
+HEALTH_PORT="${API_PORT:-8080}"
 for i in {1..60}; do
-  if curl -sS http://localhost:5000/health >/dev/null 2>&1; then
-    HEALTH_URL=http://localhost:5000
-    echo "API healthy on $HEALTH_URL"
-    break
-  fi
-  if curl -sS http://localhost:8080/health >/dev/null 2>&1; then
-    HEALTH_URL=http://localhost:8080
-    echo "API healthy on $HEALTH_URL"
+  if bash -c "echo > /dev/tcp/127.0.0.1/${HEALTH_PORT}" >/dev/null 2>&1; then
+    HEALTH_URL="http://localhost:${HEALTH_PORT}"
+    echo "API reachable on $HEALTH_URL"
     break
   fi
   sleep 1
