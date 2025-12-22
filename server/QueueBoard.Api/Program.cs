@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using QueueBoard.Api;
 using QueueBoard.Api.Extensions;
