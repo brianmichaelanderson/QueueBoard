@@ -27,10 +27,12 @@ services:
     env_file: .env
     environment:
       - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - DOTNET_USE_POLLING_FILE_WATCHER=1
     volumes:
       - ./:/src:cached
     working_dir: /src
-    command: bash -lc "dotnet restore server/QueueBoard.Api && dotnet run --project server/QueueBoard.Api --urls \"${ASPNETCORE_URLS:-http://0.0.0.0:8080}\""
+    # Use `dotnet watch` in dev so code changes on the host are picked up without manual restarts.
+    command: bash -lc "dotnet restore server/QueueBoard.Api && dotnet watch --project server/QueueBoard.Api run --urls \"${ASPNETCORE_URLS:-http://0.0.0.0:8080}\""
     ports:
       - "${API_PORT:-8080}:8080"
     depends_on:

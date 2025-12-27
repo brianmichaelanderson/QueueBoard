@@ -259,9 +259,11 @@ npm install
 ng serve
 ```
 
-### Running with Docker Compose (recommended for local dev)
+### Running with Docker Compose (recommended for local dev).  
 
 Running `docker compose up --build -d` from the repo root will start both the `db` and `api` services defined in `docker-compose.yml` (the `api` service maps `${API_PORT:-8080}:8080` by default).
+
+- Development note: the `api` service runs the API using `dotnet watch` so source edits on the host are picked up automatically without restarting the container. This is convenient for the non-production exercise in this repo. To run a production-style image instead, build a publish image (multi-stage Dockerfile) and run `docker compose up --build` or run the API locally with `dotnet run`.
 
 
 ## Data persistence (Docker)

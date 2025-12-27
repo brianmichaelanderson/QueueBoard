@@ -8,7 +8,7 @@ namespace QueueBoard.Api.Controllers
 {
     [ApiController]
     [Route("agents")]
-    public class AgentsController : ControllerBase
+    public class AgentsController : ControllerBase 
     {
         private readonly QueueBoardDbContext _db;
 
