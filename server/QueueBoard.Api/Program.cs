@@ -27,7 +27,29 @@ builder.Services.AddDbContext<QueueBoardDbContext>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+var xmlFile = (System.Reflection.Assembly.GetExecutingAssembly().GetName().Name ?? "QueueBoard.Api") + ".xml";
+var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Title = "QueueBoard API",
+        Version = "v1",
+        Description = "QueueBoard ASP.NET Core API",
+        Contact = new Microsoft.OpenApi.Models.OpenApiContact
+        {
+            Name = "QueueBoard",
+            Email = "dev@example.com"
+        }
+    });
+
+    if (System.IO.File.Exists(xmlPath))
+    {
+        options.IncludeXmlComments(xmlPath);
+    }
+});
 
 var app = builder.Build();
 

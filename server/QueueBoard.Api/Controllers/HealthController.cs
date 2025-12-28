@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace QueueBoard.Api.Controllers
 {
+    /// <summary>
+    /// Simple health endpoint that reports database connectivity and timestamp.
+    /// </summary>
     [ApiController]
     [Route("[controller]")]
     public class HealthController : ControllerBase
@@ -17,6 +20,9 @@ namespace QueueBoard.Api.Controllers
             _db = db;
         }
 
+        /// <summary>
+        /// Returns liveness/readiness status and a short set of checks.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> Get()
         {

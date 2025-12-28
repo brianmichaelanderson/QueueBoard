@@ -27,6 +27,7 @@ services:
     env_file: .env
     environment:
       - ASPNETCORE_URLS=${ASPNETCORE_URLS}
+      - ASPNETCORE_ENVIRONMENT=Development
       - DOTNET_USE_POLLING_FILE_WATCHER=1
     volumes:
       - ./:/src:cached

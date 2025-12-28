@@ -36,6 +36,8 @@ The domain is intentionally lightweight and exists only to support the technical
 - SQL Server Express
 - Swagger / OpenAPI
 
+Swagger UI: When running the API locally or via Docker Compose (Development environment), the Swagger UI is available at http://localhost:8080/swagger. The `api` service is configured to run in Development to enable the Swagger UI during local development.
+
 ### Frontend
 
 - Angular 20

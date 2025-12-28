@@ -6,6 +6,9 @@ using QueueBoard.Api.DTOs;
 
 namespace QueueBoard.Api.Controllers
 {
+    /// <summary>
+    /// Controller for managing agents: list and fetch by id.
+    /// </summary>
     [ApiController]
     [Route("agents")]
     public class AgentsController : ControllerBase 
@@ -17,6 +20,9 @@ namespace QueueBoard.Api.Controllers
             _db = db;
         }
 
+        /// <summary>
+        /// Returns a paginated list of agents. Supports optional search, paging and page size.
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
         {
@@ -43,6 +49,10 @@ namespace QueueBoard.Api.Controllers
             return Ok(new { totalCount = total, page, pageSize, items });
         }
 
+        /// <summary>
+        /// Returns a single agent by id.
+        /// </summary>
+        /// <param name="id">The agent id (GUID).</param>
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] System.Guid id)
         {
