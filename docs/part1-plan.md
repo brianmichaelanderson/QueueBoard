@@ -26,6 +26,10 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
        - [x] 4.3 Add Serilog settings to `appsettings.Development.json` (console JSON formatting, minimum levels, optional Seq/file sinks)
        - [x] 4.4 Update key controllers/services to use `ILogger<T>` where useful (minimal, targeted changes)
        - [x] 4.5 Verify structured logs during a container run (use `docker compose up` and inspect logs for JSON/enriched fields)
+      - [x] 4.6 Persist container logs to file and enable rotation
+         - [x] 4.6.1 Update Serilog config to add file sink with rolling interval
+         - [x] 4.6.2 Update Docker Compose volume mounts to persist log files outside container
+         - [x] 4.6.3 Verify log files are created and rotated as expected during container runs
 
 5. [ ] Global exception middleware + ProblemDetails
    - Centralize error handling, return RFC7807 ProblemDetails for errors.

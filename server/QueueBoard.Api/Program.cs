@@ -12,14 +12,12 @@ var builder = WebApplication.CreateBuilder(args);
 Serilog.Debugging.SelfLog.Enable(System.Console.Error);
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
-    // Ensure file sink is available even if configuration binding misses; also keep console sink from config
-    .WriteTo.File("/src/logs/queueboard-api-.log", formatter: new Serilog.Formatting.Compact.RenderedCompactJsonFormatter(), rollingInterval: Serilog.RollingInterval.Day, fileSizeLimitBytes: 10485760, retainedFileCountLimit: 7)
     .Enrich.FromLogContext()
     .Enrich.WithProperty("Environment", Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development")
     .CreateLogger();
 
-// Emit a startup event to exercise sinks (helps create file on first write)
-Log.Information("Startup: Serilog file sink test");
+// Emit a startup event
+Log.Information("Startup");
 
 // Use Serilog for the host
 builder.Host.UseSerilog();

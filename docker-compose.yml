@@ -12,6 +12,11 @@ services:
     volumes:
       - mssql-data:/var/opt/mssql
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     # Simple TCP-based healthcheck using bash /dev/tcp (avoids sqlcmd dependency)
     healthcheck:
       test: ['CMD-SHELL', 'bash -c "echo > /dev/tcp/127.0.0.1/1433 >/dev/null 2>&1 || exit 1"']
@@ -31,7 +36,7 @@ services:
       - DOTNET_USE_POLLING_FILE_WATCHER=1
     volumes:
       - ./:/src:cached
-      - ./logs:/src/logs
+      - ./logs:/var/log/queueboard
     working_dir: /src
     # For quieter logs during verification run `dotnet run` instead of `dotnet watch`.
     # This runs without hot-reload and is preferred when capturing structured logs.
@@ -41,11 +46,6 @@ services:
     depends_on:
       - db
     restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
 
 volumes:
   mssql-data:
