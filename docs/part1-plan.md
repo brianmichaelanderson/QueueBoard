@@ -47,7 +47,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
           - Implement explicit mappings for common exceptions (model validation, `KeyNotFoundException`/domain not-found, `DbUpdateException`→409, etc.).
       - [x] 5.6 Register and order middleware
           - Wire middleware into `Program.cs` in the correct order (register correlation-id middleware first, then exception middleware, consider `UseDeveloperExceptionPage` in Development only).
-       - [ ] 5.7 Avoid leaking secrets / redaction
+       - [x] 5.7 Avoid leaking secrets / redaction
           - Strip or redact sensitive info from `ProblemDetails` in non-development environments; ensure stack traces are not returned in production.
        - [x] 5.8 Tests (TDD)
           - [x] Added unit tests for:
@@ -55,6 +55,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
                [x] `CorrelationIdMiddlewareTests.cs` (ensures correlation id propagation and context items)
                [x] `ExceptionHandlingMiddlewareTests.cs` (maps exceptions → status codes and ProblemDetails shape)
                [x] `ProblemDetailsFactoryTests.cs` (ensures `traceId`/`timestamp` enrichment and validation payload shape)
+               [x] `CustomProblemDetailsFactoryTests.cs` (covers production redaction and development preservation of `detail`)
                - Tests located under `server/QueueBoard.Api/Tests/Unit`
           - [ ] Integration tests using `WebApplicationFactory` to assert response shape, headers, and end-to-end logging behaviour.
        - [x] 5.9 Documentation

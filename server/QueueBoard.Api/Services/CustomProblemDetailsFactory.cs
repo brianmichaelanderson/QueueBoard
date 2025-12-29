@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace QueueBoard.Api.Services
 {
@@ -45,13 +47,27 @@ namespace QueueBoard.Api.Services
 
         private void EnrichWithDefaults(HttpContext? httpContext, ProblemDetails pd)
         {
+            var isDevelopment = false;
+
             if (httpContext != null)
             {
+                var env = httpContext.RequestServices?.GetService<IHostEnvironment>();
+                if (env != null)
+                {
+                    isDevelopment = env.IsDevelopment();
+                }
+
                 var traceId = httpContext.Items.ContainsKey("CorrelationId") ? httpContext.Items["CorrelationId"]?.ToString() : httpContext.TraceIdentifier;
                 if (!string.IsNullOrEmpty(traceId)) pd.Extensions["traceId"] = traceId!;
             }
 
             pd.Extensions["timestamp"] = DateTime.UtcNow.ToString("o");
+
+            // Redact detail in non-development environments to avoid leaking sensitive information
+            if (!isDevelopment)
+            {
+                pd.Detail = null;
+            }
         }
     }
 }

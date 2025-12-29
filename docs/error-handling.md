@@ -67,6 +67,7 @@ Redaction rules (dev-first)
 - Non-development (production-like):
   - Do not return stack traces or sensitive data.
   - For 500s return a generic message (e.g., "An unexpected error occurred.") and `traceId` only.
+  - Implemented: the `CustomProblemDetailsFactory` redacts `detail` in non-development environments to avoid leaking sensitive information. Unit tests cover both behaviors (development preserves `detail`, production omits it).
 - Always:
   - Never echo secrets (passwords, connection strings, tokens) in response bodies.
   - Validation errors may include field names and messages but must not echo sensitive values back.
@@ -81,6 +82,9 @@ Testing guidance
   - `status`, `title`, and `traceId` exist.
   - Validation responses include `errors` with expected keys/messages.
 - Integration tests should verify end-to-end behavior and that the `traceId` in response correlates with logs.
+
+Unit test for redaction behavior
+- `server/QueueBoard.Api/Tests/Unit/CustomProblemDetailsFactoryTests.cs`: [server/QueueBoard.Api/Tests/Unit/CustomProblemDetailsFactoryTests.cs](server/QueueBoard.Api/Tests/Unit/CustomProblemDetailsFactoryTests.cs)
 
 Location & usage
 - File: `docs/error-handling.md` (this file)
