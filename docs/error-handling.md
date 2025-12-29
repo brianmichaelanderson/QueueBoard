@@ -86,5 +86,10 @@ Location & usage
 - File: `docs/error-handling.md` (this file)
 - Link from `docs/part1-plan.md` and README under the API/dev section.
 
+Test files (unit)
+- `server/QueueBoard.Api/Tests/Unit/CorrelationIdMiddlewareTests.cs`: [server/QueueBoard.Api/Tests/Unit/CorrelationIdMiddlewareTests.cs](server/QueueBoard.Api/Tests/Unit/CorrelationIdMiddlewareTests.cs)
+- `server/QueueBoard.Api/Tests/Unit/ExceptionHandlingMiddlewareTests.cs`: [server/QueueBoard.Api/Tests/Unit/ExceptionHandlingMiddlewareTests.cs](server/QueueBoard.Api/Tests/Unit/ExceptionHandlingMiddlewareTests.cs)
+- `server/QueueBoard.Api/Tests/Unit/ProblemDetailsFactoryTests.cs`: [server/QueueBoard.Api/Tests/Unit/ProblemDetailsFactoryTests.cs](server/QueueBoard.Api/Tests/Unit/ProblemDetailsFactoryTests.cs)
+
 Change notes
 - Keep examples small and stable; update the doc if the contract changes. Tests should reference this doc as the canonical behavior.

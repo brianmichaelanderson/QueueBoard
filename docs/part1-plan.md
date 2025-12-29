@@ -38,8 +38,8 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
           - Define mapping rules: validation → 400, not-found → 404, conflict → 409, unhandled → 500.
       - [x] 5.2 Implement correlation-id / trace propagation (recommended early)
           - Add middleware to ensure every request has a correlation id (header `X-Correlation-ID`) and surface it in logs and `ProblemDetails` responses. This should run before exception middleware so exceptions include the correlation id.
-      - [ ] 5.3 ProblemDetails factory
-          - Add a custom `ProblemDetailsFactory` or extend the default to include `traceId`, environment-safe details, and a consistent `errors` shape for validation failures.
+        - [x] 5.3 ProblemDetails factory
+           - Add a custom `ProblemDetailsFactory` or extend the default to include `traceId`, environment-safe details, and a consistent `errors` shape for validation failures.
       - [x] 5.4 Implement global exception-handling middleware
           - Create `Middleware/ExceptionHandlingMiddleware` to catch exceptions, map to `ProblemDetails` via the factory, set `application/problem+json`, and return proper status codes.
           - Ensure middleware logs the exception with structured context (path, method, user, correlation id).
@@ -49,8 +49,13 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
           - Wire middleware into `Program.cs` in the correct order (register correlation-id middleware first, then exception middleware, consider `UseDeveloperExceptionPage` in Development only).
        - [ ] 5.7 Avoid leaking secrets / redaction
           - Strip or redact sensitive info from `ProblemDetails` in non-development environments; ensure stack traces are not returned in production.
-       - [ ] 5.8 Tests (TDD)
-          - [x] Unit tests for `ExceptionHandlingMiddleware` mapping rules and logging (fast, deterministic).
+       - [x] 5.8 Tests (TDD)
+          - [x] Added unit tests for:
+               [x] `ExceptionHandlingMiddleware` mapping rules and logging (fast, deterministic).
+               [x] `CorrelationIdMiddlewareTests.cs` (ensures correlation id propagation and context items)
+               [x] `ExceptionHandlingMiddlewareTests.cs` (maps exceptions → status codes and ProblemDetails shape)
+               [x] `ProblemDetailsFactoryTests.cs` (ensures `traceId`/`timestamp` enrichment and validation payload shape)
+               - Tests located under `server/QueueBoard.Api/Tests/Unit`
           - [ ] Integration tests using `WebApplicationFactory` to assert response shape, headers, and end-to-end logging behaviour.
        - [x] 5.9 Documentation
           - Update `docs/part1-plan.md` and README with examples of error responses, status codes, and headers. See `docs/error-handling.md` for canonical examples and rules.

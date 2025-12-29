@@ -295,6 +295,38 @@ docker run --rm --network queueboard_default \
   mcr.microsoft.com/dotnet/sdk:10.0 bash -lc "dotnet restore server/QueueBoard.Api && dotnet test server/QueueBoard.Api -v minimal"
 ```
 
+- Unit tests (run an individual unit test or run the API project's tests inside the SDK container):
+
+Run all tests in the API project (inside the SDK container):
+
+```bash
+docker run --rm --network queueboard_default \
+  --platform linux/amd64 \
+  -v "$(pwd)":/src -w /src --env-file .env \
+  mcr.microsoft.com/dotnet/sdk:10.0 bash -lc "dotnet restore server/QueueBoard.Api && dotnet test server/QueueBoard.Api/QueueBoard.Api.csproj -v minimal"
+```
+
+Run a single unit test by fully-qualified name (useful for fast feedback while developing middleware/tests):
+
+```bash
+docker run --rm --network queueboard_default \
+  --platform linux/amd64 \
+  -v "$(pwd)":/src -w /src --env-file .env \
+  mcr.microsoft.com/dotnet/sdk:10.0 bash -lc "dotnet test server/QueueBoard.Api/QueueBoard.Api.csproj --filter FullyQualifiedName~ProblemDetailsFactoryTests --logger 'console;verbosity=normal' --no-restore"
+```
+
+If you already have the `api` service running via `docker compose up`, you can run tests directly inside that container:
+
+```bash
+docker compose exec api bash -lc "dotnet test /src/server/QueueBoard.Api/QueueBoard.Api.csproj -v minimal"
+```
+
+Or run a single test by name inside the running `api` service:
+
+```bash
+docker compose exec api bash -lc "dotnet test /src/server/QueueBoard.Api/QueueBoard.Api.csproj --filter FullyQualifiedName~ProblemDetailsFactoryTests --logger 'console;verbosity=normal' --no-restore"
+```
+
 - Notes:
   - The repository includes a lightweight script at `scripts/run_http_checks.sh` used for fast verification of migrations/seed and DTO projections.
   - Some macOS hosts may experience transient NuGet/vulnerability-metadata errors with `dotnet restore`; using the SDK container avoids that class of issues.
