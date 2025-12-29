@@ -32,7 +32,28 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
          - [x] 4.6.3 Verify log files are created and rotated as expected during container runs
 
 5. [ ] Global exception middleware + ProblemDetails
-   - Centralize error handling, return RFC7807 ProblemDetails for errors.
+    - Centralize error handling and return RFC7807 `ProblemDetails` for errors.
+       - [ ] 5.1 Design error contract and mapping rules
+          - Decide canonical `ProblemDetails` fields (title, status, detail, instance, traceId) and any project-specific extensions (e.g., `errors` array).
+          - Define mapping rules: validation → 400, not-found → 404, conflict → 409, unhandled → 500.
+       - [ ] 5.2 Implement correlation-id / trace propagation (recommended early)
+          - Add middleware to ensure every request has a correlation id (header `X-Correlation-ID`) and surface it in logs and `ProblemDetails` responses. This should run before exception middleware so exceptions include the correlation id.
+       - [ ] 5.3 ProblemDetails factory
+          - Add a custom `ProblemDetailsFactory` or extend the default to include `traceId`, environment-safe details, and a consistent `errors` shape for validation failures.
+       - [ ] 5.4 Implement global exception-handling middleware
+          - Create `Middleware/ExceptionHandlingMiddleware` to catch exceptions, map to `ProblemDetails` via the factory, set `application/problem+json`, and return proper status codes.
+          - Ensure middleware logs the exception with structured context (path, method, user, correlation id).
+       - [ ] 5.5 Exception → status mapping (part of middleware)
+          - Implement explicit mappings for common exceptions (model validation, `KeyNotFoundException`/domain not-found, `DbUpdateException`→409, etc.).
+       - [ ] 5.6 Register and order middleware
+          - Wire middleware into `Program.cs` in the correct order (register correlation-id middleware first, then exception middleware, consider `UseDeveloperExceptionPage` in Development only).
+       - [ ] 5.7 Avoid leaking secrets / redaction
+          - Strip or redact sensitive info from `ProblemDetails` in non-development environments; ensure stack traces are not returned in production.
+       - [ ] 5.8 Tests (TDD recommended)
+          - Unit tests for `ExceptionHandlingMiddleware` mapping rules and logging (fast, deterministic).
+          - Integration tests using `WebApplicationFactory` to assert response shape, headers, and end-to-end logging behaviour.
+       - [ ] 5.9 Documentation
+          - Update `docs/part1-plan.md` and README with examples of error responses, status codes, and headers.
 
 6. [ ] Request validation
    - Add DataAnnotation or FluentValidation rules and consistent validation error payloads.
