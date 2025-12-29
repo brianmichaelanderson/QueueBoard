@@ -18,14 +18,14 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
    - [ ] 3.4 (optional) Add API versioning/grouping
    - [x] 3.5 Update README/docs with Swagger URL and usage
 
-4. [ ] Configure structured logging
-   - Add structured logs (Serilog or configure Microsoft logging) and logging scopes.
-     - [ ] 4.1 Add Serilog NuGet packages to server/QueueBoard.Api.csproj (`Serilog.AspNetCore`, `Serilog.Sinks.Console`, optionally `Serilog.Sinks.File`, `Serilog.Enrichers.Environment`)
-       - [ ] 4.2 Configure Serilog host in `Program.cs` (call `builder.Host.UseSerilog()` and initialize `Log.Logger` with JSON console sink and basic enrichers)
-          - [ ] 4.2.1 Run `dotnet restore` / `dotnet build` (or container build) to validate package restore and build before runtime verification
-     - [ ] 4.3 Add Serilog settings to `appsettings.Development.json` (console JSON formatting, minimum levels, optional Seq/file sinks)
-     - [ ] 4.4 Update key controllers/services to use `ILogger<T>` where useful (minimal, targeted changes)
-     - [ ] 4.5 Verify structured logs during a container run (use `docker compose up` and inspect logs for JSON/enriched fields)
+4. [x] Configure structured logging
+    - Add structured logs (Serilog or configure Microsoft logging) and logging scopes.
+       - [x] 4.1 Add Serilog NuGet packages to server/QueueBoard.Api.csproj (`Serilog.AspNetCore`, `Serilog.Sinks.Console`, optionally `Serilog.Sinks.File`, `Serilog.Enrichers.Environment`)
+       - [x] 4.2 Configure Serilog host in `Program.cs` (call `builder.Host.UseSerilog()` and initialize `Log.Logger` with JSON console sink and basic enrichers)
+          - [x] 4.2.1 Run `dotnet restore` / `dotnet build` (or container build) to validate package restore and build before runtime verification
+       - [x] 4.3 Add Serilog settings to `appsettings.Development.json` (console JSON formatting, minimum levels, optional Seq/file sinks)
+       - [x] 4.4 Update key controllers/services to use `ILogger<T>` where useful (minimal, targeted changes)
+       - [x] 4.5 Verify structured logs during a container run (use `docker compose up` and inspect logs for JSON/enriched fields)
 
 5. [ ] Global exception middleware + ProblemDetails
    - Centralize error handling, return RFC7807 ProblemDetails for errors.

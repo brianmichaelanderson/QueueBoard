@@ -14,10 +14,12 @@ namespace QueueBoard.Api.Controllers
     public class AgentsController : ControllerBase 
     {
         private readonly QueueBoardDbContext _db;
+        private readonly Microsoft.Extensions.Logging.ILogger<AgentsController> _logger;
 
-        public AgentsController(QueueBoardDbContext db)
+        public AgentsController(QueueBoardDbContext db, Microsoft.Extensions.Logging.ILogger<AgentsController> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace QueueBoard.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
         {
+            _logger?.LogDebug("GetAll agents {Search} page {Page} size {PageSize}", search, page, pageSize);
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 25;
 
@@ -46,6 +49,7 @@ namespace QueueBoard.Api.Controllers
                 .Select(a => new AgentDto(a.Id, a.FirstName, a.LastName, a.Email, a.IsActive, a.CreatedAt))
                 .ToListAsync();
 
+            _logger?.LogInformation("Returned {Count} agents (total {Total}) for page {Page}", items.Count, total, page);
             return Ok(new { totalCount = total, page, pageSize, items });
         }
 
@@ -56,13 +60,19 @@ namespace QueueBoard.Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] System.Guid id)
         {
+            _logger?.LogDebug("GetById agent {Id}", id);
             var dto = await _db.Agents
                 .AsNoTracking()
                 .Where(a => a.Id == id)
                 .Select(a => new AgentDto(a.Id, a.FirstName, a.LastName, a.Email, a.IsActive, a.CreatedAt))
                 .FirstOrDefaultAsync();
 
-            if (dto is null) return NotFound();
+            if (dto is null)
+            {
+                _logger?.LogInformation("Agent {Id} not found", id);
+                return NotFound();
+            }
+            _logger?.LogInformation("Returned agent {Id}", id);
             return Ok(dto);
         }
     }

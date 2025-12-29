@@ -14,10 +14,12 @@ namespace QueueBoard.Api.Controllers
     public class QueuesController : ControllerBase
     {
         private readonly QueueBoardDbContext _db;
+        private readonly Microsoft.Extensions.Logging.ILogger<QueuesController> _logger;
 
-        public QueuesController(QueueBoardDbContext db)
+        public QueuesController(QueueBoardDbContext db, Microsoft.Extensions.Logging.ILogger<QueuesController> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         /// <summary>
@@ -26,6 +28,7 @@ namespace QueueBoard.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] string? search, [FromQuery] int page = 1, [FromQuery] int pageSize = 25)
         {
+            _logger?.LogDebug("GetAll queues {Search} page {Page} size {PageSize}", search, page, pageSize);
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 25;
 
@@ -46,6 +49,7 @@ namespace QueueBoard.Api.Controllers
                 .Select(q => new QueueDto(q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt))
                 .ToListAsync();
 
+            _logger?.LogInformation("Returned {Count} queues (total {Total}) for page {Page}", items.Count, total, page);
             return Ok(new { totalCount = total, page, pageSize, items });
         }
 
@@ -56,13 +60,19 @@ namespace QueueBoard.Api.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById([FromRoute] System.Guid id)
         {
+            _logger?.LogDebug("GetById queue {Id}", id);
             var dto = await _db.Queues
                 .AsNoTracking()
                 .Where(q => q.Id == id)
                 .Select(q => new QueueDto(q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt))
                 .FirstOrDefaultAsync();
 
-            if (dto is null) return NotFound();
+            if (dto is null)
+            {
+                _logger?.LogInformation("Queue {Id} not found", id);
+                return NotFound();
+            }
+            _logger?.LogInformation("Returned queue {Id}", id);
             return Ok(dto);
         }
     }
