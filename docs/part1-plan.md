@@ -33,7 +33,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
 
 5. [ ] Global exception middleware + ProblemDetails
     - Centralize error handling and return RFC7807 `ProblemDetails` for errors.
-       - [ ] 5.1 Design error contract and mapping rules
+      - [x] 5.1 Design error contract and mapping rules
           - Decide canonical `ProblemDetails` fields (title, status, detail, instance, traceId) and any project-specific extensions (e.g., `errors` array).
           - Define mapping rules: validation → 400, not-found → 404, conflict → 409, unhandled → 500.
        - [ ] 5.2 Implement correlation-id / trace propagation (recommended early)
@@ -50,10 +50,10 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
        - [ ] 5.7 Avoid leaking secrets / redaction
           - Strip or redact sensitive info from `ProblemDetails` in non-development environments; ensure stack traces are not returned in production.
        - [ ] 5.8 Tests (TDD recommended)
-          - Unit tests for `ExceptionHandlingMiddleware` mapping rules and logging (fast, deterministic).
-          - Integration tests using `WebApplicationFactory` to assert response shape, headers, and end-to-end logging behaviour.
-       - [ ] 5.9 Documentation
-          - Update `docs/part1-plan.md` and README with examples of error responses, status codes, and headers.
+          - [x] Unit tests for `ExceptionHandlingMiddleware` mapping rules and logging (fast, deterministic).
+          - [ ] Integration tests using `WebApplicationFactory` to assert response shape, headers, and end-to-end logging behaviour.
+       - [x] 5.9 Documentation
+          - Update `docs/part1-plan.md` and README with examples of error responses, status codes, and headers. See `docs/error-handling.md` for canonical examples and rules.
 
 6. [ ] Request validation
    - Add DataAnnotation or FluentValidation rules and consistent validation error payloads.
