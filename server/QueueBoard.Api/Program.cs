@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using QueueBoard.Api;
 using QueueBoard.Api.Extensions;
 using Serilog;
+using QueueBoard.Api.Middleware;
+using Microsoft.Extensions.Logging;
 using Serilog.Events;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,6 +91,18 @@ try
         // If seeding fails, let the exception bubble to stop startup so the issue can be addressed.
         throw;
     }
+
+    // Correlation id middleware must run early so downstream components and error handlers can use the id
+    app.UseMiddleware<CorrelationIdMiddleware>();
+
+    // Exception handling middleware wraps downstream pipeline and logs/errors in a consistent shape.
+    // We construct it here resolving a typed logger from DI to pass to the existing middleware constructor.
+    app.Use(async (context, next) =>
+    {
+        var logger = context.RequestServices.GetRequiredService<ILogger<ExceptionHandlingMiddleware>>();
+        var middleware = new ExceptionHandlingMiddleware(next, logger);
+        await middleware.InvokeAsync(context).ConfigureAwait(false);
+    });
 
     app.UseHttpsRedirection();
 

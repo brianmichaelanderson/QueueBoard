@@ -1,6 +1,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using QueueBoard.Api.Middleware;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace QueueBoard.Api.Tests.Unit;

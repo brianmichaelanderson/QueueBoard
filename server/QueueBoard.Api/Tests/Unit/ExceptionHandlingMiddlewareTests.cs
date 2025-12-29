@@ -5,6 +5,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging.Abstractions;
+using QueueBoard.Api.Middleware;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace QueueBoard.Api.Tests.Unit;
