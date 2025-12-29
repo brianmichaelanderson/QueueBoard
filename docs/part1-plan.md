@@ -31,7 +31,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
          - [x] 4.6.2 Update Docker Compose volume mounts to persist log files outside container
          - [x] 4.6.3 Verify log files are created and rotated as expected during container runs
 
-5. [ ] Global exception middleware + ProblemDetails
+5. [x] Global exception middleware + ProblemDetails
     - Centralize error handling and return RFC7807 `ProblemDetails` for errors.
       - [x] 5.1 Design error contract and mapping rules
           - Decide canonical `ProblemDetails` fields (title, status, detail, instance, traceId) and any project-specific extensions (e.g., `errors` array).
@@ -50,19 +50,39 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
        - [x] 5.7 Avoid leaking secrets / redaction
           - Strip or redact sensitive info from `ProblemDetails` in non-development environments; ensure stack traces are not returned in production.
        - [x] 5.8 Tests (TDD)
-          - [x] Added unit tests for:
-               [x] `ExceptionHandlingMiddleware` mapping rules and logging (fast, deterministic).
-               [x] `CorrelationIdMiddlewareTests.cs` (ensures correlation id propagation and context items)
-               [x] `ExceptionHandlingMiddlewareTests.cs` (maps exceptions → status codes and ProblemDetails shape)
-               [x] `ProblemDetailsFactoryTests.cs` (ensures `traceId`/`timestamp` enrichment and validation payload shape)
-               [x] `CustomProblemDetailsFactoryTests.cs` (covers production redaction and development preservation of `detail`)
-               - Tests located under `server/QueueBoard.Api/Tests/Unit`
-          - [ ] Integration tests using `WebApplicationFactory` to assert response shape, headers, and end-to-end logging behaviour.
+          - [x] 5.8.1 Unit tests
+             - [x] `CorrelationIdMiddlewareTests.cs` — ensures correlation id propagation and context items
+             - [x] `ExceptionHandlingMiddlewareTests.cs` — maps exceptions → status codes and ProblemDetails shape
+             - [x] `ProblemDetailsFactoryTests.cs` — ensures `traceId`/`timestamp` enrichment and validation payload shape
+             - [x] `CustomProblemDetailsFactoryTests.cs` — covers production redaction and development preservation of `detail`
+             - Tests located under `server/QueueBoard.Api/Tests/Unit`
+          - [x] 5.8.2 Integration tests (HTTP end-to-end)
+             - [x] `ProjectionsTests.cs` — integration smoke tests that call the running API (http://localhost:8080 or `TEST_API_BASE_URL`) to validate DTO shapes and middleware behavior
+             - Integration tests executed inside the SDK/container to avoid host NuGet/network issues and to exercise real DB/middleware
+          - [ ] 5.8.3 (optional) In-process `WebApplicationFactory` integration tests
+             - [ ] Add/restore `WebApplicationFactory`-style tests if you want faster, in-process integration tests (requires content-root/solution layout adjustments)
        - [x] 5.9 Documentation
           - Update `docs/part1-plan.md` and README with examples of error responses, status codes, and headers. See `docs/error-handling.md` for canonical examples and rules.
 
-6. [ ] Request validation
-   - Add DataAnnotation or FluentValidation rules and consistent validation error payloads.
+6. [ ] Request validation: Minimal, TDD-first plan (MVP):
+       - [ ] 6.1 Define validation strategy
+          - [ ] 6.1.1 Choose DataAnnotations on DTOs for the MVP; reserve `FluentValidation` for richer/complex rules later.
+          - [ ] 6.1.2 Decide which rules live on DTOs (required, ranges, lengths) vs domain validators (uniqueness, cross-field constraints).
+       - [ ] 6.2 Annotate DTOs
+          - [ ] 6.2.1 Add `[Required]`, `[StringLength]`, `[Range]` to `QueueDto` and `AgentDto` for fields the UI depends on (e.g., `Name` required, `MaxWait` > 0).
+       - [ ] 6.3 Unit tests (TDD) for DTO validation
+          - [ ] 6.3.1 Write fast MSTest unit tests that validate DTOs via `Validator.TryValidateObject(...)` and assert expected validation messages.
+       - [ ] 6.4 Domain / cross-field validators (unit-tested)
+          - [ ] 6.4.1 Implement small validator classes for rules that need logic (e.g., `MaxWait` ≤ SLA), test with unit tests and mocks for any service/DB dependencies.
+       - [ ] 6.5 Enforce model validation → `ValidationProblemDetails`
+          - [ ] 6.5.1 Ensure `[ApiController]` behavior is enabled so model binding failures produce `ValidationProblemDetails`.
+          - [ ] 6.5.2 Ensure `CustomProblemDetailsFactory` is used so `traceId`/`timestamp` and `errors` shape are consistent.
+       - [ ] 6.6 Integration tests (HTTP end-to-end)
+          - [ ] 6.6.1 Add integration tests that POST/PUT invalid DTOs → expect `400` `application/problem+json`, `errors` object, and `traceId` present (run inside SDK/container).
+       - [ ] 6.7 Docs & README updates
+          - [ ] 6.7.1 Add examples of invalid request → `ValidationProblemDetails` to `docs/error-handling.md` and reference commands for running validation tests.
+       - [ ] 6.8 Optional: FluentValidation integration
+          - [ ] 6.8.1 If richer rules are required later, add `FluentValidation.AspNetCore`, register validators, and map failures to `ValidationProblemDetails`.
 
 7. [ ] Implement Queues endpoints
    - List (search + pagination), Get by id, Create, Update, Delete. Use DTOs and projection queries.

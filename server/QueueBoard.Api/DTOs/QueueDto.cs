@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace QueueBoard.Api.DTOs
 {
@@ -7,6 +8,7 @@ namespace QueueBoard.Api.DTOs
     /// </summary>
     public sealed record QueueDto(
         Guid Id,
+        [property: Required]
         string Name,
         string? Description,
         bool IsActive,
