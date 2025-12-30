@@ -35,6 +35,9 @@ The domain is intentionally lightweight and exists only to support the technical
 - EF Core
 - SQL Server Express
 - Swagger / OpenAPI
+ - Swagger / OpenAPI
+
+ETag / optimistic concurrency: API returns an `ETag` header and includes `rowVersion` in DTO responses. Clients may use `If-Match` headers or include `RowVersion` in update bodies to perform optimistic concurrency checks. See `docs/etag.md` for examples and curl snippets.
 
 Swagger UI: When running the API locally or via Docker Compose (Development environment), the Swagger UI is available at http://localhost:8080/swagger. The `api` service is configured to run in Development to enable the Swagger UI during local development.
 
