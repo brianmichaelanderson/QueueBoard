@@ -65,22 +65,23 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
           - Update `docs/part1-plan.md` and README with examples of error responses, status codes, and headers. See `docs/error-handling.md` for canonical examples and rules.
 
 6. [ ] Request validation: Minimal, TDD-first plan (MVP):
-       - [ ] 6.1 Define validation strategy
-          - [ ] 6.1.1 Choose DataAnnotations on DTOs for the MVP; reserve `FluentValidation` for richer/complex rules later.
-          - [ ] 6.1.2 Decide which rules live on DTOs (required, ranges, lengths) vs domain validators (uniqueness, cross-field constraints).
-       - [ ] 6.2 Annotate DTOs
-          - [ ] 6.2.1 Add `[Required]`, `[StringLength]`, `[Range]` to `QueueDto` and `AgentDto` for fields the UI depends on (e.g., `Name` required, `MaxWait` > 0).
-       - [ ] 6.3 Unit tests (TDD) for DTO validation
-          - [ ] 6.3.1 Write fast MSTest unit tests that validate DTOs via `Validator.TryValidateObject(...)` and assert expected validation messages.
+       - [x] 6.1 Define validation strategy
+          - [x] 6.1.1 Choose DataAnnotations on DTOs for the MVP; reserve `FluentValidation` for richer/complex rules later.
+          - [x] 6.1.2 Decide which rules live on DTOs (required, ranges, lengths) vs domain validators (uniqueness, cross-field constraints).
+       - [x] 6.2 Annotate DTOs
+          - [x] 6.2.1 Add `[Required]`, `[StringLength]`, `[Range]` to `QueueDto` and `AgentDto` for fields the UI depends on (e.g., `Name` required, `MaxWait` > 0).  
+            - Note: `QueueDto.Name` annotated and `CreateQueueDto` constructor parameter uses `[param: Required]`. Agent DTO annotations pending.
+       - [x] 6.3 Unit tests (TDD) for DTO validation
+          - [x] 6.3.1 Write fast MSTest unit tests that validate DTOs via `Validator.TryValidateObject(...)` and assert expected validation messages.
        - [ ] 6.4 Domain / cross-field validators (unit-tested)
           - [ ] 6.4.1 Implement small validator classes for rules that need logic (e.g., `MaxWait` ≤ SLA), test with unit tests and mocks for any service/DB dependencies.
-       - [ ] 6.5 Enforce model validation → `ValidationProblemDetails`
-          - [ ] 6.5.1 Ensure `[ApiController]` behavior is enabled so model binding failures produce `ValidationProblemDetails`.
-          - [ ] 6.5.2 Ensure `CustomProblemDetailsFactory` is used so `traceId`/`timestamp` and `errors` shape are consistent.
-       - [ ] 6.6 Integration tests (HTTP end-to-end)
-          - [ ] 6.6.1 Add integration tests that POST/PUT invalid DTOs → expect `400` `application/problem+json`, `errors` object, and `traceId` present (run inside SDK/container).
-       - [ ] 6.7 Docs & README updates
-          - [ ] 6.7.1 Add examples of invalid request → `ValidationProblemDetails` to `docs/error-handling.md` and reference commands for running validation tests.
+       - [x] 6.5 Enforce model validation → `ValidationProblemDetails`
+          - [x] 6.5.1 Ensure `[ApiController]` behavior is enabled so model binding failures produce `ValidationProblemDetails`.
+          - [x] 6.5.2 Ensure `CustomProblemDetailsFactory` is used so `traceId`/`timestamp` and `errors` shape are consistent.
+       - [x] 6.6 Integration tests (HTTP end-to-end)
+          - [x] 6.6.1 Add integration tests that POST/PUT invalid DTOs → expect `400` `application/problem+json`, `errors` object, and `traceId` present (run inside SDK/container).
+       - [x] 6.7 Docs & README updates
+          - [x] 6.7.1 Add examples of invalid request → `ValidationProblemDetails` to `docs/error-handling.md` and reference commands for running validation tests.
        - [ ] 6.8 Optional: FluentValidation integration
           - [ ] 6.8.1 If richer rules are required later, add `FluentValidation.AspNetCore`, register validators, and map failures to `ValidationProblemDetails`.
 

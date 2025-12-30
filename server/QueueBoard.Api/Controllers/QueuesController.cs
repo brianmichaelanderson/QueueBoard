@@ -75,5 +75,33 @@ namespace QueueBoard.Api.Controllers
             _logger?.LogInformation("Returned queue {Id}", id);
             return Ok(dto);
         }
+
+        /// <summary>
+        /// Create a new queue.
+        /// </summary>
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] DTOs.CreateQueueDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var entity = new Entities.Queue
+            {
+                Id = System.Guid.NewGuid(),
+                Name = dto.Name,
+                Description = dto.Description,
+                IsActive = dto.IsActive,
+                CreatedAt = System.DateTimeOffset.UtcNow,
+                UpdatedAt = System.DateTimeOffset.UtcNow
+            };
+
+            _db.Queues.Add(entity);
+            await _db.SaveChangesAsync();
+
+            var result = new QueueDto(entity.Id, entity.Name, entity.Description, entity.IsActive, entity.CreatedAt);
+            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, result);
+        }
     }
 }

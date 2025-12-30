@@ -295,6 +295,23 @@ docker run --rm --network queueboard_default \
   mcr.microsoft.com/dotnet/sdk:10.0 bash -lc "dotnet restore server/QueueBoard.Api && dotnet test server/QueueBoard.Api -v minimal"
 ```
 
+Integration test approach
+- The repository's integration tests are written to exercise the running API (HTTP) rather than always using an in-process TestHost. When executed inside the SDK container or via `docker compose exec api`, the tests call the API at `http://localhost:8080` (or at the `TEST_API_BASE_URL` environment variable if set).
+- This avoids solution-root/content-root lookup issues when running tests inside containers and better reflects end-to-end behavior against the database and middleware.
+
+Typical workflow (compose running):
+
+```bash
+docker compose up --build -d   # start db + api (api listens on 8080)
+docker compose exec api bash -lc "dotnet test /src/server/QueueBoard.Api/QueueBoard.Api.csproj --filter Category!=Unit -v minimal"
+```
+
+Or run individual integration tests against the running service:
+
+```bash
+docker compose exec api bash -lc "dotnet test /src/server/QueueBoard.Api/QueueBoard.Api.csproj --filter FullyQualifiedName~ProjectionsTests --logger 'console;verbosity=normal' --no-restore"
+```
+
 - Unit tests (run an individual unit test or run the API project's tests inside the SDK container):
 
 Run all tests in the API project (inside the SDK container):

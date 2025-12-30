@@ -10,35 +10,13 @@ namespace QueueBoard.Api.Tests.Integration;
 [TestClass]
 public class ProjectionsTests
 {
-    private static WebApplicationFactory<Program>? _factory;
-
-    private class CustomFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint> where TEntryPoint : class
-    {
-        protected override IHost CreateHost(IHostBuilder builder)
-        {
-            // Force content root to the API project path inside the container
-            builder.UseContentRoot("/src/server/QueueBoard.Api");
-            return base.CreateHost(builder);
-        }
-    }
-
-    [ClassInitialize]
-    public static void ClassInit(TestContext _)
-    {
-        // Ensure the factory uses the API project as the content root so static assets and configuration load correctly
-        _factory = new CustomFactory<Program>();
-    }
-
-    [ClassCleanup]
-    public static void ClassCleanup()
-    {
-        _factory?.Dispose();
-    }
+    // Integration tests call the running API service (compose) at localhost:8080 when executed inside the container.
+    private static string ApiBaseUrl => System.Environment.GetEnvironmentVariable("TEST_API_BASE_URL") ?? "http://localhost:8080";
 
     [TestMethod]
     public async Task Queues_GetAll_ReturnsDtoShape()
     {
-        var client = _factory!.CreateClient();
+        using var client = new System.Net.Http.HttpClient { BaseAddress = new System.Uri(ApiBaseUrl) };
         var resp = await client.GetAsync("/queues?page=1&pageSize=5");
         resp.EnsureSuccessStatusCode();
 
@@ -49,7 +27,7 @@ public class ProjectionsTests
     [TestMethod]
     public async Task Agents_GetAll_ReturnsDtoShape()
     {
-        var client = _factory!.CreateClient();
+        using var client = new System.Net.Http.HttpClient { BaseAddress = new System.Uri(ApiBaseUrl) };
         var resp = await client.GetAsync("/agents?page=1&pageSize=5");
         resp.EnsureSuccessStatusCode();
 
