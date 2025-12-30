@@ -13,6 +13,10 @@ jobs:
   smoke:
     name: Run smoke script
     runs-on: ubuntu-latest
+    env:
+      SA_PASSWORD: ${{ secrets.SA_PASSWORD }}
+      DB_PORT: 1433
+      ASPNETCORE_URLS: "http://0.0.0.0:8080"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
