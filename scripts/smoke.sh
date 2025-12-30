@@ -54,10 +54,33 @@ fi
 echo "Created queue id: $id"
 
 
-# Prefer ETag from POST response headers; fallback to GET if missing
+# Prefer ETag from POST response headers; fallback to JSON body.rowVersion or GET if missing
 etag=$(awk -F': ' '/^[Ee]tag:/ {gsub(/"/,"",$2); print $2; exit}' "$POST_HDR_FILE" || true)
 if [ -z "$etag" ]; then
-  echo "ETag not present on POST response; fetching via GET..."
+  # Try to read RowVersion from the POST response body (JSON). This is more reliable in some envs.
+  echo "ETag not present on POST response headers; checking POST body for rowVersion..."
+  if command -v python3 >/dev/null 2>&1; then
+    rv=$(python3 - <<PY
+import sys, json
+try:
+    o = json.load(open('$POST_BODY_FILE'))
+except Exception:
+    sys.exit(2)
+for k in ('rowVersion','RowVersion','rowversion'):
+    v = o.get(k)
+    if v:
+        print(v)
+        sys.exit(0)
+sys.exit(1)
+PY
+)
+    if [ $? -eq 0 ] && [ -n "$rv" ]; then
+      etag="$rv"
+    fi
+  fi
+fi
+if [ -z "$etag" ]; then
+  echo "ETag not present in POST body; fetching via GET..."
   etag=$(curl -sI http://localhost:8080/queues/$id | tr -d '\r' | awk -F': ' '/[Ee]tag/ {gsub(/"/,"",$2); print $2; exit}')
 fi
 if [ -z "$etag" ]; then
