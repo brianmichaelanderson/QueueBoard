@@ -24,15 +24,33 @@ namespace QueueBoard.Api.Tests.Unit.Controllers
         }
 
         [TestMethod]
-        public void Delete_WhenQueueMissing_ReturnsNotFound()
+        public async System.Threading.Tasks.Task Delete_WhenQueueMissing_ReturnsNoContent()
         {
-            Assert.Inconclusive("Will be implemented after controller uses IQueueService; test should assert 204 on success and idempotent behavior.");
+            // Arrange: fake service that does nothing (idempotent delete)
+            var fakeService = new FakeQueueService();
+            var controller = new QueueBoard.Api.Controllers.QueuesController((QueueBoard.Api.QueueBoardDbContext?)null, fakeService, (Microsoft.Extensions.Logging.ILogger<QueueBoard.Api.Controllers.QueuesController>?)null);
+
+            // Act
+            var result = await controller.Delete(System.Guid.NewGuid());
+
+            // Assert: idempotent delete should return 204 NoContent
+            Assert.IsInstanceOfType(result, typeof(Microsoft.AspNetCore.Mvc.NoContentResult));
         }
 
         [TestMethod]
-        public void Delete_Idempotent_RepeatedDeleteBehavior()
+        public async System.Threading.Tasks.Task Delete_Idempotent_RepeatedDeleteBehavior()
         {
-            Assert.Inconclusive("Will be implemented after controller uses IQueueService; test should verify repeated deletes are idempotent and return 204.");
+            // Arrange
+            var fakeService = new FakeQueueService();
+            var controller = new QueueBoard.Api.Controllers.QueuesController((QueueBoard.Api.QueueBoardDbContext?)null, fakeService, (Microsoft.Extensions.Logging.ILogger<QueueBoard.Api.Controllers.QueuesController>?)null);
+
+            // Act: call delete twice
+            var r1 = await controller.Delete(System.Guid.NewGuid());
+            var r2 = await controller.Delete(System.Guid.NewGuid());
+
+            // Assert: both should be NoContent (idempotent)
+            Assert.IsInstanceOfType(r1, typeof(Microsoft.AspNetCore.Mvc.NoContentResult));
+            Assert.IsInstanceOfType(r2, typeof(Microsoft.AspNetCore.Mvc.NoContentResult));
         }
     }
 }
