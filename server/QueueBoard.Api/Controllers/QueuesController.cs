@@ -15,10 +15,12 @@ namespace QueueBoard.Api.Controllers
     {
         private readonly QueueBoardDbContext _db;
         private readonly Microsoft.Extensions.Logging.ILogger<QueuesController> _logger;
+        private readonly Services.IQueueService _queueService;
 
-        public QueuesController(QueueBoardDbContext db, Microsoft.Extensions.Logging.ILogger<QueuesController> logger)
+        public QueuesController(QueueBoardDbContext db, Services.IQueueService queueService, Microsoft.Extensions.Logging.ILogger<QueuesController> logger)
         {
             _db = db;
+            _queueService = queueService;
             _logger = logger;
         }
 
@@ -158,8 +160,8 @@ namespace QueueBoard.Api.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] System.Guid id)
         {
-            // TODO: TDD placeholder — implement delete semantics in Task 7.6.
-            throw new System.NotImplementedException("Delete endpoint not implemented yet (TDD placeholder).");
+            await _queueService.DeleteAsync(id);
+            return NoContent();
         }
     }
 }

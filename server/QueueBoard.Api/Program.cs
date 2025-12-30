@@ -49,6 +49,8 @@ builder.Services.AddDbContext<QueueBoardDbContext>(options =>
 builder.Services.AddControllers();
 // Use custom ProblemDetailsFactory to ensure consistent ProblemDetails enrichment and redaction
 builder.Services.AddSingleton<ProblemDetailsFactory, CustomProblemDetailsFactory>();
+// Register QueueService for delete and other domain operations
+builder.Services.AddScoped<IQueueService, QueueService>();
 builder.Services.AddEndpointsApiExplorer();
 
 var xmlFile = (System.Reflection.Assembly.GetExecutingAssembly().GetName().Name ?? "QueueBoard.Api") + ".xml";

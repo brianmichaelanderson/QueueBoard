@@ -87,29 +87,35 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
 
 7. [ ] Implement Queues endpoints: List (search + pagination), Get by id, Create, Update, Delete. Use DTOs and projection queries.
    - 7.1 Decide delete semantics (hard-delete vs soft-delete)
-      - [ ] 7.1.1 Choose hard-delete or soft-delete for `Queue` and document rationale
+      - [x] 7.1.1 Choose hard-delete or soft-delete for `Queue` and document rationale
       - [ ] 7.1.2 If soft-delete chosen, define `IsDeleted` semantics and retention/cleanup policy
    - 7.2 TDD: Controller & service unit tests (write tests first)
-      - [ ] 7.2.1 Write unit tests for `QueuesController.Delete` behaviors (204 on success, 404 when missing, idempotency)
-      - [ ] 7.2.2 Write unit tests for service/repository behaviors (delete persistence, soft-delete flag, exceptions mapping)
+      - [x] 7.2.1 Write unit tests for `QueuesController.Delete` behaviors (204 on success, 404 when missing, idempotency)
+      - [x] 7.2.2 Write unit tests for service/repository behaviors (delete persistence, soft-delete flag, exceptions mapping)
    - 7.3 TDD: Integration tests (HTTP end-to-end)
       - [ ] 7.3.1 Write integration test: create → delete → get (expect 404)
-      - [ ] 7.3.2 Write integration test: delete idempotency (repeat delete returns 204 or 404 per semantics)
+      - [ ] 7.3.2 Write integration test: delete idempotency (repeat delete returns 204)
       - [ ] 7.3.3 Write integration test: conflict/concurrency scenarios (if concurrency tokens/ETags used → 409)
    - 7.4 Test infra & fixtures
-      - [ ] 7.4.1 Add/extend integration test fixtures to create isolated test data and reset DB between tests
+      - [x] 7.4.1 Add/extend integration test fixtures to create isolated test data and reset DB between tests (unit/service tests use EF InMemory)
       - [ ] 7.4.2 Add helper to poll `/health` and ensure API readiness before running integration tests
    - 7.5 API contract, status codes & docs
-      - [ ] 7.5.1 Define status code semantics for DELETE (204 vs 200 vs 404) and idempotency guarantees
+      - [x] 7.5.1 Define status code semantics for DELETE (204 on success, idempotent deletes return 204)
       - [ ] 7.5.2 Add Swagger examples for DELETE and document in README/docs
    - 7.6 Implementation (after tests exist and fail)
-      - [ ] 7.6.1 Implement `DELETE /queues/{id}` in `QueuesController` and call service/repo
-      - [ ] 7.6.2 Add/adjust service and repository logic (soft-delete column + query filters if soft-delete chosen)
+      - [x] 7.6.1 Implement `DELETE /queues/{id}` in `QueuesController` and call service/repo
+      - [x] 7.6.2 Add/adjust service and repository logic (hard-delete implemented in `QueueService.DeleteAsync`)
       - [ ] 7.6.3 Add EF migration for soft-delete (if chosen)
       - [ ] 7.6.4 Add logging/telemetry for delete events (include `traceId`, user, queueId)
    - 7.7 CI & smoke tests
       - [ ] 7.7.1 Run containerized smoke tests (create→delete→fetch) in CI/local to validate end-to-end behavior
       - [ ] 7.7.2 Ensure tests are deterministic and cleanup DB state after runs
+
+Minimal remaining items to meet MVP intent for Task 7:
+- Add the integration tests (7.3.1, 7.3.2) that exercise create → delete → get(404) and idempotency using the SDK container and real SQL server instance.
+- Add a small readiness helper for integration tests to poll `/health` before running (7.4.2).
+- Add a short README/Swagger example documenting `DELETE /queues/{id}` behavior (7.5.2).
+- Optional: add logging/telemetry for delete events (7.6.4) and include in smoke tests (7.7.1).
 
 8. [ ] Implement Agents endpoints
    - CRUD endpoints for `Agent` with analogous patterns to `Queues`.
