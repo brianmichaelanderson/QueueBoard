@@ -51,6 +51,8 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<ProblemDetailsFactory, CustomProblemDetailsFactory>();
 // Register QueueService for delete and other domain operations
 builder.Services.AddScoped<IQueueService, QueueService>();
+// Provide IHttpContextAccessor for services that need request context (traceId, user headers)
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 
 var xmlFile = (System.Reflection.Assembly.GetExecutingAssembly().GetName().Name ?? "QueueBoard.Api") + ".xml";
