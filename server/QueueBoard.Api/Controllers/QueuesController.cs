@@ -222,6 +222,56 @@ namespace QueueBoard.Api.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] System.Guid id)
         {
+            // If client provided an If-Match header, validate it against the current token
+            if (Request.Headers.TryGetValue("If-Match", out var ifMatchVals))
+            {
+                var ifMatch = ifMatchVals.FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(ifMatch))
+                {
+                    // normalize: remove weak indicator and surrounding quotes
+                    ifMatch = ifMatch.Trim();
+                    if (ifMatch.StartsWith("W/")) ifMatch = ifMatch.Substring(2).Trim();
+                    if (ifMatch.StartsWith("\"") && ifMatch.EndsWith("\"")) ifMatch = ifMatch[1..^1];
+
+                    byte[] tokenBytes;
+                    try
+                    {
+                        tokenBytes = System.Convert.FromBase64String(ifMatch);
+                    }
+                    catch
+                    {
+                        ModelState.AddModelError("If-Match", "If-Match header must contain a valid base64 token.");
+                        return ValidationProblem(ModelState);
+                    }
+
+                    if (tokenBytes.Length < 8)
+                    {
+                        ModelState.AddModelError("If-Match", "If-Match token is invalid.");
+                        return ValidationProblem(ModelState);
+                    }
+
+                    var providedTicks = System.BitConverter.ToInt64(tokenBytes, 0);
+
+                    var entity = await _db.Queues.FindAsync(id);
+                    if (entity is null) return NotFound();
+
+                    if (providedTicks != entity.UpdatedAt.UtcTicks)
+                    {
+                        var body = new
+                        {
+                            type = "https://example.com/probs/precondition-failed",
+                            title = "Precondition Failed",
+                            status = 412,
+                            detail = "The provided ETag does not match the current resource state.",
+                            instance = Request.Path.Value,
+                            traceId = Request.HttpContext.Items.ContainsKey("CorrelationId") ? Request.HttpContext.Items["CorrelationId"] : Request.HttpContext.TraceIdentifier,
+                            timestamp = System.DateTime.UtcNow.ToString("o")
+                        };
+                        return new ObjectResult(body) { StatusCode = 412, ContentTypes = { "application/problem+json" } };
+                    }
+                }
+            }
+
             await _queueService.DeleteAsync(id);
             return NoContent();
         }
