@@ -117,7 +117,7 @@ Minimal remaining items to meet MVP intent for Task 7:
 - Completed: deterministic concurrency (ETag / RowVersion token) surfaced in DTOs and emitted as `ETag` headers; middleware maps concurrency → 409.
 - Remaining: (none for 7.5) Swagger examples and README snippets for `DELETE /queues/{id}` completed.
 - Remaining: Add CI smoke tests to run containerized create→delete→fetch and fail-fast on regressions (7.7.1).
-- Remaining/Optional: Add logging/telemetry for delete events (7.6.4) and address XML doc warnings.
+- Remaining/Optional: Add logging/telemetry for delete events (7.6.4) and address XML doc warnings. 
 
 8. [ ] Implement Agents endpoints
    - CRUD endpoints for `Agent` with analogous patterns to `Queues`.
