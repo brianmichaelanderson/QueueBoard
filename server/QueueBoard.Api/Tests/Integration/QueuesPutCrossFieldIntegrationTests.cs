@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace QueueBoard.Api.Tests.Integration
 {
+    [TestCategory("Integration")]
     [TestClass]
     public class QueuesPutCrossFieldIntegrationTests
     {

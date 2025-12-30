@@ -9,6 +9,10 @@ on:
       - main
   workflow_dispatch: {}
 
+concurrency:
+  group: ci-tests-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   smoke:
     name: Run smoke script

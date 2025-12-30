@@ -5,6 +5,7 @@ using QueueBoard.Api.Tests.Integration.TestHelpers;
 
 namespace QueueBoard.Api.Tests.Integration;
 
+[TestCategory("Integration")]
 [TestClass]
 public class QueuesDeleteIntegrationTests
 {

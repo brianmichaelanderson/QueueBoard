@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace QueueBoard.Api.Tests.Integration;
 
+[TestCategory("Integration")]
 [TestClass]
 public class ProjectionsTests
 {

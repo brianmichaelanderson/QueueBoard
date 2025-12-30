@@ -396,6 +396,16 @@ chmod +x scripts/run_http_checks.sh
 ./scripts/run_http_checks.sh
 ```
 
+Additional test helpers
+- `scripts/test-unit.sh` — runs the API project's unit tests inside the `api` SDK container and explicitly excludes integration tests. Use this for fast, local feedback.
+- `scripts/test-integration.sh` — starts `db_test` and `api`, runs `./scripts/reset-db.sh` to reset the test DB, then runs only the integration tests inside the `api` container.
+
+Examples:
+```
+./scripts/test-unit.sh
+./scripts/test-integration.sh
+```
+
 ## AsNoTracking guidance
 
 - **What it does:** `.AsNoTracking()` tells EF Core not to track returned entities in the change tracker. This reduces memory usage and slightly improves query performance for read-only scenarios.

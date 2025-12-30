@@ -1,0 +1,31 @@
+name: Unit Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+concurrency:
+  group: ci-tests-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  unit:
+    name: Run unit tests (containerized)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start api service
+        run: |
+          docker compose up -d --build api || docker compose up -d api
+
+      - name: Run unit tests inside api container
+        run: |
+          docker compose run --rm api bash -lc "cd /src/server/QueueBoard.Api && dotnet test --filter 'TestCategory!=Integration&FullyQualifiedName!~Integration'"
+
+      - name: Tear down
+        if: always()
+        run: docker compose down -v
