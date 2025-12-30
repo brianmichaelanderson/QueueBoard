@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using QueueBoard.Api;
 using QueueBoard.Api.Extensions;
+using QueueBoard.Api.Services;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Serilog;
 using QueueBoard.Api.Middleware;
 using Microsoft.Extensions.Logging;
@@ -45,6 +47,8 @@ builder.Services.AddDbContext<QueueBoardDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddControllers();
+// Use custom ProblemDetailsFactory to ensure consistent ProblemDetails enrichment and redaction
+builder.Services.AddSingleton<ProblemDetailsFactory, CustomProblemDetailsFactory>();
 builder.Services.AddEndpointsApiExplorer();
 
 var xmlFile = (System.Reflection.Assembly.GetExecutingAssembly().GetName().Name ?? "QueueBoard.Api") + ".xml";
