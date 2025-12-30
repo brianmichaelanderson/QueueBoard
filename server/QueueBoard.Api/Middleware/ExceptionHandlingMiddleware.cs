@@ -72,6 +72,21 @@ namespace QueueBoard.Api.Middleware
                     _logger.LogWarning(ex, "Not found while processing request {Path}", context.Request.Path);
                     break;
 
+                case Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException dbcc:
+                    status = (int)HttpStatusCode.Conflict;
+                    body = new
+                    {
+                        type = "https://example.com/probs/concurrency",
+                        title = "Conflict: concurrent update",
+                        status,
+                        detail = "The resource was updated by another process. Please re-fetch and retry your change.",
+                        instance = context.Request.Path.Value,
+                        traceId = context.Items.ContainsKey("CorrelationId") ? context.Items["CorrelationId"] : context.TraceIdentifier,
+                        timestamp = DateTime.UtcNow.ToString("o")
+                    };
+                    _logger.LogWarning(ex, "Concurrency conflict while processing request {Path}", context.Request.Path);
+                    break;
+
                 default:
                     status = (int)HttpStatusCode.InternalServerError;
                     body = new

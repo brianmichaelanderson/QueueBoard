@@ -44,12 +44,16 @@ namespace QueueBoard.Api.Controllers
 
             var total = await query.CountAsync();
 
-            var items = await query
+            var itemsRaw = await query
                 .OrderBy(q => q.Name)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
-                .Select(q => new QueueDto(q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt))
+                .Select(q => new { q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt, q.UpdatedAt })
                 .ToListAsync();
+
+            var items = itemsRaw
+                .Select(q => new QueueDto(q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt, System.Convert.ToBase64String(System.BitConverter.GetBytes(q.UpdatedAt.UtcTicks))))
+                .ToList();
 
             _logger?.LogInformation("Returned {Count} queues (total {Total}) for page {Page}", items.Count, total, page);
             return Ok(new { totalCount = total, page, pageSize, items });
@@ -63,11 +67,19 @@ namespace QueueBoard.Api.Controllers
         public async Task<IActionResult> GetById([FromRoute] System.Guid id)
         {
             _logger?.LogDebug("GetById queue {Id}", id);
-            var dto = await _db.Queues
+            var dtoRaw = await _db.Queues
                 .AsNoTracking()
                 .Where(q => q.Id == id)
-                .Select(q => new QueueDto(q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt))
+                .Select(q => new { q.Id, q.Name, q.Description, q.IsActive, q.CreatedAt, q.UpdatedAt })
                 .FirstOrDefaultAsync();
+
+            QueueDto? dto = null;
+            if (dtoRaw is not null)
+            {
+                var token = System.Convert.ToBase64String(System.BitConverter.GetBytes(dtoRaw.UpdatedAt.UtcTicks));
+                dto = new QueueDto(dtoRaw.Id, dtoRaw.Name, dtoRaw.Description, dtoRaw.IsActive, dtoRaw.CreatedAt, token);
+                Response.Headers["ETag"] = $"\"{token}\"";
+            }
 
             if (dto is null)
             {
@@ -93,7 +105,7 @@ namespace QueueBoard.Api.Controllers
 
             // Cross-field validation (TDD): ensure Name and Description are not identical
             var crossValidator = new Validators.QueueCrossFieldValidator();
-            if (!crossValidator.Validate(new DTOs.QueueDto(System.Guid.Empty, dto.Name, dto.Description, dto.IsActive, System.DateTimeOffset.UtcNow), out var crossErrors))
+            if (!crossValidator.Validate(new DTOs.QueueDto(System.Guid.Empty, dto.Name, dto.Description, dto.IsActive, System.DateTimeOffset.UtcNow, null), out var crossErrors))
             {
                 foreach (var e in crossErrors)
                 {
@@ -115,7 +127,9 @@ namespace QueueBoard.Api.Controllers
             _db.Queues.Add(entity);
             await _db.SaveChangesAsync();
 
-            var result = new QueueDto(entity.Id, entity.Name, entity.Description, entity.IsActive, entity.CreatedAt);
+            var newToken = System.Convert.ToBase64String(System.BitConverter.GetBytes(entity.UpdatedAt.UtcTicks));
+            var result = new QueueDto(entity.Id, entity.Name, entity.Description, entity.IsActive, entity.CreatedAt, newToken);
+            Response.Headers["ETag"] = $"\"{newToken}\"";
             return CreatedAtAction(nameof(GetById), new { id = entity.Id }, result);
         }
 
@@ -123,7 +137,7 @@ namespace QueueBoard.Api.Controllers
         /// Update an existing queue.
         /// </summary>
         [HttpPut("{id:guid}")]
-        public async Task<IActionResult> Update([FromRoute] System.Guid id, [FromBody] DTOs.CreateQueueDto dto)
+        public async Task<IActionResult> Update([FromRoute] System.Guid id, [FromBody] DTOs.UpdateQueueDto dto)
         {
             if (!ModelState.IsValid)
             {
@@ -132,7 +146,7 @@ namespace QueueBoard.Api.Controllers
 
             // Cross-field validation
             var crossValidator = new Validators.QueueCrossFieldValidator();
-            if (!crossValidator.Validate(new DTOs.QueueDto(id, dto.Name, dto.Description, dto.IsActive, System.DateTimeOffset.UtcNow), out var crossErrors))
+            if (!crossValidator.Validate(new DTOs.QueueDto(id, dto.Name, dto.Description, dto.IsActive, System.DateTimeOffset.UtcNow, null), out var crossErrors))
             {
                 foreach (var e in crossErrors)
                 {
@@ -144,12 +158,60 @@ namespace QueueBoard.Api.Controllers
             var entity = await _db.Queues.FindAsync(id);
             if (entity is null) return NotFound();
 
+            // Accept RowVersion from body or If-Match header (ETag)
+            string? headerIfMatch = null;
+            if (Request.Headers.TryGetValue("If-Match", out var ifMatchVals))
+            {
+                headerIfMatch = ifMatchVals.FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(headerIfMatch))
+                {
+                    // strip weak prefix and surrounding quotes
+                    headerIfMatch = headerIfMatch.Trim();
+                    if (headerIfMatch.StartsWith("W/")) headerIfMatch = headerIfMatch.Substring(2).Trim();
+                    if (headerIfMatch.StartsWith("\"") && headerIfMatch.EndsWith("\"")) headerIfMatch = headerIfMatch[1..^1];
+                }
+            }
+
+            var tokenSource = headerIfMatch ?? dto.RowVersion;
+            if (string.IsNullOrWhiteSpace(tokenSource))
+            {
+                ModelState.AddModelError("RowVersion", "RowVersion (body) or If-Match header is required for update.");
+                return ValidationProblem(ModelState);
+            }
+
+            byte[] tokenBytes;
+            try
+            {
+                tokenBytes = System.Convert.FromBase64String(tokenSource!);
+            }
+            catch
+            {
+                ModelState.AddModelError("RowVersion", "RowVersion must be a valid base64 string.");
+                return ValidationProblem(ModelState);
+            }
+
+            if (tokenBytes.Length < 8)
+            {
+                ModelState.AddModelError("RowVersion", "RowVersion token is invalid.");
+                return ValidationProblem(ModelState);
+            }
+
+            var providedTicks = System.BitConverter.ToInt64(tokenBytes, 0);
+            if (providedTicks != entity.UpdatedAt.UtcTicks)
+            {
+                throw new Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException();
+            }
+
             entity.Name = dto.Name;
             entity.Description = dto.Description;
             entity.IsActive = dto.IsActive;
             entity.UpdatedAt = System.DateTimeOffset.UtcNow;
 
             await _db.SaveChangesAsync();
+
+            // return new ETag for updated resource
+            var updatedToken = System.Convert.ToBase64String(System.BitConverter.GetBytes(entity.UpdatedAt.UtcTicks));
+            Response.Headers["ETag"] = $"\"{updatedToken}\"";
 
             return NoContent();
         }

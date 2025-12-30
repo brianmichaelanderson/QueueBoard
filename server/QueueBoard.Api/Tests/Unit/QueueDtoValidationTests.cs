@@ -13,7 +13,7 @@ public class QueueDtoValidationTests
     public void Name_IsRequired()
     {
         // Arrange: create a QueueDto with an empty Name (should be invalid once attributes are added)
-        var dto = new QueueDto(Guid.NewGuid(), string.Empty, "desc", true, DateTimeOffset.UtcNow);
+        var dto = new QueueDto(Guid.NewGuid(), string.Empty, "desc", true, DateTimeOffset.UtcNow, null);
 
         var context = new ValidationContext(dto);
         var results = new List<ValidationResult>();

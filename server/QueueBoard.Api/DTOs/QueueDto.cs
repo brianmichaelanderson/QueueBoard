@@ -12,6 +12,8 @@ namespace QueueBoard.Api.DTOs
         string Name,
         string? Description,
         bool IsActive,
-        DateTimeOffset CreatedAt
+        DateTimeOffset CreatedAt,
+        // Base64-encoded RowVersion token for optimistic concurrency.
+        string? RowVersion
     );
 }

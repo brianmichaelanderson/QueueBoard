@@ -13,7 +13,7 @@ namespace QueueBoard.Api.Tests.Unit
         public void NameEqualsDescription_IsInvalid()
         {
             // Arrange: Name and Description intentionally identical to drive a cross-field validation failure
-            var dto = new QueueDto(Guid.NewGuid(), "SameValue", "SameValue", true, DateTimeOffset.UtcNow);
+            var dto = new QueueDto(Guid.NewGuid(), "SameValue", "SameValue", true, DateTimeOffset.UtcNow, null);
 
             var validator = new QueueCrossFieldValidator();
 
