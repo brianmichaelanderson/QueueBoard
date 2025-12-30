@@ -101,6 +101,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 7.4.2 Add helper to poll `/health` and ensure API readiness before running integration tests
    - 7.5 API contract, status codes & docs
       - [x] 7.5.1 Define status code semantics for DELETE (204 on success, idempotent deletes return 204)
+        - [x] 7.5.3 Define ETag/If-Match semantics and emit `ETag` / accept `If-Match` on relevant endpoints
       - [ ] 7.5.2 Add Swagger examples for DELETE and document in README/docs
    - 7.6 Implementation (after tests exist and fail)
       - [x] 7.6.1 Implement `DELETE /queues/{id}` in `QueuesController` and call service/repo
