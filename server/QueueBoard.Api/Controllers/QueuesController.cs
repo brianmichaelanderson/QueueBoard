@@ -87,6 +87,19 @@ namespace QueueBoard.Api.Controllers
                 return ValidationProblem(ModelState);
             }
 
+            _logger?.LogDebug("Create called with Name='{Name}' Description='{Description}'", dto.Name, dto.Description);
+
+            // Cross-field validation (TDD): ensure Name and Description are not identical
+            var crossValidator = new Validators.QueueCrossFieldValidator();
+            if (!crossValidator.Validate(new DTOs.QueueDto(System.Guid.Empty, dto.Name, dto.Description, dto.IsActive, System.DateTimeOffset.UtcNow), out var crossErrors))
+            {
+                foreach (var e in crossErrors)
+                {
+                    ModelState.AddModelError(string.Empty, e);
+                }
+                return ValidationProblem(ModelState);
+            }
+
             var entity = new Entities.Queue
             {
                 Id = System.Guid.NewGuid(),
@@ -102,6 +115,41 @@ namespace QueueBoard.Api.Controllers
 
             var result = new QueueDto(entity.Id, entity.Name, entity.Description, entity.IsActive, entity.CreatedAt);
             return CreatedAtAction(nameof(GetById), new { id = entity.Id }, result);
+        }
+
+        /// <summary>
+        /// Update an existing queue.
+        /// </summary>
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> Update([FromRoute] System.Guid id, [FromBody] DTOs.CreateQueueDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            // Cross-field validation
+            var crossValidator = new Validators.QueueCrossFieldValidator();
+            if (!crossValidator.Validate(new DTOs.QueueDto(id, dto.Name, dto.Description, dto.IsActive, System.DateTimeOffset.UtcNow), out var crossErrors))
+            {
+                foreach (var e in crossErrors)
+                {
+                    ModelState.AddModelError(string.Empty, e);
+                }
+                return ValidationProblem(ModelState);
+            }
+
+            var entity = await _db.Queues.FindAsync(id);
+            if (entity is null) return NotFound();
+
+            entity.Name = dto.Name;
+            entity.Description = dto.Description;
+            entity.IsActive = dto.IsActive;
+            entity.UpdatedAt = System.DateTimeOffset.UtcNow;
+
+            await _db.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
