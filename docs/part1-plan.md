@@ -92,11 +92,11 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
    - 7.2 TDD: Controller & service unit tests (write tests first)
       - [x] 7.2.1 Write unit tests for `QueuesController.Delete` behaviors (204 on success, 404 when missing, idempotency)
       - [x] 7.2.2 Write unit tests for service/repository behaviors (delete persistence, soft-delete flag, exceptions mapping)
-   - 7.3 TDD: Integration tests (HTTP end-to-end)
+   - [x] 7.3 TDD: Integration tests (HTTP end-to-end)
    - [x] 7.3.1 Write integration test: create → delete → get (expect 404)
    - [x] 7.3.2 Write integration test: delete idempotency (repeat delete returns 204)
    - [x] 7.3.3 Write integration test: conflict/concurrency scenarios (if concurrency tokens/ETags used → 409)
-   - 7.4 Test infra & fixtures
+   - [x] 7.4 Test infra & fixtures
       - [x] 7.4.1 Add/extend integration test fixtures to create isolated test data and reset DB between tests (unit/service tests use EF InMemory)
       - [x] 7.4.2 Add helper to poll `/health` and ensure API readiness before running integration tests
    - 7.5 API contract, status codes & docs
@@ -113,10 +113,11 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [ ] 7.7.2 Ensure tests are deterministic and cleanup DB state after runs
 
 Minimal remaining items to meet MVP intent for Task 7:
-- Add the integration tests (7.3.1, 7.3.2) that exercise create → delete → get(404) and idempotency using the SDK container and real SQL server instance.
-- Add a small readiness helper for integration tests to poll `/health` before running (7.4.2).
-- Add a short README/Swagger example documenting `DELETE /queues/{id}` behavior (7.5.2).
-- Optional: add logging/telemetry for delete events (7.6.4) and include in smoke tests (7.7.1).
+- Completed: integration tests (7.3.1, 7.3.2, 7.3.3) and readiness helper (7.4.2); idempotent delete behavior implemented.
+- Completed: deterministic concurrency (ETag / RowVersion token) surfaced in DTOs and emitted as `ETag` headers; middleware maps concurrency → 409.
+- Remaining: Add Swagger examples and README snippets for `DELETE /queues/{id}` (7.5.2).
+- Remaining: Add CI smoke tests to run containerized create→delete→fetch and fail-fast on regressions (7.7.1).
+- Remaining/Optional: Add logging/telemetry for delete events (7.6.4) and address XML doc warnings.
 
 8. [ ] Implement Agents endpoints
    - CRUD endpoints for `Agent` with analogous patterns to `Queues`.

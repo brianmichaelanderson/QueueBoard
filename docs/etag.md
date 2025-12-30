@@ -39,6 +39,25 @@ ETAG='"<base64-token>"'
 curl -i -X DELETE -H "If-Match: $ETAG" http://localhost:8080/queues/<id>
 ```
 
+Expected responses:
+
+- `204 NoContent` — queue deleted (idempotent). Response will include a new `ETag` header when applicable.
+- `404 NotFound` — the queue with the specified id does not exist.
+- `412 Precondition Failed` — the provided `If-Match` ETag does not match the current resource state. The response is `application/problem+json` with `type`, `title`, `status`, `detail`, `instance`, and `traceId`.
+
+Example `412` response body (application/problem+json):
+
+```json
+{
+  "type": "https://example.com/probs/precondition-failed",
+  "title": "Precondition Failed",
+  "status": 412,
+  "detail": "The provided ETag does not match the current resource state.",
+  "instance": "/queues/<id>",
+  "traceId": "|trace-id-example|"
+}
+```
+
 PUT with If-Match (body includes rowVersion):
 
 ```bash

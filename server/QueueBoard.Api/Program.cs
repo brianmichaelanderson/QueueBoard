@@ -74,6 +74,8 @@ builder.Services.AddSwaggerGen(options =>
     {
         options.IncludeXmlComments(xmlPath);
     }
+    // Add operation filter examples for DELETE /queues/{id}
+    options.OperationFilter<QueueBoard.Api.Swagger.OperationFilters.DeleteQueueOperationFilter>();
 });
 
 try

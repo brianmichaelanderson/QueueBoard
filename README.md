@@ -70,6 +70,16 @@ docker compose up -d --build api
 docker compose exec api bash -lc 'cd /src/server/QueueBoard.Api && dotnet test'
 ```
 
+Delete example (If-Match precondition):
+
+```bash
+# Fetch ETag from GET (inspect response headers or `rowVersion` in body)
+ETAG='"<base64-token>"'
+curl -i -X DELETE -H "If-Match: $ETAG" http://localhost:8080/queues/<id>
+```
+
+See `docs/etag.md` for more examples and expected responses.
+
 
 ## Angular Architecture (Standalone-First)
 
