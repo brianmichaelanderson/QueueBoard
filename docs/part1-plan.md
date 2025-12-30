@@ -93,12 +93,12 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 7.2.1 Write unit tests for `QueuesController.Delete` behaviors (204 on success, 404 when missing, idempotency)
       - [x] 7.2.2 Write unit tests for service/repository behaviors (delete persistence, soft-delete flag, exceptions mapping)
    - 7.3 TDD: Integration tests (HTTP end-to-end)
-      - [ ] 7.3.1 Write integration test: create → delete → get (expect 404)
-      - [ ] 7.3.2 Write integration test: delete idempotency (repeat delete returns 204)
+      - [x] 7.3.1 Write integration test: create → delete → get (expect 404)
+      - [x] 7.3.2 Write integration test: delete idempotency (repeat delete returns 204)
       - [ ] 7.3.3 Write integration test: conflict/concurrency scenarios (if concurrency tokens/ETags used → 409)
    - 7.4 Test infra & fixtures
       - [x] 7.4.1 Add/extend integration test fixtures to create isolated test data and reset DB between tests (unit/service tests use EF InMemory)
-      - [ ] 7.4.2 Add helper to poll `/health` and ensure API readiness before running integration tests
+      - [x] 7.4.2 Add helper to poll `/health` and ensure API readiness before running integration tests
    - 7.5 API contract, status codes & docs
       - [x] 7.5.1 Define status code semantics for DELETE (204 on success, idempotent deletes return 204)
       - [ ] 7.5.2 Add Swagger examples for DELETE and document in README/docs
