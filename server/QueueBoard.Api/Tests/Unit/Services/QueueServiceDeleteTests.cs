@@ -23,11 +23,18 @@ namespace QueueBoard.Api.Tests.Unit.Services
                 await context.SaveChangesAsync();
             }
 
-            // Create service backed by in-memory context; DeleteAsync not implemented yet — this test should fail (TDD)
+            // Act: call DeleteAsync (should remove the seeded entity)
             using (var context = new QueueBoard.Api.QueueBoardDbContext(options))
             {
                 var service = new QueueBoard.Api.Services.QueueService(context);
-                await Assert.ThrowsExceptionAsync<NotImplementedException>(async () => await service.DeleteAsync(id));
+                await service.DeleteAsync(id);
+            }
+
+            // Assert: entity no longer present
+            using (var context = new QueueBoard.Api.QueueBoardDbContext(options))
+            {
+                var found = await context.Queues.FindAsync(id);
+                Assert.IsNull(found, "Entity should be removed from the database after DeleteAsync.");
             }
         }
 
@@ -41,7 +48,15 @@ namespace QueueBoard.Api.Tests.Unit.Services
             using (var context = new QueueBoard.Api.QueueBoardDbContext(options))
             {
                 var service = new QueueBoard.Api.Services.QueueService(context);
-                await Assert.ThrowsExceptionAsync<NotImplementedException>(async () => await service.DeleteAsync(Guid.NewGuid()));
+                // Should not throw for non-existing id (idempotent)
+                await service.DeleteAsync(Guid.NewGuid());
+            }
+
+            // Assert database still empty
+            using (var context = new QueueBoard.Api.QueueBoardDbContext(options))
+            {
+                var any = await context.Queues.AnyAsync();
+                Assert.IsFalse(any, "Database should remain empty after deleting a non-existing entity.");
             }
         }
     }

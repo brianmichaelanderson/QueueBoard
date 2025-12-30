@@ -15,8 +15,16 @@ namespace QueueBoard.Api.Services
 
         public async Task DeleteAsync(Guid id)
         {
-            // TDD: Not implemented yet — tests will drive the implementation.
-            throw new NotImplementedException();
+            // Hard-delete semantics: remove the entity if it exists.
+            var entity = await _db.Queues.FindAsync(id);
+            if (entity is null)
+            {
+                // Idempotent: deleting a missing resource is a no-op.
+                return;
+            }
+
+            _db.Queues.Remove(entity);
+            await _db.SaveChangesAsync();
         }
     }
 }
