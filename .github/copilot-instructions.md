@@ -14,6 +14,7 @@ Big picture (what matters)
 
 Developer workflows discovered (documented / discoverable)
 - Backend run: `dotnet restore`, `dotnet ef database update`, `dotnet run` (see [README.md](README.md)).
+	- Note: prefer building and running the backend inside the SDK/container using Docker Compose. Local `dotnet` builds/tests often fail during NuGet restore in some environments; use the `api` SDK container to run `dotnet build`/`dotnet test` to avoid unreliable local NuGet connectivity.
 - Frontend run: `npm install`, `ng serve` (see [README.md](README.md)).
 - EF migrations: use the standard EF Core commands (`Add-Migration`, `Update-Database`) against SQL Server Express; migrations are the source of truth for schema changes.
 - Tests: README references unit tests and an integration test using `WebApplicationFactory`—inspect test projects for exact names before editing.

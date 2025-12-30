@@ -59,6 +59,18 @@ Swagger UI: When running the API locally or via Docker Compose (Development envi
 
 ---
 
+## Dev build note
+
+Prefer building and running the backend inside the SDK/container using Docker Compose. Local `dotnet` builds and tests often fail during NuGet restore in some environments; running inside the `api` SDK container avoids unreliable local NuGet connectivity.
+
+Example commands (run from the repository root):
+
+```bash
+docker compose up -d --build api
+docker compose exec api bash -lc 'cd /src/server/QueueBoard.Api && dotnet test'
+```
+
+
 ## Angular Architecture (Standalone-First)
 
 The frontend is built using Angular 20's standalone APIs. NgModules are intentionally avoided in favor of:
