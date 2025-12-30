@@ -251,7 +251,8 @@ namespace QueueBoard.Api.Controllers
         public async Task<IActionResult> Delete([FromRoute] System.Guid id)
         {
             // If client provided an If-Match header, validate it against the current token
-            if (Request.Headers.TryGetValue("If-Match", out var ifMatchVals))
+            var request = Request;
+            if (request != null && request.Headers != null && request.Headers.TryGetValue("If-Match", out var ifMatchVals))
             {
                 var ifMatch = ifMatchVals.FirstOrDefault();
                 if (!string.IsNullOrWhiteSpace(ifMatch))
@@ -285,14 +286,15 @@ namespace QueueBoard.Api.Controllers
 
                     if (providedTicks != entity.UpdatedAt.UtcTicks)
                     {
+                        var traceId = request.HttpContext?.Items != null && request.HttpContext.Items.ContainsKey("CorrelationId") ? request.HttpContext.Items["CorrelationId"] : request.HttpContext?.TraceIdentifier;
                         var body = new
                         {
                             type = "https://example.com/probs/precondition-failed",
                             title = "Precondition Failed",
                             status = 412,
                             detail = "The provided ETag does not match the current resource state.",
-                            instance = Request.Path.Value,
-                            traceId = Request.HttpContext.Items.ContainsKey("CorrelationId") ? Request.HttpContext.Items["CorrelationId"] : Request.HttpContext.TraceIdentifier,
+                            instance = request.Path.Value,
+                            traceId,
                             timestamp = System.DateTime.UtcNow.ToString("o")
                         };
                         return new ObjectResult(body) { StatusCode = 412, ContentTypes = { "application/problem+json" } };
