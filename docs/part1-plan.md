@@ -109,7 +109,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [ ] 7.6.3 Add EF migration for soft-delete (if chosen)
       - [x] 7.6.4 Add logging/telemetry for delete events (include `traceId`, user, queueId)
    - 7.7 CI & smoke tests
-      - [ ] 7.7.1 Run containerized smoke tests (create→delete→fetch) in CI/local to validate end-to-end behavior
+      - [x] 7.7.1 Run containerized smoke tests (create→delete→fetch) in CI/local to validate end-to-end behavior
       - [ ] 7.7.2 Ensure tests are deterministic and cleanup DB state after runs
 
 Minimal remaining items to meet MVP intent for Task 7:
