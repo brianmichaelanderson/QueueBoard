@@ -60,6 +60,15 @@ Correlation / traceId
 - Always include `traceId` in the response. Mirror it in the `X-Correlation-ID` response header when present.
 - Use `Activity.Current` or a lightweight correlation-id middleware to populate `traceId`.
 
+ProblemDetails factory registration
+- Register the `CustomProblemDetailsFactory` with MVC so all `ProblemDetails` (including automatic `ValidationProblemDetails`) are consistently enriched and redacted.
+- This centralizes `traceId`/`timestamp` enrichment and ensures `detail` is removed in non-development environments.
+- Registration snippet (Program.cs):
+```csharp
+// register ProblemDetails factory so MVC uses our enrichment/redaction
+builder.Services.AddSingleton<ProblemDetailsFactory, CustomProblemDetailsFactory>();
+```
+
 Redaction rules (dev-first)
 - Development:
   - Responses may include `detail` with a short exception message to aid debugging.

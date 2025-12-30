@@ -180,6 +180,8 @@ Navigating to a feature route triggers loading of that feature's bundle.
 - EF Core migrations managed end-to-end
 - Development-only seed data
 
+Note: The API registers a custom `ProblemDetailsFactory` to enrich and redact RFC7807 responses (adds `traceId`/`timestamp` and strips `detail` in non-development environments). See `docs/error-handling.md` for examples and test guidance.
+
 ### Example Endpoints
 
 ```
