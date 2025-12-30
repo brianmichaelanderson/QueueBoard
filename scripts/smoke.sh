@@ -29,17 +29,23 @@ if [ "$status" != "200" ]; then
   exit 2
 fi
 
+# Create queue and capture headers + body so we can read ETag directly from response headers
 echo "Creating queue..."
-create_resp=$(curl -s -w "\n%{http_code}" -H "Content-Type: application/json" -d '{"name":"smoke-queue","description":"smoke","isActive":true}' http://localhost:8080/queues)
-body=$(echo "$create_resp" | sed '$d')
-code=$(echo "$create_resp" | tail -n1)
+TMP_DIR=$(mktemp -d)
+POST_BODY_FILE="$TMP_DIR/body.json"
+POST_HDR_FILE="$TMP_DIR/headers.txt"
+curl -s -D "$POST_HDR_FILE" -H "Content-Type: application/json" -d '{"name":"smoke-queue","description":"smoke","isActive":true}' -o "$POST_BODY_FILE" -w "%{http_code}" http://localhost:8080/queues > "$TMP_DIR/code.txt"
+code=$(cat "$TMP_DIR/code.txt" || echo "")
+body=$(cat "$POST_BODY_FILE" || echo "")
 if [ "$code" != "201" ]; then
   echo "Create failed: $code\n$body"
+  cat "$POST_HDR_FILE" || true
+  rm -rf "$TMP_DIR"
   exit 3
 fi
 
 # Extract id from response JSON (use python if available)
-id=$(echo "$body" | python3 -c 'import sys,json; print(json.load(sys.stdin)["id"])')
+id=$(echo "$body" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("id",""))')
 if [ -z "$id" ] || [ "$id" = "null" ]; then
   echo "Failed to obtain id from create response"
   echo "$body"
@@ -47,11 +53,17 @@ if [ -z "$id" ] || [ "$id" = "null" ]; then
 fi
 echo "Created queue id: $id"
 
-echo "Reading ETag header for id $id"
-etag=$(curl -sI http://localhost:8080/queues/$id | tr -d '\r' | awk -F': ' '/[Ee]tag/ {gsub(/"/,"",$2); print $2; exit}')
+
+# Prefer ETag from POST response headers; fallback to GET if missing
+etag=$(awk -F': ' '/^[Ee]tag:/ {gsub(/"/,"",$2); print $2; exit}' "$POST_HDR_FILE" || true)
+if [ -z "$etag" ]; then
+  echo "ETag not present on POST response; fetching via GET..."
+  etag=$(curl -sI http://localhost:8080/queues/$id | tr -d '\r' | awk -F': ' '/[Ee]tag/ {gsub(/"/,"",$2); print $2; exit}')
+fi
 if [ -z "$etag" ]; then
   echo "ETag not found in response headers"
   docker compose logs api --no-color | tail -n 200
+  rm -rf "$TMP_DIR"
   exit 5
 fi
 echo "ETag: $etag"
