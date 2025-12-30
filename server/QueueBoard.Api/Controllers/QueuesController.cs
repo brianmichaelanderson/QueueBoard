@@ -151,5 +151,15 @@ namespace QueueBoard.Api.Controllers
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Delete an existing queue.
+        /// </summary>
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> Delete([FromRoute] System.Guid id)
+        {
+            // TODO: TDD placeholder — implement delete semantics in Task 7.6.
+            throw new System.NotImplementedException("Delete endpoint not implemented yet (TDD placeholder).");
+        }
     }
 }
