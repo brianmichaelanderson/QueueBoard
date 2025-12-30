@@ -9,11 +9,12 @@ namespace QueueBoard.Api.Tests.Integration
     [TestClass]
     public class QueuesCrossFieldIntegrationTests
     {
+        // Respect TEST_API_BASE_URL when running inside containers
+        private static string ApiBaseUrl => System.Environment.GetEnvironmentVariable("TEST_API_BASE_URL") ?? "http://localhost:8080";
         [TestMethod]
         public async Task Post_InvalidQueue_NameEqualsDescription_ReturnsValidationProblemDetails()
         {
-            var client = new HttpClient();
-            client.BaseAddress = new System.Uri("http://localhost:8080");
+            var client = new HttpClient { BaseAddress = new System.Uri(ApiBaseUrl) };
 
             var payload = new
             {

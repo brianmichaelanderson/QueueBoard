@@ -9,10 +9,11 @@ namespace QueueBoard.Api.Tests.Integration
     [TestClass]
     public class QueuesPutCrossFieldIntegrationTests
     {
+        private static string ApiBaseUrl => System.Environment.GetEnvironmentVariable("TEST_API_BASE_URL") ?? "http://localhost:8080";
         [TestMethod]
         public async Task Put_InvalidQueue_NameEqualsDescription_ReturnsValidationProblemDetails()
         {
-            var client = new HttpClient { BaseAddress = new System.Uri("http://localhost:8080") };
+            var client = new HttpClient { BaseAddress = new System.Uri(ApiBaseUrl) };
 
             // Create a valid queue first
             var createPayload = new { name = "Initial", description = "Initial description", isActive = true };

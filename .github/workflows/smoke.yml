@@ -13,21 +13,9 @@ jobs:
   smoke:
     name: Run smoke script
     runs-on: ubuntu-latest
-    env:
-      SA_PASSWORD: ${{ secrets.SA_PASSWORD }}
-      DB_PORT: 1433
-      ASPNETCORE_URLS: "http://0.0.0.0:8080"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Create .env from secrets
-        run: |
-          cat > .env <<'EOF'
-          SA_PASSWORD=${{ env.SA_PASSWORD }}
-          DB_PORT=${{ env.DB_PORT }}
-          ASPNETCORE_URLS=${{ env.ASPNETCORE_URLS }}
-          EOF
 
       - name: Start services
         run: |
