@@ -9,7 +9,11 @@ cd "$ROOT_DIR"
 
 echo "Starting smoke test (create -> delete -> fetch)..."
 
-docker compose up -d --build api || docker compose up -d --build
+# Start services (api depends on db). For smoke runs prefer the test DB service.
+docker compose up -d --build db_test api || docker compose up -d --build api
+
+# Reset test DB to a clean state (uses TEST_DB_* env vars from .env)
+./scripts/reset-db.sh
 
 echo "Waiting for API health on http://localhost:8080/health"
 status=000
