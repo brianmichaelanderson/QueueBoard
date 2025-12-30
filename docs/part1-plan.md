@@ -107,7 +107,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 7.6.1 Implement `DELETE /queues/{id}` in `QueuesController` and call service/repo
       - [x] 7.6.2 Add/adjust service and repository logic (hard-delete implemented in `QueueService.DeleteAsync`)
       - [ ] 7.6.3 Add EF migration for soft-delete (if chosen)
-      - [ ] 7.6.4 Add logging/telemetry for delete events (include `traceId`, user, queueId)
+      - [x] 7.6.4 Add logging/telemetry for delete events (include `traceId`, user, queueId)
    - 7.7 CI & smoke tests
       - [ ] 7.7.1 Run containerized smoke tests (create→delete→fetch) in CI/local to validate end-to-end behavior
       - [ ] 7.7.2 Ensure tests are deterministic and cleanup DB state after runs
