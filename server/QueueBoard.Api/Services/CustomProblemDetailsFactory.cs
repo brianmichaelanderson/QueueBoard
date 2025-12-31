@@ -29,7 +29,9 @@ namespace QueueBoard.Api.Services
 
         public override ValidationProblemDetails CreateValidationProblemDetails(HttpContext? httpContext, ModelStateDictionary modelStateDictionary, int? statusCode = null, string? title = null, string? type = null, string? detail = null, string? instance = null)
         {
-            var errors = modelStateDictionary.ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Errors.Select(e => string.IsNullOrEmpty(e.ErrorMessage) ? e.Exception?.Message ?? string.Empty : e.ErrorMessage).ToArray());
+            var errors = modelStateDictionary.ToDictionary(
+                kvp => kvp.Key,
+                kvp => (kvp.Value?.Errors.Select(e => string.IsNullOrEmpty(e.ErrorMessage) ? e.Exception?.Message ?? string.Empty : e.ErrorMessage).ToArray()) ?? Array.Empty<string>());
 
             var vpd = new ValidationProblemDetails(errors)
             {
@@ -68,9 +70,14 @@ namespace QueueBoard.Api.Services
                     traceId = httpContext.TraceIdentifier;
                 }
 
-                if (!string.IsNullOrEmpty(traceId)) pd.Extensions["traceId"] = traceId!;
+                if (!string.IsNullOrEmpty(traceId))
+                {
+                    if (pd.Extensions == null) pd.Extensions = new System.Collections.Generic.Dictionary<string, object?>();
+                    pd.Extensions["traceId"] = traceId!;
+                }
             }
 
+            if (pd.Extensions == null) pd.Extensions = new System.Collections.Generic.Dictionary<string, object?>();
             pd.Extensions["timestamp"] = DateTime.UtcNow.ToString("o");
 
             // Redact detail in non-development environments to avoid leaking sensitive information
