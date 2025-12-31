@@ -8,4 +8,8 @@ namespace QueueBoard.Api.DTOs
         string? Description,
         bool IsActive
     );
+
+    /// <example>
+    /// { "name": "Support", "description": "Customer support queue", "isActive": true }
+    /// </example>
 }

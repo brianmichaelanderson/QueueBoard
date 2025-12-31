@@ -37,7 +37,7 @@ The domain is intentionally lightweight and exists only to support the technical
 - Swagger / OpenAPI
  - Swagger / OpenAPI
 
-ETag / optimistic concurrency: API returns an `ETag` header and includes `rowVersion` in DTO responses. Clients may use `If-Match` headers or include `RowVersion` in update bodies to perform optimistic concurrency checks. See `docs/etag.md` for examples and curl snippets.
+ETag / optimistic concurrency: API returns an `ETag` header and includes `rowVersion` in DTO responses. Clients may use `If-Match` headers or include `RowVersion` in update bodies to perform optimistic concurrency checks. See `docs/etag.md` and `docs/agents.md` for examples and curl snippets.
 
 Swagger UI: When running the API locally or via Docker Compose (Development environment), the Swagger UI is available at http://localhost:8080/swagger. The `api` service is configured to run in Development to enable the Swagger UI during local development.
 
@@ -78,7 +78,7 @@ ETAG='"<base64-token>"'
 curl -i -X DELETE -H "If-Match: $ETAG" http://localhost:8080/queues/<id>
 ```
 
-See `docs/etag.md` for more examples and expected responses.
+See `docs/etag.md` and `docs/agents.md` for more examples and expected responses.
 
 
 ## Angular Architecture (Standalone-First)

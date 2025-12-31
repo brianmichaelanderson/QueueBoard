@@ -10,6 +10,21 @@ namespace QueueBoard.Api.Controllers
     /// <summary>
     /// Controller for managing agents: list and fetch by id.
     /// </summary>
+    /// <remarks>
+    /// Examples
+    /// 
+    /// Create (POST /agents)
+    /// ```json
+    /// { "firstName": "Alice", "lastName": "Anderson", "email": "alice@example.com", "isActive": true }
+    /// ```
+    /// 
+    /// Update (PUT /agents/{id}) — send `If-Match` header with the ETag or include `rowVersion` in the body:
+    /// ```json
+    /// { "firstName": "Alice", "lastName": "Anderson", "email": "alice.new@example.com", "isActive": true, "rowVersion": "<base64-token>" }
+    /// ```
+    /// 
+    /// Responses include an `ETag` header and the `rowVersion` property in JSON payloads.
+    /// </remarks>
     [ApiController]
     [Route("agents")]
     public class AgentsController : ControllerBase 
