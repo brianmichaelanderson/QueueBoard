@@ -133,7 +133,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
          - `POST /agents` → 201 Created, returns `AgentDto` + `ETag`
          - `PUT /agents/{id}` → 204 NoContent, 400, 404, 409 (concurrency)
          - `DELETE /agents/{id}` → 204 NoContent, 404 (idempotent semantics as chosen)
-      - [ ] 8.1.3 Add XML comments and Swagger examples for each endpoint and DTO (align with Task 7 conventions)
+      - [x] 8.1.3 Add XML comments and Swagger examples for each endpoint and DTO (align with Task 7 conventions)
    - [x] 8.2 TDD: Unit tests (fast, in-memory)
       - [x] 8.2.1 Controller unit tests (TDD-first): create failing tests for expected behaviors, then implement controllers to satisfy them
          - [x] 8.2.1.1 `Create_ReturnsCreated_WithETag`
@@ -157,22 +157,12 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 8.5.2 Add negative tests: validation errors (400), not-found (404), concurrency conflicts (409)
       - [x] 8.5.3 Use existing `ReadinessHelper` and `reset-db.sh` to ensure deterministic DB state between runs
    - [ ] 8.6 Docs, Swagger & examples
-      - [ ] 8.6.1 Add Swagger examples for agents endpoints and update `README.md` and `docs/*` with usage snippets (curl examples showing `ETag`/`If-Match` semantics)
-      - [ ] 8.6.2 Document expected status codes and error shapes in `docs/error-handling.md`
+      - [x] 8.6.1 Add Swagger examples for agents endpoints and update `README.md` and `docs/*` with usage snippets (curl examples showing `ETag`/`If-Match` semantics)
+      - [x] 8.6.2 Document expected status codes and error shapes in `docs/error-handling.md`
    - [ ] 8.7 Optional polish (post-MVP)
       - [ ] 8.7.1 Search, filtering and pagination tuning for `GET /agents`
       - [ ] 8.7.2 Audit logging for agent create/update/delete events (include `traceId`)
       - [ ] 8.7.3 Authorization/guards: protect agent endpoints with roles or claims (if needed)
-
-Notes / ordering guidance (TDD-first)
-   - Follow this sequence for efficient TDD flow:
-      1. 8.1 — design DTOs and API contract (small, explicit surface)
-      2. 8.2 — write failing unit tests for controllers and services
-      3. 8.3 — add minimal EF model and in-memory wiring to satisfy unit tests
-      4. 8.4 — implement controllers/services/repositories to make unit tests pass
-      5. 8.5 — add integration tests and run them in the SDK/container using `reset-db.sh`
-      6. 8.6 — add Swagger examples and docs
-   - Reference: `QueueBoard-outline.md` — keep Agents MVP minimal (Name, IsActive, optional relationships) and reuse established patterns from Task 7.
 
 9. [ ] DTOs, mappings & EF configurations
    - Define DTOs, mapping strategies, and `IEntityTypeConfiguration<>` for each entity.

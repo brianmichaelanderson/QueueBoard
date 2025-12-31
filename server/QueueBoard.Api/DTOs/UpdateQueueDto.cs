@@ -6,7 +6,7 @@ namespace QueueBoard.Api.DTOs
     /// DTO used for updating an existing queue. Includes the RowVersion (base64) for optimistic concurrency.
     /// </summary>
     /// <example>
-    /// { "name": "Support", "description": "Customer support queue", "isActive": true, "rowVersion": "<base64-token>" }
+    /// { "name": "Support", "description": "Customer support queue", "isActive": true, "rowVersion": "&lt;base64-token&gt;" }
     /// </example>
     /// <param name="Name">The queue name.</param>
     /// <param name="Description">Optional human-readable description for the queue.</param>

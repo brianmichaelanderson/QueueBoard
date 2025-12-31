@@ -8,44 +8,28 @@ Token format
 
 Client usage patterns
 
-1) Safe read/update
-- GET resource:
-  - GET /queues/{id}
+This document describes the canonical ETag/If-Match mechanics used across resources. For per-resource examples and curl snippets, see the resource docs (for example `docs/queues.md` and `docs/agents.md`).
+
+1) Safe read/update (general)
+- GET resource (e.g., GET /{resource}/{id})
   - Response includes `ETag` header and `rowVersion` in the body.
-- Update using `If-Match` header or include `RowVersion` in body:
-  - PUT /queues/{id}
+- Update using `If-Match` header or include `RowVersion` in body (e.g., PUT /{resource}/{id})
   - Header: `If-Match: "<etag-value>"`
-  - Body: `{ name, description, isActive, rowVersion: "<etag-value>" }`
+  - Body: include the resource fields and `rowVersion: "<etag-value>"`
 - On success: `204 NoContent` + new `ETag` header.
 - If the resource changed since you fetched it: `409 Conflict` or `412 Precondition Failed` (if `If-Match` provided and mismatched).
 
-2) Delete with precondition
+2) Delete with precondition (general)
 - To prevent accidental deletes, include `If-Match` with the ETag read from GET.
 - If the ETag doesn't match current resource, API returns `412 Precondition Failed` with `application/problem+json`.
 
-Curl examples
+Expected responses (canonical)
 
-Get resource and capture ETag:
-
-```bash
-curl -i http://localhost:8080/queues/<id>
-# look for ETag header and the rowVersion in JSON body
-```
-
-Delete with If-Match:
-
-```bash
-ETAG='"<base64-token>"'
-curl -i -X DELETE -H "If-Match: $ETAG" http://localhost:8080/queues/<id>
-```
-
-Expected responses:
-
-- `204 NoContent` — queue deleted (idempotent). Response will include a new `ETag` header when applicable.
-- `404 NotFound` — the queue with the specified id does not exist.
+- `204 NoContent` — resource deleted (idempotent). Response may include a new `ETag` header when applicable.
+- `404 NotFound` — the resource with the specified id does not exist.
 - `412 Precondition Failed` — the provided `If-Match` ETag does not match the current resource state. The response is `application/problem+json` with `type`, `title`, `status`, `detail`, `instance`, and `traceId`.
 
-Example `412` response body (application/problem+json):
+Example `412` response body (application/problem+json) — use in tests as a canonical shape:
 
 ```json
 {
@@ -53,16 +37,9 @@ Example `412` response body (application/problem+json):
   "title": "Precondition Failed",
   "status": 412,
   "detail": "The provided ETag does not match the current resource state.",
-  "instance": "/queues/<id>",
+  "instance": "/{resource}/{id}",
   "traceId": "|trace-id-example|"
 }
-```
-
-PUT with If-Match (body includes rowVersion):
-
-```bash
-ETAG='"<base64-token>"'
-curl -i -X PUT -H "Content-Type: application/json" -H "If-Match: $ETAG" -d '{"name":"New","description":"x","isActive":true,"rowVersion":"<base64-token>"}' http://localhost:8080/queues/<id>
 ```
 
 Notes

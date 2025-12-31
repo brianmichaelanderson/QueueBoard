@@ -6,7 +6,7 @@ namespace QueueBoard.Api.DTOs
     /// DTO used for updating an existing agent. Includes the RowVersion (base64) for optimistic concurrency.
     /// </summary>
     /// <example>
-    /// { "firstName": "Alice", "lastName": "Anderson", "email": "alice.anderson@example.com", "isActive": true, "rowVersion": "<base64-token>" }
+    /// { "firstName": "Alice", "lastName": "Anderson", "email": "alice.anderson@example.com", "isActive": true, "rowVersion": "&lt;base64-token&gt;" }
     /// </example>
     /// <param name="FirstName">Agent first name.</param>
     /// <param name="LastName">Agent last name.</param>

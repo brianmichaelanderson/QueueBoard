@@ -37,7 +37,7 @@ The domain is intentionally lightweight and exists only to support the technical
 - Swagger / OpenAPI
  - Swagger / OpenAPI
 
-ETag / optimistic concurrency: API returns an `ETag` header and includes `rowVersion` in DTO responses. Clients may use `If-Match` headers or include `RowVersion` in update bodies to perform optimistic concurrency checks. See `docs/etag.md` and `docs/agents.md` for examples and curl snippets.
+ETag / optimistic concurrency: API returns an `ETag` header and includes `rowVersion` in DTO responses. Clients may use `If-Match` headers or include `RowVersion` in update bodies to perform optimistic concurrency checks. See `docs/etag.md`, `docs/queues.md`, and `docs/agents.md` for examples and curl snippets.
 
 Swagger UI: When running the API locally or via Docker Compose (Development environment), the Swagger UI is available at http://localhost:8080/swagger. The `api` service is configured to run in Development to enable the Swagger UI during local development.
 
@@ -70,15 +70,7 @@ docker compose up -d --build api
 docker compose exec api bash -lc 'cd /src/server/QueueBoard.Api && dotnet test'
 ```
 
-Delete example (If-Match precondition):
-
-```bash
-# Fetch ETag from GET (inspect response headers or `rowVersion` in body)
-ETAG='"<base64-token>"'
-curl -i -X DELETE -H "If-Match: $ETAG" http://localhost:8080/queues/<id>
-```
-
-See `docs/etag.md` and `docs/agents.md` for more examples and expected responses.
+For queue- and agent-specific curl examples (create/get/update/delete) see `docs/queues.md` and `docs/agents.md`. For protocol-level details about ETag/If-Match and canonical error bodies see `docs/etag.md`.
 
 
 ## Angular Architecture (Standalone-First)
