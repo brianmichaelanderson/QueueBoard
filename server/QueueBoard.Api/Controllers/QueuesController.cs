@@ -64,11 +64,11 @@ namespace QueueBoard.Api.Controllers
         /// Returns a single queue by id.
         /// </summary>
         /// <param name="id">The queue id (GUID).</param>
-        [HttpGet("{id:guid}")]
         /// <remarks>
         /// Returns the queue DTO and an `ETag` response header containing a base64 token representing the resource state.
         /// Clients can use this `ETag` value in an `If-Match` header when calling `PUT` or `DELETE` to perform optimistic concurrency checks.
         /// </remarks>
+        [HttpGet("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById([FromRoute] System.Guid id)
@@ -98,12 +98,9 @@ namespace QueueBoard.Api.Controllers
         }
 
         /// <summary>
-        /// Create a new queue.
-        /// </summary>
-        [HttpPost]
-        /// <summary>
         /// Create a new queue. Responds with `201 Created` and an `ETag` header representing the created resource state.
         /// </summary>
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] DTOs.CreateQueueDto dto)
@@ -146,13 +143,10 @@ namespace QueueBoard.Api.Controllers
         }
 
         /// <summary>
-        /// Update an existing queue.
-        /// </summary>
-        [HttpPut("{id:guid}")]
-        /// <summary>
         /// Update an existing queue. Requires either `RowVersion` in the body or an `If-Match` header with the ETag provided by a previous GET/POST.
         /// On stale token, returns `409 Conflict` (mapped via problem details).
         /// </summary>
+        [HttpPut("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -238,13 +232,10 @@ namespace QueueBoard.Api.Controllers
         }
 
         /// <summary>
-        /// Delete an existing queue.
-        /// </summary>
-        [HttpDelete("{id:guid}")]
-        /// <summary>
         /// Delete an existing queue. If `If-Match` header is provided the header value must match the current ETag (otherwise 412).
         /// Returns `204 NoContent` on success.
         /// </summary>
+        [HttpDelete("{id:guid}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]

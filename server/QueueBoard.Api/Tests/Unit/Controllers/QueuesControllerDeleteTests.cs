@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.EntityFrameworkCore;
 
 namespace QueueBoard.Api.Tests.Unit.Controllers
 {
@@ -14,7 +15,9 @@ namespace QueueBoard.Api.Tests.Unit.Controllers
         {
             // Arrange: fake IQueueService that completes successfully
             var fakeService = new FakeQueueService();
-            var controller = new QueueBoard.Api.Controllers.QueuesController((QueueBoard.Api.QueueBoardDbContext?)null, fakeService, (Microsoft.Extensions.Logging.ILogger<QueueBoard.Api.Controllers.QueuesController>?)null);
+            var options = new DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>().UseInMemoryDatabase(System.Guid.NewGuid().ToString()).Options;
+            var db = new QueueBoard.Api.QueueBoardDbContext(options);
+            var controller = new QueueBoard.Api.Controllers.QueuesController(db, fakeService, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.QueuesController>.Instance);
 
             // Act
             var result = await controller.Delete(System.Guid.NewGuid());
@@ -28,7 +31,9 @@ namespace QueueBoard.Api.Tests.Unit.Controllers
         {
             // Arrange: fake service that does nothing (idempotent delete)
             var fakeService = new FakeQueueService();
-            var controller = new QueueBoard.Api.Controllers.QueuesController((QueueBoard.Api.QueueBoardDbContext?)null, fakeService, (Microsoft.Extensions.Logging.ILogger<QueueBoard.Api.Controllers.QueuesController>?)null);
+            var options = new DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>().UseInMemoryDatabase(System.Guid.NewGuid().ToString()).Options;
+            var db = new QueueBoard.Api.QueueBoardDbContext(options);
+            var controller = new QueueBoard.Api.Controllers.QueuesController(db, fakeService, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.QueuesController>.Instance);
 
             // Act
             var result = await controller.Delete(System.Guid.NewGuid());
@@ -42,7 +47,9 @@ namespace QueueBoard.Api.Tests.Unit.Controllers
         {
             // Arrange
             var fakeService = new FakeQueueService();
-            var controller = new QueueBoard.Api.Controllers.QueuesController((QueueBoard.Api.QueueBoardDbContext?)null, fakeService, (Microsoft.Extensions.Logging.ILogger<QueueBoard.Api.Controllers.QueuesController>?)null);
+            var options = new DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>().UseInMemoryDatabase(System.Guid.NewGuid().ToString()).Options;
+            var db = new QueueBoard.Api.QueueBoardDbContext(options);
+            var controller = new QueueBoard.Api.Controllers.QueuesController(db, fakeService, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.QueuesController>.Instance);
 
             // Act: call delete twice
             var r1 = await controller.Delete(System.Guid.NewGuid());

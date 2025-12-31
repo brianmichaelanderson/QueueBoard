@@ -8,7 +8,11 @@ namespace QueueBoard.Api.Tests.Unit.Helpers
     {
         public List<string> Messages { get; } = new List<string>();
 
-        public IDisposable BeginScope<TState>(TState state) => NullScope.Instance;
+        IDisposable Microsoft.Extensions.Logging.ILogger.BeginScope<TState>(TState state)
+            where TState : notnull
+        {
+            return NullScope.Instance;
+        }
 
         public bool IsEnabled(LogLevel logLevel) => true;
 

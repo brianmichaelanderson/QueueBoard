@@ -57,7 +57,17 @@ namespace QueueBoard.Api.Services
                     isDevelopment = env.IsDevelopment();
                 }
 
-                var traceId = httpContext.Items.ContainsKey("CorrelationId") ? httpContext.Items["CorrelationId"]?.ToString() : httpContext.TraceIdentifier;
+                string? traceId = null;
+                if (httpContext.Items is System.Collections.Generic.IDictionary<object, object> dict && dict.TryGetValue("CorrelationId", out var corr))
+                {
+                    traceId = corr?.ToString();
+                }
+
+                if (string.IsNullOrEmpty(traceId))
+                {
+                    traceId = httpContext.TraceIdentifier;
+                }
+
                 if (!string.IsNullOrEmpty(traceId)) pd.Extensions["traceId"] = traceId!;
             }
 

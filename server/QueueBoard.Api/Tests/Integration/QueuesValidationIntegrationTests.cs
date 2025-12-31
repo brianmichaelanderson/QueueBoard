@@ -26,7 +26,8 @@ public class QueuesValidationIntegrationTests
         var resp = await client.PostAsJsonAsync("/queues", payload);
 
         Assert.AreEqual(System.Net.HttpStatusCode.BadRequest, resp.StatusCode);
-        Assert.IsTrue(resp.Content.Headers.ContentType.MediaType == "application/problem+json" || resp.Content.Headers.ContentType.MediaType == "application/json");
+        var media = resp.Content.Headers.ContentType?.MediaType;
+        Assert.IsTrue(media == "application/problem+json" || media == "application/json");
 
         var body = await resp.Content.ReadFromJsonAsync<System.Text.Json.JsonElement>();
         Assert.IsTrue(body.TryGetProperty("errors", out var errors));
