@@ -140,8 +140,8 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
          - [x] 8.2.1.2 `GetById_ReturnsDto_OrNotFound`
          - [x] 8.2.1.3 `Update_WithStaleRowVersion_ReturnsConflict`
          - [x] 8.2.1.4 `Delete_Idempotent_ReturnsNoContent`
-      - [ ] 8.2.2 Service/repository unit tests (in-memory DB or mocks): persistence, validation, concurrency, error mapping
-      - [ ] 8.2.3 Validation tests: DTO DataAnnotations and any cross-field validators (TDD-first)
+      - [x] 8.2.2 Service/repository unit tests (in-memory DB or mocks): persistence, validation, concurrency, error mapping
+      - [x] 8.2.3 Validation tests: DTO DataAnnotations and any cross-field validators (TDD-first)
    - [ ] 8.3 Data model & EF Core
       - [ ] 8.3.1 Add `Agent` entity and any join entities (e.g., `AgentQueue`) if needed per domain model
       - [ ] 8.3.2 Add `AgentConfiguration` implementing `IEntityTypeConfiguration<Agent>` and register in `OnModelCreating`
