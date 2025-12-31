@@ -195,15 +195,9 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
          - [ ] 10.4.1.2 Add a unit test asserting the pagination envelope shape for that endpoint
       - [ ] 10.4.2 Decide on pagination headers vs body envelope and document the contract
       - [ ] 10.4.3 Add lightweight tests asserting pagination envelope and conventions
-   - 10.5 Docs & follow-ups
+   10.5 Docs & follow-ups
       - [x] 10.5.1 Add `docs/api-conventions.md` summarizing pagination, status codes, and idempotency rules
       - [x] 10.5.2 Optionally update README with an API conventions summary
-
-11. [ ] Tests: integration + unit
-    - Add a WebApplicationFactory integration test for create→fetch→update and basic unit tests for services.
-
-12. [ ] Docs / README updates
-    - Document endpoints, run instructions, and development notes (including `dotnet watch` behaviour).
 
 ---
 
