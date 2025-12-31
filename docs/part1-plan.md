@@ -147,15 +147,15 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 8.3.2 Add `AgentConfiguration` implementing `IEntityTypeConfiguration<Agent>` and register in `OnModelCreating`
       - [x] 8.3.3 Add EF migration (`Add-Migration AddAgent`) and test `dotnet ef database update` in the SDK/container
       - [x] 8.3.4 Seed minimal dev data for local runs (optional)
-   - [ ] 8.4 Implementation (make tests pass)
-      - [ ] 8.4.1 Implement `AgentsController` with the same patterns used for `QueuesController` (projection, DTO mapping, ETag emission)
-      - [ ] 8.4.2 Implement `IAgentService` and concrete service: create, get, update, delete, with logging and exception mapping
-      - [ ] 8.4.3 Implement repository layer / DbContext usage and mapping helpers
-      - [ ] 8.4.4 Emit `ETag` / support `If-Match` and deterministic `rowVersion` (if concurrency adopted)
-   - [ ] 8.5 Integration tests & readiness
-      - [ ] 8.5.1 Add integration tests (SDK/container) for the agent happy path: create → get → update → delete
-      - [ ] 8.5.2 Add negative tests: validation errors (400), not-found (404), concurrency conflicts (409)
-      - [ ] 8.5.3 Use existing `ReadinessHelper` and `reset-db.sh` to ensure deterministic DB state between runs
+   - [x] 8.4 Implementation (make tests pass)
+      - [x] 8.4.1 Implement `AgentsController` with the same patterns used for `QueuesController` (projection, DTO mapping, ETag emission)
+      - [x] 8.4.2 Implement `IAgentService` and concrete service: create, get, update, delete, with logging and exception mapping
+      - [x] 8.4.3 Implement repository layer / DbContext usage and mapping helpers
+      - [x] 8.4.4 Emit `ETag` / support `If-Match` and deterministic `rowVersion` (if concurrency adopted)
+   - [x] 8.5 Integration tests & readiness
+      - [x] 8.5.1 Add integration tests (SDK/container) for the agent happy path: create → get → update → delete
+      - [x] 8.5.2 Add negative tests: validation errors (400), not-found (404), concurrency conflicts (409)
+      - [x] 8.5.3 Use existing `ReadinessHelper` and `reset-db.sh` to ensure deterministic DB state between runs
    - [ ] 8.6 Docs, Swagger & examples
       - [ ] 8.6.1 Add Swagger examples for agents endpoints and update `README.md` and `docs/*` with usage snippets (curl examples showing `ETag`/`If-Match` semantics)
       - [ ] 8.6.2 Document expected status codes and error shapes in `docs/error-handling.md`
