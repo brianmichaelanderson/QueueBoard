@@ -179,8 +179,25 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
          - [ ] 9.6.2 Add a short `docs/mapping.md` describing mapping conventions, ETag usage, and examples
          - [ ] 9.6.3 (Optional) Add a WebApplicationFactory or contract test that verifies exported DTO shapes against a spec
 
-10. [ ] API conventions
-    - Standardize pagination response shape, status code conventions, and idempotency behavior for POST/PUT.
+10. [x] API conventions:  Standardize pagination response shape, status code conventions, and idempotency behavior for POST/PUT.
+   - 10.1 Status codes & ProblemDetails (completed)
+      - [x] 10.1.1 Global `ProblemDetails` factory and exception middleware implemented and used
+      - [x] 10.1.2 Controllers/services map domain errors → proper status codes (400/404/409/500)
+   - 10.2 Idempotency & concurrency (completed)
+      - [x] 10.2.1 `DELETE` implemented with idempotent semantics
+      - [x] 10.2.2 `ETag` / `If-Match` concurrency for `PUT` implemented
+      - [x] 10.2.3 `POST` & `PUT` return expected status codes (`201`/`204`) on success
+   - 10.3 Paging inputs (completed)
+      - [x] 10.3.1 Endpoints accept `search`, `page`, `pageSize` query params for list endpoints
+   - 10.4 Recommended (small, non-blocking, not strictly recquired for MVP)
+      - [ ] 10.4.1 Standardize pagination response envelope (`items`, `total`, `page`, `pageSize`) across list endpoints
+         - [ ] 10.4.1.1 Create a `PagedResult<T>` DTO and update one list endpoint (example: `GET /queues`) to return the envelope
+         - [ ] 10.4.1.2 Add a unit test asserting the pagination envelope shape for that endpoint
+      - [ ] 10.4.2 Decide on pagination headers vs body envelope and document the contract
+      - [ ] 10.4.3 Add lightweight tests asserting pagination envelope and conventions
+   - 10.5 Docs & follow-ups
+      - [x] 10.5.1 Add `docs/api-conventions.md` summarizing pagination, status codes, and idempotency rules
+      - [x] 10.5.2 Optionally update README with an API conventions summary
 
 11. [ ] Tests: integration + unit
     - Add a WebApplicationFactory integration test for create→fetch→update and basic unit tests for services.
