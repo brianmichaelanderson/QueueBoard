@@ -143,10 +143,10 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 8.2.2 Service/repository unit tests (in-memory DB or mocks): persistence, validation, concurrency, error mapping
       - [x] 8.2.3 Validation tests: DTO DataAnnotations and any cross-field validators (TDD-first)
    - [ ] 8.3 Data model & EF Core
-      - [ ] 8.3.1 Add `Agent` entity and any join entities (e.g., `AgentQueue`) if needed per domain model
-      - [ ] 8.3.2 Add `AgentConfiguration` implementing `IEntityTypeConfiguration<Agent>` and register in `OnModelCreating`
-      - [ ] 8.3.3 Add EF migration (`Add-Migration AddAgent`) and test `dotnet ef database update` in the SDK/container
-      - [ ] 8.3.4 Seed minimal dev data for local runs (optional)
+      - [x] 8.3.1 Add `Agent` entity and any join entities (e.g., `AgentQueue`) if needed per domain model
+      - [x] 8.3.2 Add `AgentConfiguration` implementing `IEntityTypeConfiguration<Agent>` and register in `OnModelCreating`
+      - [x] 8.3.3 Add EF migration (`Add-Migration AddAgent`) and test `dotnet ef database update` in the SDK/container
+      - [x] 8.3.4 Seed minimal dev data for local runs (optional)
    - [ ] 8.4 Implementation (make tests pass)
       - [ ] 8.4.1 Implement `AgentsController` with the same patterns used for `QueuesController` (projection, DTO mapping, ETag emission)
       - [ ] 8.4.2 Implement `IAgentService` and concrete service: create, get, update, delete, with logging and exception mapping
