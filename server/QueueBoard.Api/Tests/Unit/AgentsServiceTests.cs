@@ -15,7 +15,7 @@ namespace QueueBoard.Api.Tests.Unit
             var options = new DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
             using var db = new QueueBoard.Api.QueueBoardDbContext(options);
-            var svc = new AgentService(db, NullLogger<AgentService>.Instance);
+            var svc = new AgentService(db, NullLogger<AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
 
             var dto = new QueueBoard.Api.DTOs.CreateAgentDto("Jane", "Doe", "jane.svc@example.com", true);
             var created = await svc.CreateAsync(dto);
@@ -34,7 +34,7 @@ namespace QueueBoard.Api.Tests.Unit
             var options = new DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
             using var db = new QueueBoard.Api.QueueBoardDbContext(options);
-            var svc = new AgentService(db, NullLogger<AgentService>.Instance);
+            var svc = new AgentService(db, NullLogger<AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
 
             var agent = new QueueBoard.Api.Entities.Agent { Id = Guid.NewGuid(), FirstName = "Sam", LastName = "Agent", Email = "sam@example.com", IsActive = true, CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow };
             db.Agents.Add(agent);
@@ -54,7 +54,7 @@ namespace QueueBoard.Api.Tests.Unit
             var options = new DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
             using var db = new QueueBoard.Api.QueueBoardDbContext(options);
-            var svc = new AgentService(db, NullLogger<AgentService>.Instance);
+            var svc = new AgentService(db, NullLogger<AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
 
             var agent = new QueueBoard.Api.Entities.Agent { Id = Guid.NewGuid(), FirstName = "Old", LastName = "Agent", Email = "old@example.com", IsActive = true, CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow };
             db.Agents.Add(agent);
@@ -78,7 +78,7 @@ namespace QueueBoard.Api.Tests.Unit
             var options = new DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>()
                 .UseInMemoryDatabase(Guid.NewGuid().ToString()).Options;
             using var db = new QueueBoard.Api.QueueBoardDbContext(options);
-            var svc = new AgentService(db, NullLogger<AgentService>.Instance);
+            var svc = new AgentService(db, NullLogger<AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
 
             var agent = new QueueBoard.Api.Entities.Agent { Id = Guid.NewGuid(), FirstName = "ToDelete", LastName = "Agent", Email = "d@example.com", IsActive = true, CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow };
             db.Agents.Add(agent);

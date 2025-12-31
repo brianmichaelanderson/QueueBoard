@@ -20,7 +20,7 @@ namespace QueueBoard.Api.Controllers
     /// 
     /// Update (PUT /agents/{id}) — send `If-Match` header with the ETag or include `rowVersion` in the body:
     /// ```json
-    /// { "firstName": "Alice", "lastName": "Anderson", "email": "alice.new@example.com", "isActive": true, "rowVersion": "<base64-token>" }
+    /// { "firstName": "Alice", "lastName": "Anderson", "email": "alice.new@example.com", "isActive": true, "rowVersion": "&lt;base64-token&gt;" }
     /// ```
     /// 
     /// Responses include an `ETag` header and the `rowVersion` property in JSON payloads.

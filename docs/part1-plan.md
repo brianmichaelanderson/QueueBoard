@@ -161,11 +161,23 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 8.6.2 Document expected status codes and error shapes in `docs/error-handling.md`
    - [ ] 8.7 Optional polish (post-MVP)
       - [ ] 8.7.1 Search, filtering and pagination tuning for `GET /agents`
-      - [ ] 8.7.2 Audit logging for agent create/update/delete events (include `traceId`)
+      - [x] 8.7.2 Audit logging for agent create/update/delete events (include `traceId`)
       - [ ] 8.7.3 Authorization/guards: protect agent endpoints with roles or claims (if needed)
 
-9. [ ] DTOs, mappings & EF configurations
-   - Define DTOs, mapping strategies, and `IEntityTypeConfiguration<>` for each entity.
+9. [x] DTOs, mappings & EF configurations: Implement core DTOs, mapping strategies, and `IEntityTypeConfiguration<>` for MVP entities.
+      - [x] 9.1 DTO surface & conventions established for MVP entities (`Queue`, `Agent`)
+      - [x] 9.2 DataAnnotation placement on record constructor parameters used (`[param: Required]` where applicable)
+      - [x] 9.3 `rowVersion` / `ETag` conventions implemented and used in controllers/services (deterministic `UpdatedAt` ticks → ETag)
+      - [x] 9.4 `IEntityTypeConfiguration<>` implementations added and registered in `DbContext.OnModelCreating`
+   - Optional / future work
+      - 9.5 Optional: mapping layer & tooling
+         - [ ] 9.5.1 Add an `AutoMapper` profile or explicit mapping helpers for `Entity <-> DTO` mapping
+         - [ ] 9.5.2 Consider code generation or source-generator approaches for mappings (optional)
+         - [ ] 9.5.3 Add mapping lint/CI checks or small contract tests to detect DTO↔Entity drift
+      - 9.6 Tests & docs (optional, recommended)
+         - [ ] 9.6.1 Add unit tests asserting DTO projection queries do not return EF tracked entities
+         - [ ] 9.6.2 Add a short `docs/mapping.md` describing mapping conventions, ETag usage, and examples
+         - [ ] 9.6.3 (Optional) Add a WebApplicationFactory or contract test that verifies exported DTO shapes against a spec
 
 10. [ ] API conventions
     - Standardize pagination response shape, status code conventions, and idempotency behavior for POST/PUT.

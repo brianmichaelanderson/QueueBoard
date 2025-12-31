@@ -11,11 +11,13 @@ namespace QueueBoard.Api.Services
     {
         private readonly QueueBoardDbContext _db;
         private readonly ILogger<AgentService> _logger;
+        private readonly Microsoft.AspNetCore.Http.IHttpContextAccessor _httpContextAccessor;
 
-        public AgentService(QueueBoardDbContext db, ILogger<AgentService> logger)
+        public AgentService(QueueBoardDbContext db, ILogger<AgentService> logger, Microsoft.AspNetCore.Http.IHttpContextAccessor httpContextAccessor)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
             _logger = logger;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<AgentDto> CreateAsync(CreateAgentDto dto)
@@ -35,6 +37,13 @@ namespace QueueBoard.Api.Services
             await _db.SaveChangesAsync();
 
             var token = Convert.ToBase64String(BitConverter.GetBytes(entity.UpdatedAt.UtcTicks));
+
+            // Log creation with trace and user context if available
+            var httpContext = _httpContextAccessor?.HttpContext;
+            var traceId = httpContext?.Items != null && httpContext.Items.ContainsKey("CorrelationId") ? httpContext.Items["CorrelationId"]?.ToString() : httpContext?.TraceIdentifier;
+            var user = httpContext?.User?.Identity?.IsAuthenticated == true ? httpContext.User.Identity?.Name : (httpContext?.Request?.Headers.ContainsKey("X-User") == true ? httpContext.Request.Headers["X-User"].ToString() : "anonymous");
+            _logger?.LogInformation("Agent created: {AgentId} by {User} (traceId={TraceId})", entity.Id, user ?? "anonymous", traceId ?? "-");
+
             return new AgentDto(entity.Id, entity.FirstName, entity.LastName, entity.Email, entity.IsActive, entity.CreatedAt, token);
         }
 
@@ -75,6 +84,11 @@ namespace QueueBoard.Api.Services
             entity.UpdatedAt = DateTimeOffset.UtcNow;
 
             await _db.SaveChangesAsync();
+
+            var httpContext = _httpContextAccessor?.HttpContext;
+            var traceId = httpContext?.Items != null && httpContext.Items.ContainsKey("CorrelationId") ? httpContext.Items["CorrelationId"]?.ToString() : httpContext?.TraceIdentifier;
+            var user = httpContext?.User?.Identity?.IsAuthenticated == true ? httpContext.User.Identity?.Name : (httpContext?.Request?.Headers.ContainsKey("X-User") == true ? httpContext.Request.Headers["X-User"].ToString() : "anonymous");
+            _logger?.LogInformation("Agent updated: {AgentId} by {User} (traceId={TraceId})", id, user ?? "anonymous", traceId ?? "-");
         }
 
         public async Task DeleteAsync(Guid id, string? ifMatch = null)
@@ -92,10 +106,19 @@ namespace QueueBoard.Api.Services
             }
 
             var existing = await _db.Agents.FindAsync(id);
-            if (existing is null) return; // idempotent
+            if (existing is null)
+            {
+                _logger?.LogInformation("Delete requested for missing agent {AgentId} — idempotent no-op", id);
+                return; // idempotent
+            }
 
             _db.Agents.Remove(existing);
             await _db.SaveChangesAsync();
+
+            var httpContext = _httpContextAccessor?.HttpContext;
+            var traceId = httpContext?.Items != null && httpContext.Items.ContainsKey("CorrelationId") ? httpContext.Items["CorrelationId"]?.ToString() : httpContext?.TraceIdentifier;
+            var user = httpContext?.User?.Identity?.IsAuthenticated == true ? httpContext.User.Identity?.Name : (httpContext?.Request?.Headers.ContainsKey("X-User") == true ? httpContext.Request.Headers["X-User"].ToString() : "anonymous");
+            _logger?.LogInformation("Agent deleted: {AgentId} by {User} (traceId={TraceId})", id, user ?? "anonymous", traceId ?? "-");
         }
     }
 }

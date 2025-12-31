@@ -14,7 +14,7 @@ namespace QueueBoard.Api.Tests.Unit
             var options = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>()
                 .UseInMemoryDatabase(System.Guid.NewGuid().ToString()).Options;
             var db = new QueueBoard.Api.QueueBoardDbContext(options);
-            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
             var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
@@ -59,7 +59,7 @@ namespace QueueBoard.Api.Tests.Unit
             db.Agents.Add(agent);
             await db.SaveChangesAsync();
 
-            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
             var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
@@ -95,7 +95,7 @@ namespace QueueBoard.Api.Tests.Unit
             db.Agents.Add(agent);
             await db.SaveChangesAsync();
 
-            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
             var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
@@ -139,7 +139,7 @@ namespace QueueBoard.Api.Tests.Unit
             db.Agents.Add(agent);
             await db.SaveChangesAsync();
 
-            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance, new Microsoft.AspNetCore.Http.HttpContextAccessor());
             var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
