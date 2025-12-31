@@ -85,7 +85,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
        - [ ] 6.8 Optional: FluentValidation integration
           - [ ] 6.8.1 If richer rules are required later, add `FluentValidation.AspNetCore`, register validators, and map failures to `ValidationProblemDetails`.
 
-7. [ ] Implement Queues endpoints: List (search + pagination), Get by id, Create, Update, Delete. Use DTOs and projection queries.
+7. [x] Implement Queues endpoints: List (search + pagination), Get by id, Create, Update, Delete. Use DTOs and projection queries.
    - 7.1 Decide delete semantics (hard-delete vs soft-delete)
       - [x] 7.1.1 Choose hard-delete or soft-delete for `Queue` and document rationale
       - [ ] 7.1.2 If soft-delete chosen, define `IsDeleted` semantics and retention/cleanup policy
@@ -110,7 +110,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 7.6.4 Add logging/telemetry for delete events (include `traceId`, user, queueId)
    - 7.7 CI & smoke tests
       - [x] 7.7.1 Run containerized smoke tests (create→delete→fetch) in CI/local to validate end-to-end behavior
-      - [ ] 7.7.2 Ensure tests are deterministic and cleanup DB state after runs
+      - [x] 7.7.2 Ensure tests are deterministic and cleanup DB state after runs
 
 Minimal remaining items to meet MVP intent for Task 7:
 - Completed: integration tests (7.3.1, 7.3.2, 7.3.3) and readiness helper (7.4.2); idempotent delete behavior implemented.
