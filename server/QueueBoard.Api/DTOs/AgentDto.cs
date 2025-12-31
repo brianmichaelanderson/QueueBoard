@@ -19,6 +19,8 @@ namespace QueueBoard.Api.DTOs
         [property: EmailAddress]
         string Email,
         bool IsActive,
-        DateTimeOffset CreatedAt
+        DateTimeOffset CreatedAt,
+        // Base64-encoded RowVersion token for optimistic concurrency.
+        string? RowVersion
     );
 }

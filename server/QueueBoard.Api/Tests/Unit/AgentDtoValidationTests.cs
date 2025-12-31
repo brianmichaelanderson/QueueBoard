@@ -21,7 +21,7 @@ namespace QueueBoard.Api.Tests.Unit
         [TestMethod]
         public void ValidAgent_PassesValidation()
         {
-            var dto = new AgentDto(Guid.NewGuid(), "John", "Doe", "john.doe@example.com", true, DateTimeOffset.UtcNow);
+            var dto = new AgentDto(Guid.NewGuid(), "John", "Doe", "john.doe@example.com", true, DateTimeOffset.UtcNow, null);
             var results = Validate(dto);
             Assert.AreEqual(0, results.Count);
         }
@@ -29,7 +29,7 @@ namespace QueueBoard.Api.Tests.Unit
         [TestMethod]
         public void MissingFirstName_FailsRequired()
         {
-            var dto = new AgentDto(Guid.NewGuid(), "", "Doe", "john.doe@example.com", true, DateTimeOffset.UtcNow);
+            var dto = new AgentDto(Guid.NewGuid(), "", "Doe", "john.doe@example.com", true, DateTimeOffset.UtcNow, null);
             var results = Validate(dto);
             Assert.IsTrue(results.Count > 0);
             Assert.IsTrue(results.Any(r => r.MemberNames.Contains("FirstName") || (r.ErrorMessage ?? string.Empty).IndexOf("FirstName", StringComparison.OrdinalIgnoreCase) >= 0));
@@ -38,7 +38,7 @@ namespace QueueBoard.Api.Tests.Unit
         [TestMethod]
         public void InvalidEmail_FailsEmailAttribute()
         {
-            var dto = new AgentDto(Guid.NewGuid(), "John", "Doe", "not-an-email", true, DateTimeOffset.UtcNow);
+            var dto = new AgentDto(Guid.NewGuid(), "John", "Doe", "not-an-email", true, DateTimeOffset.UtcNow, null);
             var results = Validate(dto);
             Assert.IsTrue(results.Count > 0);
             Assert.IsTrue(results.Any(r => r.MemberNames.Contains("Email") || (r.ErrorMessage ?? string.Empty).IndexOf("email", StringComparison.OrdinalIgnoreCase) >= 0));
@@ -48,7 +48,7 @@ namespace QueueBoard.Api.Tests.Unit
         public void LongFirstName_FailsStringLength()
         {
             var longName = new string('A', 101);
-            var dto = new AgentDto(Guid.NewGuid(), longName, "Doe", "john.doe@example.com", true, DateTimeOffset.UtcNow);
+            var dto = new AgentDto(Guid.NewGuid(), longName, "Doe", "john.doe@example.com", true, DateTimeOffset.UtcNow, null);
             var results = Validate(dto);
             Assert.IsTrue(results.Count > 0);
             Assert.IsTrue(results.Any(r => r.MemberNames.Contains("FirstName") || (r.ErrorMessage ?? string.Empty).IndexOf("FirstName", StringComparison.OrdinalIgnoreCase) >= 0));

@@ -85,42 +85,94 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
        - [ ] 6.8 Optional: FluentValidation integration
           - [ ] 6.8.1 If richer rules are required later, add `FluentValidation.AspNetCore`, register validators, and map failures to `ValidationProblemDetails`.
 
-7. [x] Implement Queues endpoints: List (search + pagination), Get by id, Create, Update, Delete. Use DTOs and projection queries.
-   - 7.1 Decide delete semantics (hard-delete vs soft-delete)
-      - [x] 7.1.1 Choose hard-delete or soft-delete for `Queue` and document rationale
-      - [ ] 7.1.2 If soft-delete chosen, define `IsDeleted` semantics and retention/cleanup policy
-   - 7.2 TDD: Controller & service unit tests (write tests first)
-      - [x] 7.2.1 Write unit tests for `QueuesController.Delete` behaviors (204 on success, 404 when missing, idempotency)
-      - [x] 7.2.2 Write unit tests for service/repository behaviors (delete persistence, soft-delete flag, exceptions mapping)
-   - [x] 7.3 TDD: Integration tests (HTTP end-to-end)
-   - [x] 7.3.1 Write integration test: create → delete → get (expect 404)
-   - [x] 7.3.2 Write integration test: delete idempotency (repeat delete returns 204)
-   - [x] 7.3.3 Write integration test: conflict/concurrency scenarios (if concurrency tokens/ETags used → 409)
-   - [x] 7.4 Test infra & fixtures
-      - [x] 7.4.1 Add/extend integration test fixtures to create isolated test data and reset DB between tests (unit/service tests use EF InMemory)
-      - [x] 7.4.2 Add helper to poll `/health` and ensure API readiness before running integration tests
-   - 7.5 API contract, status codes & docs
-      - [x] 7.5.1 Define status code semantics for DELETE (204 on success, idempotent deletes return 204)
-      - [x] 7.5.2 Add Swagger examples for DELETE and document in README/docs
-      - [x] 7.5.3 Define ETag/If-Match semantics and emit `ETag` / accept `If-Match` on relevant endpoints
-   - 7.6 Implementation (after tests exist and fail)
-      - [x] 7.6.1 Implement `DELETE /queues/{id}` in `QueuesController` and call service/repo
-      - [x] 7.6.2 Add/adjust service and repository logic (hard-delete implemented in `QueueService.DeleteAsync`)
-      - [ ] 7.6.3 Add EF migration for soft-delete (if chosen)
-      - [x] 7.6.4 Add logging/telemetry for delete events (include `traceId`, user, queueId)
-   - 7.7 CI & smoke tests
-      - [x] 7.7.1 Run containerized smoke tests (create→delete→fetch) in CI/local to validate end-to-end behavior
-      - [x] 7.7.2 Ensure tests are deterministic and cleanup DB state after runs
-
-Minimal remaining items to meet MVP intent for Task 7:
-- Completed: integration tests (7.3.1, 7.3.2, 7.3.3) and readiness helper (7.4.2); idempotent delete behavior implemented.
-- Completed: deterministic concurrency (ETag / RowVersion token) surfaced in DTOs and emitted as `ETag` headers; middleware maps concurrency → 409.
-- Remaining: (none for 7.5) Swagger examples and README snippets for `DELETE /queues/{id}` completed.
-- Remaining: Add CI smoke tests to run containerized create→delete→fetch and fail-fast on regressions (7.7.1).
-- Remaining/Optional: Add logging/telemetry for delete events (7.6.4) and address XML doc warnings. 
+7. [x] Implement Queues endpoints
+   - [x] 7.1 Design & API contract
+      - [x] 7.1.1 Define DTOs: `QueueDto`, `CreateQueueDto`, `UpdateQueueDto` (Id, Name, optional settings, CreatedAt, UpdatedAt, `rowVersion` when using concurrency)
+      - [x] 7.1.2 Define routes and status codes:
+         - `GET /queues` → 200, supports `search`, `page`, `pageSize`
+         - `GET /queues/{id}` → 200 or 404
+         - `POST /queues` → 201 Created, returns `QueueDto` + `ETag`
+         - `PUT /queues/{id}` → 204 NoContent, 400, 404, 409 (concurrency)
+         - `DELETE /queues/{id}` → 204 NoContent, 404 (idempotent semantics)
+      - [x] 7.1.3 Add XML comments and Swagger examples for each endpoint and DTO (align with project conventions)
+   - [x] 7.2 TDD: Unit tests (fast, in-memory)
+      - [x] 7.2.1 Controller unit tests (TDD-first): create failing tests for expected behaviors, then implement controllers to satisfy them
+         - 7.2.1.1 `Create_ReturnsCreated_WithETag`
+         - 7.2.1.2 `GetById_ReturnsDto_OrNotFound`
+         - 7.2.1.3 `Update_WithStaleRowVersion_ReturnsConflict`
+         - 7.2.1.4 `Delete_Idempotent_ReturnsNoContent`
+      - [x] 7.2.2 Service/repository unit tests (in-memory): persistence, validation, concurrency handling, and exception-to-status mapping
+   - [x] 7.3 Data model & EF Core
+      - [x] 7.3.1 `Queue` entity + `AgentQueue` join already modeled and configured
+      - [x] 7.3.2 `QueueConfiguration` present and registered in `OnModelCreating`
+      - [x] 7.3.3 EF migrations applied for initial schema; add migration if soft-delete is adopted later
+      - [x] 7.3.4 Seed minimal dev data for local runs (optional and already included in `SeedData`)
+   - [x] 7.4 Implementation (make tests pass)
+      - [x] 7.4.1 Implement `QueuesController` endpoints (`GET`, `POST`, `PUT`, `DELETE`) following projection/DTO patterns
+      - [x] 7.4.2 Implement `IQueueService` / `QueueService` with create/read/update/delete, projection queries, and hard-delete semantics
+      - [x] 7.4.3 Emit `ETag` on create/read and accept `If-Match` for updates/deletes when concurrency is used
+      - [x] 7.4.4 Add structured logging for queue lifecycle events (include `traceId`, user, queueId)
+   - [x] 7.5 Integration tests & readiness
+      - [x] 7.5.1 Integration tests (SDK/container) for happy path: create → delete → get (expect 404)
+      - [x] 7.5.2 Negative tests: delete idempotency, concurrency conflict (409), and validation errors (400)
+      - [x] 7.5.3 Use `reset-db.sh` and readiness helper to ensure deterministic DB state between runs
+   - [x] 7.6 Docs, Swagger & examples
+      - [x] 7.6.1 Add Swagger examples and README snippets showing `ETag` / `If-Match` semantics for queues
+      - [x] 7.6.2 Document status codes, error shapes, and idempotency expectations in `docs/*`
+   - [ ] 7.7 Optional polish (post-MVP)
+      - [ ] 7.7.1 Tweak search, filtering and pagination behavior for `GET /queues`
+      - [ ] 7.7.2 Consider soft-delete / retention policy (if chosen, add migration and cleanup policy)
+      - [x] 7.7.3 Audit/logging for queue create/update/delete events already added (include `traceId`)
 
 8. [ ] Implement Agents endpoints
-   - CRUD endpoints for `Agent` with analogous patterns to `Queues`.
+   - [ ] 8.1 Design & API contract
+      - [x] 8.1.1 Define DTOs: `AgentDto`, `CreateAgentDto`, `UpdateAgentDto` (Id, Name, IsActive, CreatedAt, rowVersion if using concurrency)
+      - [x] 8.1.2 Define routes and status codes:
+         - `GET /agents` → 200, supports `search`, `page`, `pageSize`
+         - `GET /agents/{id}` → 200 or 404
+         - `POST /agents` → 201 Created, returns `AgentDto` + `ETag`
+         - `PUT /agents/{id}` → 204 NoContent, 400, 404, 409 (concurrency)
+         - `DELETE /agents/{id}` → 204 NoContent, 404 (idempotent semantics as chosen)
+      - [ ] 8.1.3 Add XML comments and Swagger examples for each endpoint and DTO (align with Task 7 conventions)
+   - [x] 8.2 TDD: Unit tests (fast, in-memory)
+      - [x] 8.2.1 Controller unit tests (TDD-first): create failing tests for expected behaviors, then implement controllers to satisfy them
+         - [x] 8.2.1.1 `Create_ReturnsCreated_WithETag`
+         - [x] 8.2.1.2 `GetById_ReturnsDto_OrNotFound`
+         - [x] 8.2.1.3 `Update_WithStaleRowVersion_ReturnsConflict`
+         - [x] 8.2.1.4 `Delete_Idempotent_ReturnsNoContent`
+      - [ ] 8.2.2 Service/repository unit tests (in-memory DB or mocks): persistence, validation, concurrency, error mapping
+      - [ ] 8.2.3 Validation tests: DTO DataAnnotations and any cross-field validators (TDD-first)
+   - [ ] 8.3 Data model & EF Core
+      - [ ] 8.3.1 Add `Agent` entity and any join entities (e.g., `AgentQueue`) if needed per domain model
+      - [ ] 8.3.2 Add `AgentConfiguration` implementing `IEntityTypeConfiguration<Agent>` and register in `OnModelCreating`
+      - [ ] 8.3.3 Add EF migration (`Add-Migration AddAgent`) and test `dotnet ef database update` in the SDK/container
+      - [ ] 8.3.4 Seed minimal dev data for local runs (optional)
+   - [ ] 8.4 Implementation (make tests pass)
+      - [ ] 8.4.1 Implement `AgentsController` with the same patterns used for `QueuesController` (projection, DTO mapping, ETag emission)
+      - [ ] 8.4.2 Implement `IAgentService` and concrete service: create, get, update, delete, with logging and exception mapping
+      - [ ] 8.4.3 Implement repository layer / DbContext usage and mapping helpers
+      - [ ] 8.4.4 Emit `ETag` / support `If-Match` and deterministic `rowVersion` (if concurrency adopted)
+   - [ ] 8.5 Integration tests & readiness
+      - [ ] 8.5.1 Add integration tests (SDK/container) for the agent happy path: create → get → update → delete
+      - [ ] 8.5.2 Add negative tests: validation errors (400), not-found (404), concurrency conflicts (409)
+      - [ ] 8.5.3 Use existing `ReadinessHelper` and `reset-db.sh` to ensure deterministic DB state between runs
+   - [ ] 8.6 Docs, Swagger & examples
+      - [ ] 8.6.1 Add Swagger examples for agents endpoints and update `README.md` and `docs/*` with usage snippets (curl examples showing `ETag`/`If-Match` semantics)
+      - [ ] 8.6.2 Document expected status codes and error shapes in `docs/error-handling.md`
+   - [ ] 8.7 Optional polish (post-MVP)
+      - [ ] 8.7.1 Search, filtering and pagination tuning for `GET /agents`
+      - [ ] 8.7.2 Audit logging for agent create/update/delete events (include `traceId`)
+      - [ ] 8.7.3 Authorization/guards: protect agent endpoints with roles or claims (if needed)
+
+Notes / ordering guidance (TDD-first)
+   - Follow this sequence for efficient TDD flow:
+      1. 8.1 — design DTOs and API contract (small, explicit surface)
+      2. 8.2 — write failing unit tests for controllers and services
+      3. 8.3 — add minimal EF model and in-memory wiring to satisfy unit tests
+      4. 8.4 — implement controllers/services/repositories to make unit tests pass
+      5. 8.5 — add integration tests and run them in the SDK/container using `reset-db.sh`
+      6. 8.6 — add Swagger examples and docs
+   - Reference: `QueueBoard-outline.md` — keep Agents MVP minimal (Name, IsActive, optional relationships) and reuse established patterns from Task 7.
 
 9. [ ] DTOs, mappings & EF configurations
    - Define DTOs, mapping strategies, and `IEntityTypeConfiguration<>` for each entity.
