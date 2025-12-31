@@ -12,16 +12,16 @@ namespace QueueBoard.Api.DTOs
     /// <param name="RowVersion">Base64-encoded RowVersion token from the server to support optimistic concurrency. Optional for now.</param>
     public sealed record UpdateAgentDto(
         [param: Required]
-        [property: StringLength(100)]
+        [param: StringLength(100)]
         string FirstName,
 
         [param: Required]
-        [property: StringLength(100)]
+        [param: StringLength(100)]
         string LastName,
 
         [param: Required]
-        [property: StringLength(256)]
-        [property: EmailAddress]
+        [param: StringLength(256)]
+        [param: EmailAddress]
         string Email,
 
         bool IsActive,

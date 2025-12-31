@@ -11,16 +11,16 @@ namespace QueueBoard.Api.DTOs
     /// <param name="IsActive">Whether the agent is active.</param>
     public sealed record CreateAgentDto(
         [param: Required]
-        [property: StringLength(100)]
+        [param: StringLength(100)]
         string FirstName,
 
         [param: Required]
-        [property: StringLength(100)]
+        [param: StringLength(100)]
         string LastName,
 
         [param: Required]
-        [property: StringLength(256)]
-        [property: EmailAddress]
+        [param: StringLength(256)]
+        [param: EmailAddress]
         string Email,
 
         bool IsActive

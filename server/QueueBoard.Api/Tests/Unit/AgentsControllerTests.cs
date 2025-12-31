@@ -14,7 +14,8 @@ namespace QueueBoard.Api.Tests.Unit
             var options = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<QueueBoard.Api.QueueBoardDbContext>()
                 .UseInMemoryDatabase(System.Guid.NewGuid().ToString()).Options;
             var db = new QueueBoard.Api.QueueBoardDbContext(options);
-            var controller = new QueueBoard.Api.Controllers.AgentsController(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
             var dto = new QueueBoard.Api.DTOs.CreateAgentDto("Jane", "Doe", "jane.doe@example.com", true);
@@ -58,7 +59,8 @@ namespace QueueBoard.Api.Tests.Unit
             db.Agents.Add(agent);
             await db.SaveChangesAsync();
 
-            var controller = new QueueBoard.Api.Controllers.AgentsController(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
             // Act: call existing agent
@@ -93,7 +95,8 @@ namespace QueueBoard.Api.Tests.Unit
             db.Agents.Add(agent);
             await db.SaveChangesAsync();
 
-            var controller = new QueueBoard.Api.Controllers.AgentsController(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
             // Get current RowVersion token
@@ -136,7 +139,8 @@ namespace QueueBoard.Api.Tests.Unit
             db.Agents.Add(agent);
             await db.SaveChangesAsync();
 
-            var controller = new QueueBoard.Api.Controllers.AgentsController(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
+            var svc = new QueueBoard.Api.Services.AgentService(db, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Services.AgentService>.Instance);
+            var controller = new QueueBoard.Api.Controllers.AgentsController(db, svc, Microsoft.Extensions.Logging.Abstractions.NullLogger<QueueBoard.Api.Controllers.AgentsController>.Instance);
             controller.ControllerContext = new Microsoft.AspNetCore.Mvc.ControllerContext { HttpContext = new Microsoft.AspNetCore.Http.DefaultHttpContext() };
 
             // First delete should remove the entity

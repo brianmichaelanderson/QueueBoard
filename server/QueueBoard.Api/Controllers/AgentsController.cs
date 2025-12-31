@@ -15,11 +15,13 @@ namespace QueueBoard.Api.Controllers
     public class AgentsController : ControllerBase 
     {
         private readonly QueueBoardDbContext _db;
+        private readonly QueueBoard.Api.Services.IAgentService _svc;
         private readonly Microsoft.Extensions.Logging.ILogger<AgentsController> _logger;
 
-        public AgentsController(QueueBoardDbContext db, Microsoft.Extensions.Logging.ILogger<AgentsController> logger)
+        public AgentsController(QueueBoardDbContext db, QueueBoard.Api.Services.IAgentService svc, Microsoft.Extensions.Logging.ILogger<AgentsController> logger)
         {
             _db = db;
+            _svc = svc;
             _logger = logger;
         }
 
@@ -66,20 +68,13 @@ namespace QueueBoard.Api.Controllers
         public async Task<IActionResult> GetById([FromRoute] System.Guid id)
         {
             _logger?.LogDebug("GetById agent {Id}", id);
-            var dtoRaw = await _db.Agents
-                .AsNoTracking()
-                .Where(a => a.Id == id)
-                .Select(a => new { a.Id, a.FirstName, a.LastName, a.Email, a.IsActive, a.CreatedAt, a.UpdatedAt })
-                .FirstOrDefaultAsync();
-
-            if (dtoRaw is null)
+            var dto = await _svc.GetByIdAsync(id);
+            if (dto is null)
             {
                 _logger?.LogInformation("Agent {Id} not found", id);
                 return NotFound();
             }
-            var token = System.Convert.ToBase64String(System.BitConverter.GetBytes(dtoRaw.UpdatedAt.UtcTicks));
-            var dto = new AgentDto(dtoRaw.Id, dtoRaw.FirstName, dtoRaw.LastName, dtoRaw.Email, dtoRaw.IsActive, dtoRaw.CreatedAt, token);
-            Response.Headers["ETag"] = $"\"{token}\"";
+            Response.Headers["ETag"] = $"\"{dto.RowVersion}\"";
             _logger?.LogInformation("Returned agent {Id}", id);
             return Ok(dto);
         }
@@ -140,22 +135,21 @@ namespace QueueBoard.Api.Controllers
                 return ValidationProblem(ModelState);
             }
 
-            var providedTicks = System.BitConverter.ToInt64(tokenBytes, 0);
-            if (providedTicks != entity.UpdatedAt.UtcTicks)
+            // Delegate update to service which will perform concurrency validation and persist changes
+            try
             {
-                throw new Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException();
+                await _svc.UpdateAsync(id, dto, tokenSource);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
 
-            entity.FirstName = dto.FirstName;
-            entity.LastName = dto.LastName;
-            entity.Email = dto.Email;
-            entity.IsActive = dto.IsActive;
-            entity.UpdatedAt = System.DateTimeOffset.UtcNow;
-
-            await _db.SaveChangesAsync();
-
-            var updatedToken = System.Convert.ToBase64String(System.BitConverter.GetBytes(entity.UpdatedAt.UtcTicks));
-            Response.Headers["ETag"] = $"\"{updatedToken}\"";
+            var updated = await _svc.GetByIdAsync(id);
+            if (updated is not null)
+            {
+                Response.Headers["ETag"] = $"\"{updated.RowVersion}\"";
+            }
 
             return NoContent();
         }
@@ -170,65 +164,38 @@ namespace QueueBoard.Api.Controllers
         [ProducesResponseType(StatusCodes.Status412PreconditionFailed)]
         public async Task<IActionResult> Delete([FromRoute] System.Guid id)
         {
-            var request = Request;
-            if (request != null && request.Headers != null && request.Headers.TryGetValue("If-Match", out var ifMatchVals))
+            string? headerIfMatch = null;
+            if (Request.Headers.TryGetValue("If-Match", out var ifMatchVals))
             {
-                var ifMatch = ifMatchVals.FirstOrDefault();
-                if (!string.IsNullOrWhiteSpace(ifMatch))
+                headerIfMatch = ifMatchVals.FirstOrDefault();
+                if (!string.IsNullOrWhiteSpace(headerIfMatch))
                 {
-                    ifMatch = ifMatch.Trim();
-                    if (ifMatch.StartsWith("W/")) ifMatch = ifMatch.Substring(2).Trim();
-                    if (ifMatch.StartsWith("\"") && ifMatch.EndsWith("\"")) ifMatch = ifMatch[1..^1];
-
-                    byte[] tokenBytes;
-                    try
-                    {
-                        tokenBytes = System.Convert.FromBase64String(ifMatch);
-                    }
-                    catch
-                    {
-                        ModelState.AddModelError("If-Match", "If-Match header must contain a valid base64 token.");
-                        return ValidationProblem(ModelState);
-                    }
-
-                    if (tokenBytes.Length < 8)
-                    {
-                        ModelState.AddModelError("If-Match", "If-Match token is invalid.");
-                        return ValidationProblem(ModelState);
-                    }
-
-                    var providedTicks = System.BitConverter.ToInt64(tokenBytes, 0);
-
-                    var entity = await _db.Agents.FindAsync(id);
-                    if (entity is null) return NotFound();
-
-                    if (providedTicks != entity.UpdatedAt.UtcTicks)
-                    {
-                        var traceId = request.HttpContext?.Items != null && request.HttpContext.Items.ContainsKey("CorrelationId") ? request.HttpContext.Items["CorrelationId"] : request.HttpContext?.TraceIdentifier;
-                        var body = new
-                        {
-                            type = "https://example.com/probs/precondition-failed",
-                            title = "Precondition Failed",
-                            status = 412,
-                            detail = "The provided ETag does not match the current resource state.",
-                            instance = request.Path.Value,
-                            traceId,
-                            timestamp = System.DateTime.UtcNow.ToString("o")
-                        };
-                        return new ObjectResult(body) { StatusCode = 412, ContentTypes = { "application/problem+json" } };
-                    }
+                    headerIfMatch = headerIfMatch.Trim();
+                    if (headerIfMatch.StartsWith("W/")) headerIfMatch = headerIfMatch.Substring(2).Trim();
+                    if (headerIfMatch.StartsWith("\"") && headerIfMatch.EndsWith("\"")) headerIfMatch = headerIfMatch[1..^1];
                 }
             }
 
-            var existing = await _db.Agents.FindAsync(id);
-            if (existing is null)
+            try
             {
-                // idempotent delete
-                return NoContent();
+                await _svc.DeleteAsync(id, headerIfMatch);
+            }
+            catch (Microsoft.EntityFrameworkCore.DbUpdateConcurrencyException)
+            {
+                var traceId = Request.HttpContext?.Items != null && Request.HttpContext.Items.ContainsKey("CorrelationId") ? Request.HttpContext.Items["CorrelationId"] : Request.HttpContext?.TraceIdentifier;
+                var body = new
+                {
+                    type = "https://example.com/probs/precondition-failed",
+                    title = "Precondition Failed",
+                    status = 412,
+                    detail = "The provided ETag does not match the current resource state.",
+                    instance = Request.Path.Value,
+                    traceId,
+                    timestamp = System.DateTime.UtcNow.ToString("o")
+                };
+                return new ObjectResult(body) { StatusCode = 412, ContentTypes = { "application/problem+json" } };
             }
 
-            _db.Agents.Remove(existing);
-            await _db.SaveChangesAsync();
             return NoContent();
         }
 
@@ -246,25 +213,9 @@ namespace QueueBoard.Api.Controllers
             }
 
             _logger?.LogDebug("Create agent called with {Email}", dto.Email);
-
-            var entity = new Entities.Agent
-            {
-                Id = System.Guid.NewGuid(),
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-                IsActive = dto.IsActive,
-                CreatedAt = System.DateTimeOffset.UtcNow,
-                UpdatedAt = System.DateTimeOffset.UtcNow
-            };
-
-            _db.Agents.Add(entity);
-            await _db.SaveChangesAsync();
-
-            var token = System.Convert.ToBase64String(System.BitConverter.GetBytes(entity.UpdatedAt.UtcTicks));
-            var result = new DTOs.AgentDto(entity.Id, entity.FirstName, entity.LastName, entity.Email, entity.IsActive, entity.CreatedAt, token);
-            Response.Headers["ETag"] = $"\"{token}\"";
-            return CreatedAtAction(nameof(GetById), new { id = entity.Id }, result);
+            var created = await _svc.CreateAsync(dto);
+            Response.Headers["ETag"] = $"\"{created.RowVersion}\"";
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
     }
 }
