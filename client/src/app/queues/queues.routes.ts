@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
+import { queuesResolver } from './queues.resolver';
 
 export const queuesRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./queues.component').then(m => m.QueuesComponent)
+    loadComponent: () => import('./queues.component').then(m => m.QueuesComponent),
+    resolve: { initialData: queuesResolver }
   },
   {
     path: 'create',

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -18,4 +19,10 @@ import { CommonModule } from '@angular/common';
     `.page-title { margin-bottom: 0.5rem; }`
   ]
 })
-export class QueuesComponent {}
+export class QueuesComponent {
+  constructor(private route: ActivatedRoute) {
+    // Log resolver-provided initial data for verification during development
+    const data = this.route.snapshot.data as { initialData?: any };
+    console.log('QueuesComponent resolver initialData:', data?.initialData);
+  }
+}

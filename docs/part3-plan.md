@@ -60,13 +60,13 @@ Top-level tasks
     - 2.7 [x] Configure router options
        - 2.7.1 [x] Enable `scrollPositionRestoration` and `anchorScrolling`
        - 2.7.2 [x] Set `initialNavigation` and document preloading strategy choice in client/README
-    - 2.8 [ ] Route-level data fetching & resolvers (optional)
-       - 2.8.1 [ ] Add a resolver or fetch-on-enter pattern for pages needing initial data
-       - 2.8.2 [ ] Ensure resolvers return minimal payloads and handle errors gracefully
+    - 2.8 [x] Route-level data fetching & resolvers (optional)
+       - 2.8.1 [x] Add a resolver for pages needing initial data (chose the resolver pattern — the alternative "fetch-on-enter" was not used)
+       - 2.8.2 [ ] Ensure resolvers return minimal payloads and handle errors gracefully (deferred — requires backend `QueueService`)
     - 2.9 [ ] Verify lazy-loading and routing behavior
-       - 2.9.1 [ ] Run the dev server and navigate through lazy routes
-       - 2.9.2 [ ] Verify lazy bundles are created on demand (network/devtools)
-       - 2.9.3 [ ] Confirm default route and NotFound behavior
+       - 2.9.1 [x] Run the dev server and navigate through lazy routes
+       - 2.9.2 [x] Verify lazy bundles are created on demand (network/devtools)
+       - 2.9.3 [x] Confirm default route and NotFound behavior
 
 3. [ ] Feature scaffolding
    - Create feature folders for `admin` and `agent` with standalone components and a feature-level `*.routes.ts` file per feature.
