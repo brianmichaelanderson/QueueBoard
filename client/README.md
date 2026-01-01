@@ -85,6 +85,9 @@ Notes
 - If you prefer `pnpm` or `yarn`, substitute the package manager commands.
 - After scaffolding, consider creating a minimal `src/app/app.routes.ts` and a lazy-loaded feature route for `queues` to match the project's standalone-component conventions.
 
+Routing preloading strategy
+- Routing preloading: `NoPreloading` (default) for the MVP to keep initial bundles small and only load feature code when the user navigates there. 
+
 Zoneless recommendation
 - **Recommendation:** Use a zoneless setup for the Angular 20 frontend and adopt Signals + `OnPush` change detection for components.
 - **Why:** Zoneless apps avoid Zone.js implicit change-detection side-effects, are easier to reason about, and pair naturally with Signals (Angular's forward direction) for predictable, high-performance UI updates.

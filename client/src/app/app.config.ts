@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling, withEnabledBlockingInitialNavigation } from '@angular/router';
 
 import { routes } from './app.routes';
 
@@ -7,6 +7,16 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideRouter(routes)
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled'
+      }),
+      // Initial navigation: blocking mode ensures the router completes the initial
+      // navigation before the app is considered stable. Preloading is intentionally
+      // disabled (NoPreloading) for the MVP to keep initial bundle sizes small.
+      withEnabledBlockingInitialNavigation(),
+    )
   ]
 };

@@ -54,12 +54,12 @@ Top-level tasks
     - 2.5 [x] NotFound & fallback route
        - 2.5.1 [x] Implement a `NotFoundComponent` or simple page
        - 2.5.2 [x] Add fallback route to redirect unknown paths to NotFound or root
-    - 2.6 [ ] Add a simple route guard stub
-       - 2.6.1 [ ] Implement a lightweight `AuthGuard` stub that returns `true` in dev
-       - 2.6.2 [ ] Attach guard to protected admin routes
-    - 2.7 [ ] Configure router options
-       - 2.7.1 [ ] Enable `scrollPositionRestoration` and `anchorScrolling`
-       - 2.7.2 [ ] Set `initialNavigation` and document preloading strategy choice
+    - 2.6 [x] Add a simple route guard stub
+       - 2.6.1 [x] Implement a lightweight `AuthGuard` stub that returns `true` in dev
+       - 2.6.2 [x] Attach guard to protected admin routes
+    - 2.7 [x] Configure router options
+       - 2.7.1 [x] Enable `scrollPositionRestoration` and `anchorScrolling`
+       - 2.7.2 [x] Set `initialNavigation` and document preloading strategy choice in client/README
     - 2.8 [ ] Route-level data fetching & resolvers (optional)
        - 2.8.1 [ ] Add a resolver or fetch-on-enter pattern for pages needing initial data
        - 2.8.2 [ ] Ensure resolvers return minimal payloads and handle errors gracefully
