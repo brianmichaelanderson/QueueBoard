@@ -43,9 +43,9 @@ Top-level tasks
     - 2.2 [x] Global styles & layout container
        - 2.2.1 [x] Create `styles.scss` with base layout variables and container rules
       - 2.2.2 [x] Add shared CSS utilities and a container class used by the app shell
-    - 2.3 [ ] Create `app.routes.ts` (top-level router file)
-       - 2.3.1 [ ] Define top-level routes and lazy-route placeholders
-       - 2.3.2 [ ] Add default redirect (e.g., `/` → `/queues`)
+    - 2.3 [x] Create `app.routes.ts` (top-level router file)
+       - 2.3.1 [x] Define top-level routes and lazy-route placeholders
+       - 2.3.2 [x] Add default redirect (e.g., `/` → `/queues`)
     - 2.4 [ ] Add lazy-loaded feature routes
        - 2.4.1 [ ] Add `queues` lazy route using standalone `loadChildren`/`loadComponent`
        - 2.4.2 [ ] Add `agent` lazy route
