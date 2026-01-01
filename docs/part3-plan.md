@@ -63,13 +63,32 @@ Top-level tasks
     - 2.8 [x] Route-level data fetching & resolvers (optional)
        - 2.8.1 [x] Add a resolver for pages needing initial data (chose the resolver pattern — the alternative "fetch-on-enter" was not used)
        - 2.8.2 [ ] Ensure resolvers return minimal payloads and handle errors gracefully (deferred — requires backend `QueueService`)
-    - 2.9 [ ] Verify lazy-loading and routing behavior
+    - 2.9 [x] Verify lazy-loading and routing behavior
        - 2.9.1 [x] Run the dev server and navigate through lazy routes
        - 2.9.2 [x] Verify lazy bundles are created on demand (network/devtools)
        - 2.9.3 [x] Confirm default route and NotFound behavior
 
-3. [ ] Feature scaffolding
-   - Create feature folders for `admin` and `agent` with standalone components and a feature-level `*.routes.ts` file per feature.
+3. [ ] Feature scaffolding: Provide full feature scaffolding for `admin` and `agent` following the project's standalone-component conventions. Each feature should be self-contained and lazy-loadable.
+   - 3.1 [x] Create feature folders and top-level route files
+      - 3.1.1 [x] Add `admin/*.routes.ts` and `agent/*.routes.ts` (feature-level route arrays)
+      - 3.1.2 [x] Add placeholder `List` and `Detail` standalone components for each feature (`*-list.component.ts`, `*-detail.component.ts`)
+      - 3.1.3 [ ] Add `Edit` component(s) where the feature supports create/edit flows (`*-edit.component.ts`)
+   - 3.2 [ ] Feature services, models and shared types
+      - 3.2.1 [ ] Add `AgentService` and `AdminService` skeletons that will wrap `HttpClient` calls (implement later when wiring API)
+      - 3.2.2 [ ] Add typed models/interfaces for `Agent` and feature-specific DTOs in a shared models area (e.g., `shared/models`)
+      - 3.2.3 [ ] Add basic error/response mapping utilities (to map `ValidationProblemDetails` later)
+   - 3.3 [x] Lazy-loading, route providers and guards
+      - 3.3.1 [x] Ensure `app.routes.ts` lazy-loads feature routes via `loadChildren`/`loadComponent`
+      - 3.3.2 [ ] Add feature-level providers (services, resolvers) registered at the route level when appropriate
+      - 3.3.3 [ ] Add or wire route guards for protected feature areas (admin guard already stubbed)
+   - 3.4 [ ] Styling, assets and accessibility
+      - 3.4.1 [ ] Add feature-scoped SCSS files and import shared CSS variables (`styles.scss`) where needed
+      - 3.4.2 [ ] Verify components meet basic accessibility requirements (semantic HTML, ARIA where needed)
+   - 3.5 [ ] Tests and verification
+      - 3.5.1 [ ] Add unit tests for feature components (shallow) and services (skeleton)
+      - 3.5.2 [ ] Add a simple integration/interaction test that navigates to each feature route (optional)
+      - 3.5.3 [ ] Acceptance: navigate to each feature and confirm lazy chunk loads, route params/resolvers/guards are available
+
 
 4. [ ] Queues UI
    - Implement `QueuesListComponent` with search and paging inputs and `QueueEditComponent` (create/edit) with a reactive form.

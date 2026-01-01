@@ -8,6 +8,11 @@ export const adminRoutes: Routes = [
     canActivate: [adminGuard]
   },
   {
+    path: 'create',
+    loadComponent: () => import('./admin-edit.component').then(m => m.AdminEditComponent),
+    canActivate: [adminGuard]
+  },
+  {
     path: ':id',
     loadComponent: () => import('./admin-detail.component').then(m => m.AdminDetailComponent),
     canActivate: [adminGuard]

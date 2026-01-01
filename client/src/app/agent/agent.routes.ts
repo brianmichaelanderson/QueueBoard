@@ -6,6 +6,10 @@ export const agentRoutes: Routes = [
     loadComponent: () => import('./agent-list.component').then(m => m.AgentListComponent)
   },
   {
+    path: 'create',
+    loadComponent: () => import('./agent-edit.component').then(m => m.AgentEditComponent)
+  },
+  {
     path: ':id',
     loadComponent: () => import('./agent-detail.component').then(m => m.AgentDetailComponent)
   }
