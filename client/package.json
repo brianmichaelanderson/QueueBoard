@@ -3,12 +3,11 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint",
-    "prepare": "husky install"
+    "lint": "ng lint"
   },
   "prettier": {
     "printWidth": 100,
@@ -40,14 +39,12 @@
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "21.0.1",
     "eslint": "^9.39.1",
-    "husky": "^9.1.7",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
-    "lint-staged": "^16.2.7",
     "prettier": "^3.7.4",
     "typescript": "~5.9.2",
     "typescript-eslint": "8.46.4"
