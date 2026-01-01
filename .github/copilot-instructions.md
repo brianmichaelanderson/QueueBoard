@@ -4,7 +4,9 @@ Purpose
 - Short orientation for AI coding agents working on QueueBoard: a Buildable-style reference app (ASP.NET Core 10 + EF Core backend, Angular 20 frontend). Start by reading the high-level docs and the outline.
 
 Quick files to read
-- [README.md](README.md): overall architecture, run commands, and examples.
+- [README.md](README.md): repo overview and navigation to platform-specific READMEs.
+- [server/README.md](server/README.md): backend run/test/migration commands and examples.
+- [client/README.md](client/README.md): frontend setup and dev commands.
 - [QueueBoard-outline.md](QueueBoard-outline.md): phased implementation plan and priorities.
 
 Big picture (what matters)
@@ -13,11 +15,11 @@ Big picture (what matters)
 - Backend patterns: clear separation between EF entities and DTOs, global exception handling, DataAnnotation validation, migrations via EF Core, dev-only seed data.
 
 Developer workflows discovered (documented / discoverable)
-- Backend run: `dotnet restore`, `dotnet ef database update`, `dotnet run` (see [README.md](README.md)).
+-- Backend run: `dotnet restore`, `dotnet ef database update`, `dotnet run` (see [server/README.md](server/README.md)).
 	- Note: prefer building and running the backend inside the SDK/container using Docker Compose. Local `dotnet` builds/tests often fail during NuGet restore in some environments; use the `api` SDK container to run `dotnet build`/`dotnet test` to avoid unreliable local NuGet connectivity.
-- Frontend run: `npm install`, `ng serve` (see [README.md](README.md)).
+-- Frontend run: `npm install`, `ng serve` (see [client/README.md](client/README.md)).
 - EF migrations: use the standard EF Core commands (`Add-Migration`, `Update-Database`) against SQL Server Express; migrations are the source of truth for schema changes.
-- Tests: README references unit tests and an integration test using `WebApplicationFactory`—inspect test projects for exact names before editing.
+-- Tests: see [server/README.md](server/README.md) for backend test commands; inspect test projects for exact names before editing.
 
 Project-specific conventions
 - No NgModule pattern: prefer standalone components and feature-level route files (examples in README proposed folder layout).
@@ -42,7 +44,7 @@ If you modify this file
 - Keep it concise. Update the "Quick files to read" and the run commands if you add CI or scripts.
 
 Next actions for an AI agent
-- Read [README.md](README.md) and [QueueBoard-outline.md](QueueBoard-outline.md) first.
+- Read [README.md](README.md), [server/README.md](server/README.md), [client/README.md](client/README.md) and [QueueBoard-outline.md](QueueBoard-outline.md) first.
 - Locate actual project folders (search for `*.csproj`, `angular.json`, `package.json`) to confirm layout before making edits.
 - Ask the repo owner for missing CI/build/test commands and the preferred branch/PR etiquette.
 

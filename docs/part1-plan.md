@@ -16,7 +16,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
         - [x] 3.2.2 Add XML comments to controllers/DTOs to populate Swagger UI
    - [x] 3.3 Map Swagger UI in development only
    - [ ] 3.4 (optional) Add API versioning/grouping
-   - [x] 3.5 Update README/docs with Swagger URL and usage
+   - [x] 3.5 Update server/README.md and docs with Swagger URL and usage
 
 4. [x] Configure structured logging
     - Add structured logs (Serilog or configure Microsoft logging) and logging scopes.
@@ -62,7 +62,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
           - [ ] 5.8.3 (optional) In-process `WebApplicationFactory` integration tests
              - [ ] Add/restore `WebApplicationFactory`-style tests if you want faster, in-process integration tests (requires content-root/solution layout adjustments)
        - [x] 5.9 Documentation
-          - Update `docs/part1-plan.md` and README with examples of error responses, status codes, and headers. See `docs/error-handling.md` for canonical examples and rules.
+          - Update `docs/part1-plan.md` and `server/README.md` with examples of error responses, status codes, and headers. See `docs/error-handling.md` for canonical examples and rules.
 
 6. [ ] Request validation: Minimal, TDD-first plan (MVP):
        - [x] 6.1 Define validation strategy
@@ -117,7 +117,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 7.5.2 Negative tests: delete idempotency, concurrency conflict (409), and validation errors (400)
       - [x] 7.5.3 Use `reset-db.sh` and readiness helper to ensure deterministic DB state between runs
    - [x] 7.6 Docs, Swagger & examples
-      - [x] 7.6.1 Add Swagger examples and README snippets showing `ETag` / `If-Match` semantics for queues
+   - [x] 7.6.1 Add Swagger examples and `server/README.md` snippets showing `ETag` / `If-Match` semantics for queues
       - [x] 7.6.2 Document status codes, error shapes, and idempotency expectations in `docs/*`
    - [ ] 7.7 Optional polish (post-MVP)
       - [ ] 7.7.1 Tweak search, filtering and pagination behavior for `GET /queues`
@@ -157,7 +157,7 @@ This document breaks Part 1 into numbered, high-level tasks to reference as we i
       - [x] 8.5.2 Add negative tests: validation errors (400), not-found (404), concurrency conflicts (409)
       - [x] 8.5.3 Use existing `ReadinessHelper` and `reset-db.sh` to ensure deterministic DB state between runs
    - [ ] 8.6 Docs, Swagger & examples
-      - [x] 8.6.1 Add Swagger examples for agents endpoints and update `README.md` and `docs/*` with usage snippets (curl examples showing `ETag`/`If-Match` semantics)
+      - [x] 8.6.1 Add Swagger examples for agents endpoints and update `server/README.md` and `docs/*` with usage snippets (curl examples showing `ETag`/`If-Match` semantics)
       - [x] 8.6.2 Document expected status codes and error shapes in `docs/error-handling.md`
    - [ ] 8.7 Optional polish (post-MVP)
       - [ ] 8.7.1 Search, filtering and pagination tuning for `GET /agents`

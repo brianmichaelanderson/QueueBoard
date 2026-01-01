@@ -1,5 +1,23 @@
 # QueueBoard
 
+QueueBoard is a small, end-to-end reference application that demonstrates an ASP.NET Core API and an Angular SPA.
+
+See the platform-specific README files for detailed setup and run instructions:
+
+- Server (backend): [server/README.md](server/README.md)
+- Client (frontend): [client/README.md](client/README.md)
+
+For developer guidance, architecture notes, and reference docs, see the `docs/` folder.
+
+Quick links
+
+- API conventions: [docs/api-conventions.md](docs/api-conventions.md)
+- Error handling: [docs/error-handling.md](docs/error-handling.md)
+- Data model: [docs/data-model.md](docs/data-model.md)
+
+If you prefer a single-page overview, the original README content was split: backend-related instructions moved to `server/README.md` and frontend setup moved to `client/README.md`.
+# QueueBoard
+
 QueueBoard is a small, end-to-end reference application built to exercise the same stack, patterns, and workflows used at Buildable.
 
 The purpose of this project is **technical alignment**, not domain completeness. The application intentionally uses a simple admin-style domain to demonstrate:
