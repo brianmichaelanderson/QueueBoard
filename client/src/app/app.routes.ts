@@ -4,7 +4,7 @@ export const routes: Routes = [
 	{ path: '', redirectTo: 'queues', pathMatch: 'full' },
 	{
 		path: 'queues',
-		loadComponent: () => import('./queues/queues.component').then(m => m.QueuesComponent)
+		loadChildren: () => import('./queues/queues.routes').then(m => m.queuesRoutes)
 	},
 	{
 		path: '**',

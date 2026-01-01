@@ -47,13 +47,13 @@ Top-level tasks
        - 2.3.1 [x] Define top-level routes and lazy-route placeholders
        - 2.3.2 [x] Add default redirect (e.g., `/` → `/queues`)
     - 2.4 [ ] Add lazy-loaded feature routes
-       - 2.4.1 [ ] Add `queues` lazy route using standalone `loadChildren`/`loadComponent`
+       - 2.4.1 [x] Add `queues` lazy route using standalone `loadChildren`/`loadComponent`
        - 2.4.2 [ ] Add `agent` lazy route
        - 2.4.3 [ ] Add `admin` lazy route
-       - 2.4.4 [ ] Create feature-level `*.routes.ts` files for each feature
-    - 2.5 [ ] NotFound & fallback route
-       - 2.5.1 [ ] Implement a `NotFoundComponent` or simple page
-       - 2.5.2 [ ] Add fallback route to redirect unknown paths to NotFound or root
+       - 2.4.4 [x] Create feature-level `*.routes.ts` files for each feature
+    - 2.5 [x] NotFound & fallback route
+       - 2.5.1 [x] Implement a `NotFoundComponent` or simple page
+       - 2.5.2 [x] Add fallback route to redirect unknown paths to NotFound or root
     - 2.6 [ ] Add a simple route guard stub
        - 2.6.1 [ ] Implement a lightweight `AuthGuard` stub that returns `true` in dev
        - 2.6.2 [ ] Attach guard to protected admin routes
