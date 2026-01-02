@@ -72,10 +72,10 @@ Top-level tasks
    - 3.1 [x] Create feature folders and top-level route files
       - 3.1.1 [x] Add `admin/*.routes.ts` and `agent/*.routes.ts` (feature-level route arrays)
       - 3.1.2 [x] Add placeholder `List` and `Detail` standalone components for each feature (`*-list.component.ts`, `*-detail.component.ts`)
-      - 3.1.3 [ ] Add `Edit` component(s) where the feature supports create/edit flows (`*-edit.component.ts`)
-   - 3.2 [ ] Feature services, models and shared types
-      - 3.2.1 [ ] Add `AgentService` and `AdminService` skeletons that will wrap `HttpClient` calls (implement later when wiring API)
-      - 3.2.2 [ ] Add typed models/interfaces for `Agent` and feature-specific DTOs in a shared models area (e.g., `shared/models`)
+      - 3.1.3 [x] Add `Edit` component(s) where the feature supports create/edit flows (`*-edit.component.ts`)
+   - 3.2 [x] Feature services, models and shared types
+      - 3.2.1 [x] Add `AgentService` and `AdminService` skeletons that will wrap `HttpClient` calls (implemented as placeholders at `client/src/app/services`)
+      - 3.2.2 [x] Add typed models/interfaces for `Agent/Queue` and feature-specific DTOs in a shared models area (`client/src/app/shared/models`)
       - 3.2.3 [ ] Add basic error/response mapping utilities (to map `ValidationProblemDetails` later)
    - 3.3 [x] Lazy-loading, route providers and guards
       - 3.3.1 [x] Ensure `app.routes.ts` lazy-loads feature routes via `loadChildren`/`loadComponent`
