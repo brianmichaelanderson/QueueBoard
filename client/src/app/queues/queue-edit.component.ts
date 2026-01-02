@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
+import { QueueDto } from '../shared/models/queue';
 
 @Component({
   standalone: true,
@@ -58,7 +59,7 @@ export class QueueEditComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id');
     this.isEdit = !!this.id;
 
-    const data = this.route.snapshot.data as { initialData?: any };
+    const data = this.route.snapshot.data as { initialData?: { item?: QueueDto } };
     if (data?.initialData?.item) {
       this.form.patchValue(data.initialData.item);
     } else if (this.isEdit) {

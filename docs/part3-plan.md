@@ -101,7 +101,7 @@ Top-level tasks
        - 4.1.4 [x] Create `queues.routes.ts` and wire lazy route in `app.routes.ts`
 
     - 4.2 [ ] Forms, validation & concurrency
-       - 4.2.1 [ ] Use Reactive Forms in `QueueEditComponent` with proper initial state
+       - 4.2.1 [x] Use Reactive Forms in `QueueEditComponent` with proper initial state
        - 4.2.2 [ ] Map `ValidationProblemDetails` responses to field-level errors
        - 4.2.3 [ ] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
 

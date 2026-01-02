@@ -2,12 +2,7 @@ import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
-
-interface QueueItem {
-  id: string;
-  name: string;
-  description?: string;
-}
+import { QueueDto } from '../shared/models/queue';
 
 @Component({
   standalone: true,
@@ -46,7 +41,7 @@ interface QueueItem {
 })
 export class QueuesListComponent {
   private route = inject(ActivatedRoute);
-  items: QueueItem[] = [];
+  items: QueueDto[] = [];
 
   constructor() {
     const data = this.route.snapshot.data as { initialData?: { items?: QueueItem[] } };

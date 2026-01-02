@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { QueueDto } from '../shared/models/queue';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -33,8 +34,7 @@ import { ActivatedRoute } from '@angular/router';
 export class QueueDetailComponent {
   private route = inject(ActivatedRoute);
   id: string | null = this.route.snapshot.paramMap.get('id');
-  item: { id?: string; name?: string; description?: string } | null =
-    (this.route.snapshot.data as any)?.initialData?.item ?? null;
+  item: QueueDto | null = (this.route.snapshot.data as { initialData?: { item?: QueueDto } })?.initialData?.item ?? null;
 
   constructor() {
     console.log('QueueDetailComponent resolver initialData:', (this.route.snapshot.data as any)?.initialData);
