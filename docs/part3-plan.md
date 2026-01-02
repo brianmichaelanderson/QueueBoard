@@ -121,13 +121,59 @@ Top-level tasks
        - 4.5.3 [ ] Run automated `axe` and Lighthouse checks for the queues views
 
     - 4.6 [ ] Tests & verification
-       - 4.6.1 [ ] Unit tests for `QueueService` and components (shallow)
+      - 4.6.1 [ ] Unit tests for the Queues feature: service, components, and validation utilities (shallow + targeted integration)
+         - 4.6.1.1 [ ] QueueService unit (ETag behavior)
+         - 4.6.1.2 [ ] applyServerValidationErrors unit
+         - 4.6.1.3 [ ] QueueEditComponent unit (create/edit/validation/412)
+         - 4.6.1.4 [ ] QueuesListComponent unit (resolver data, empty state)
        - 4.6.2 [ ] Integration test: navigate to `/queues`, exercise search + pagination
        - 4.6.3 [ ] Acceptance: confirm lazy chunk request when navigating to `/queues` and resolver/guard wiring
 
     - 4.7 [ ] Docs & dev notes
        - 4.7.1 [ ] Add README snippet describing queues dev workflow and test commands
 
+5. [ ] Agents UI
+   - Implement `AgentsListComponent` and `AgentDetail`/edit forms as needed for MVP.
+
+4. [ ] Queues UI (TDD order)
+    - 4.1 [ ] Tests & verification (start here for TDD)
+      - 4.1.1 [ ] Unit tests for the Queues feature: service, components, and validation utilities (shallow + small in-process integration)
+        - 4.1.1.1 [ ] QueueService unit (ETag behavior)
+        - 4.1.1.2 [ ] applyServerValidationErrors unit
+        - 4.1.1.3 [ ] QueueEditComponent unit (create/edit/validation/412)
+        - 4.1.1.4 [ ] QueuesListComponent unit
+      - 4.1.2 [ ] Integration test: navigate to `/queues`, exercise search + pagination
+      - 4.1.3 [ ] Acceptance: confirm lazy chunk request when navigating to `/queues` and resolver/guard wiring
+
+    - 4.2 [ ] Services & API integration (implement to satisfy tests)
+       - 4.2.1 [ ] Implement `QueueService` methods: `list`, `get`, `create`, `update`, `delete`
+       - 4.2.2 [ ] Use typed DTOs and centralize API base URL in environment config
+       - 4.2.3 [ ] Register `QueueService` as a route-level provider when appropriate
+
+    - 4.3 [ ] Forms, validation & concurrency (drive from tests)
+     - 4.3.1 [x] Use Reactive Forms in `QueueEditComponent` with proper initial state
+     - 4.3.2 [x] Map `ValidationProblemDetails` responses to field-level errors
+     - 4.3.3 [ ] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
+
+    - 4.4 [ ] Components & routing (implement after service + tests)
+       - 4.4.1 [x] Add `QueuesListComponent` (standalone) — list view with item links
+       - 4.4.2 [x] Add `QueueEditComponent` (standalone) — create / edit reactive form
+       - 4.4.3 [x] Add `QueueDetailComponent` (optional) — view-only detail page
+       - 4.4.4 [x] Create `queues.routes.ts` and wire lazy route in `app.routes.ts`
+
+   - 4.5 [ ] Search, paging & UX
+      - 4.5.1 [ ] Add search input with debounce and query binding
+      - 4.5.2 [ ] Add pagination controls and pageSize support (server-side page params)
+      - 4.5.3 [ ] Implement loading indicators, skeletons, and empty states
+
+    - 4.6 [ ] Accessibility, styling & assets
+       - 4.6.1 [ ] Add feature-scoped SCSS and import shared variables from `styles.scss`
+       - 4.6.2 [ ] Ensure semantic markup, keyboard focus order, and accessible names
+       - 4.6.3 [ ] Run automated `axe` and Lighthouse checks for the queues views
+
+    - 4.7 [ ] Docs & dev notes
+       - 4.7.1 [ ] Add README snippet describing queues dev workflow and test commands
+       
 5. [ ] Agents UI
    - Implement `AgentsListComponent` and `AgentDetail`/edit forms as needed for MVP.
 
