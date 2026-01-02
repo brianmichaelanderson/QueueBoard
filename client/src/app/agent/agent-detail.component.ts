@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 
@@ -16,8 +16,6 @@ import { ActivatedRoute } from '@angular/router';
   `
 })
 export class AgentDetailComponent {
-  id: string | null;
-  constructor(private route: ActivatedRoute) {
-    this.id = this.route.snapshot.paramMap.get('id');
-  }
+  private route = inject(ActivatedRoute);
+  id: string | null = this.route.snapshot.paramMap.get('id');
 }

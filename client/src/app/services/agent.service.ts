@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 
@@ -8,30 +8,30 @@ import { Observable, of } from 'rxjs';
 export class AgentService {
   private baseUrl = '/api/agents';
 
-  constructor(private http: HttpClient) {}
+  private http = inject(HttpClient);
 
   getAll(): Observable<any[]> {
     // TODO: return this.http.get<any[]>(this.baseUrl);
     return of([]);
   }
 
-  getById(id: string): Observable<any | null> {
-    // TODO: return this.http.get<any>(`${this.baseUrl}/${id}`);
+  getById(_id: string): Observable<any | null> {
+    // TODO: return this.http.get<any>(`${this.baseUrl}/${_id}`);
     return of(null);
   }
 
-  create(payload: any): Observable<any> {
-    // TODO: return this.http.post<any>(this.baseUrl, payload);
+  create(_payload: any): Observable<any> {
+    // TODO: return this.http.post<any>(this.baseUrl, _payload);
     return of(null);
   }
 
-  update(id: string, payload: any): Observable<any> {
-    // TODO: return this.http.put<any>(`${this.baseUrl}/${id}`, payload);
+  update(_id: string, _payload: any): Observable<any> {
+    // TODO: return this.http.put<any>(`${this.baseUrl}/${_id}`, _payload);
     return of(null);
   }
 
-  delete(id: string): Observable<void> {
-    // TODO: return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  delete(_id: string): Observable<void> {
+    // TODO: return this.http.delete<void>(`${this.baseUrl}/${_id}`);
     return of(void 0);
   }
 }

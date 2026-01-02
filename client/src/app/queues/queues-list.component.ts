@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -24,13 +24,13 @@ interface QueueItem {
         </div>
 
         <ul class="queue-list">
-          <li *ngFor="let q of items" class="queue-item">
+          <li *for="let q of items" class="queue-item">
             <a [routerLink]="['/queues', 'edit', q.id]">{{ q.name }}</a>
             <p class="muted">{{ q.description }}</p>
           </li>
         </ul>
 
-        <p *ngIf="items.length === 0" class="empty">No queues found.</p>
+        <p *if="items.length === 0" class="empty">No queues found.</p>
       </main>
     </div>
   `,
@@ -45,9 +45,10 @@ interface QueueItem {
   ]
 })
 export class QueuesListComponent {
+  private route = inject(ActivatedRoute);
   items: QueueItem[] = [];
 
-  constructor(private route: ActivatedRoute) {
+  constructor() {
     const data = this.route.snapshot.data as { initialData?: { items?: QueueItem[] } };
     if (data?.initialData?.items) {
       this.items = data.initialData.items;
@@ -61,7 +62,7 @@ export class QueuesListComponent {
     console.log('QueuesListComponent resolver initialData:', data?.initialData);
   }
 
-  onSearch(event: Event) {
+  onSearch(_event: Event) {
     // noop placeholder; debounce and server search will be implemented in 4.3
   }
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -30,18 +30,20 @@ import { ActivatedRoute, Router } from '@angular/router';
     `input { display:block; margin-top:0.5rem; padding:0.25rem }`
   ]
 })
-export class AdminEditComponent {
-  form: any;
+export class AdminEditComponent implements OnInit {
+  private fb = inject(FormBuilder);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
+
+  form = this.fb.group({ name: ['', Validators.required] });
   id: string | null = null;
   isEdit = false;
 
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private router: Router) {
+  ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
     this.isEdit = !!this.id;
-    this.form = this.fb.group({ name: ['', Validators.required] });
 
     if (this.isEdit) {
-      // placeholder: load existing values (replace with real service later)
       this.form.patchValue({ name: `Admin ${this.id}` });
     }
   }
