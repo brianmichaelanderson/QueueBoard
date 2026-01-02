@@ -4,7 +4,7 @@ import { queuesResolver } from './queues.resolver';
 export const queuesRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./queues.component').then(m => m.QueuesComponent),
+    loadComponent: () => import('./queues-list.component').then(m => m.QueuesListComponent),
     resolve: { initialData: queuesResolver }
   },
   {

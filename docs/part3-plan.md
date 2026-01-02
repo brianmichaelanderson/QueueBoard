@@ -95,10 +95,10 @@ Top-level tasks
 
 4. [ ] Queues UI
     - 4.1 [ ] Components & routing
-       - 4.1.1 [ ] Add `QueuesListComponent` (standalone) — list view with item links
+       - 4.1.1 [x] Add `QueuesListComponent` (standalone) — list view with item links
        - 4.1.2 [ ] Add `QueueEditComponent` (standalone) — create / edit reactive form
        - 4.1.3 [ ] Add `QueueDetailComponent` (optional) — view-only detail page
-       - 4.1.4 [ ] Create `queues.routes.ts` and wire lazy route in `app.routes.ts`
+       - 4.1.4 [x] Create `queues.routes.ts` and wire lazy route in `app.routes.ts`
 
     - 4.2 [ ] Forms, validation & concurrency
        - 4.2.1 [ ] Use Reactive Forms in `QueueEditComponent` with proper initial state
