@@ -79,19 +79,54 @@ Top-level tasks
       - 3.2.3 [x] Add basic error/response mapping utilities (to map `ValidationProblemDetails` later)
    - 3.3 [x] Lazy-loading, route providers and guards
       - 3.3.1 [x] Ensure `app.routes.ts` lazy-loads feature routes via `loadChildren`/`loadComponent`
-      - 3.3.2 [ ] Add feature-level providers (services, resolvers) registered at the route level when appropriate
-      - 3.3.3 [ ] Add or wire route guards for protected feature areas (admin guard already stubbed)
+      - 3.3.2 [x] Add feature-level providers (services, resolvers) registered at the route level when appropriate
+      - 3.3.3 [x] Wire route guards for protected feature areas (admin guard already stubbed; added `authGuard` and applied it to admin routes)
    - 3.4 [ ] Styling, assets and accessibility
-      - 3.4.1 [ ] Add feature-scoped SCSS files and import shared CSS variables (`styles.scss`) where needed
-      - 3.4.2 [ ] Verify components meet basic accessibility requirements (semantic HTML, ARIA where needed)
+      - 3.4.1 [x] Add feature-scoped SCSS files and import shared CSS variables (`styles.scss`) where needed
+      - 3.4.2 [x] Verify components meet basic accessibility requirements (semantic HTML, ARIA where needed)
+         - 3.4.2.1 [x] Automated audits: `axe-core` scan returned no violations; report saved at `client/axe-home.json`
+         - 3.4.2.2 [x] Lighthouse accessibility checks: no blocking accessibility issues; report saved at `lighthouse-home.json`
+         - 3.4.2.3 [ ] Manual accessibility testing (keyboard navigation, screen reader smoke test) — pending
    - 3.5 [ ] Tests and verification
       - 3.5.1 [ ] Add unit tests for feature components (shallow) and services (skeleton)
       - 3.5.2 [ ] Add a simple integration/interaction test that navigates to each feature route (optional)
-      - 3.5.3 [ ] Acceptance: navigate to each feature and confirm lazy chunk loads, route params/resolvers/guards are available
+      - 3.5.3 [x] Acceptance: automated checks — ran `axe` and Lighthouse against `/`, `/admin`, and `/agent`; verified lazy chunk network requests, resolver console logs, and route guards are wired; manual accessibility smoke tests deferred
 
 
 4. [ ] Queues UI
-   - Implement `QueuesListComponent` with search and paging inputs and `QueueEditComponent` (create/edit) with a reactive form.
+    - 4.1 [ ] Components & routing
+       - 4.1.1 [ ] Add `QueuesListComponent` (standalone) — list view with item links
+       - 4.1.2 [ ] Add `QueueEditComponent` (standalone) — create / edit reactive form
+       - 4.1.3 [ ] Add `QueueDetailComponent` (optional) — view-only detail page
+       - 4.1.4 [ ] Create `queues.routes.ts` and wire lazy route in `app.routes.ts`
+
+    - 4.2 [ ] Forms, validation & concurrency
+       - 4.2.1 [ ] Use Reactive Forms in `QueueEditComponent` with proper initial state
+       - 4.2.2 [ ] Map `ValidationProblemDetails` responses to field-level errors
+       - 4.2.3 [ ] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
+
+    - 4.3 [ ] Search, paging & UX
+       - 4.3.1 [ ] Add search input with debounce and query binding
+       - 4.3.2 [ ] Add pagination controls and pageSize support (server-side page params)
+       - 4.3.3 [ ] Implement loading indicators, skeletons, and empty states
+
+    - 4.4 [ ] Services & API integration
+       - 4.4.1 [ ] Implement `QueueService` methods: `list`, `get`, `create`, `update`, `delete`
+       - 4.4.2 [ ] Use typed DTOs and centralize API base URL in environment config
+       - 4.4.3 [ ] Register `QueueService` as a route-level provider when appropriate
+
+    - 4.5 [ ] Accessibility, styling & assets
+       - 4.5.1 [ ] Add feature-scoped SCSS and import shared variables from `styles.scss`
+       - 4.5.2 [ ] Ensure semantic markup, keyboard focus order, and accessible names
+       - 4.5.3 [ ] Run automated `axe` and Lighthouse checks for the queues views
+
+    - 4.6 [ ] Tests & verification
+       - 4.6.1 [ ] Unit tests for `QueueService` and components (shallow)
+       - 4.6.2 [ ] Integration test: navigate to `/queues`, exercise search + pagination
+       - 4.6.3 [ ] Acceptance: confirm lazy chunk request when navigating to `/queues` and resolver/guard wiring
+
+    - 4.7 [ ] Docs & dev notes
+       - 4.7.1 [ ] Add README snippet describing queues dev workflow and test commands
 
 5. [ ] Agents UI
    - Implement `AgentsListComponent` and `AgentDetail`/edit forms as needed for MVP.
