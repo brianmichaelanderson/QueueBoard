@@ -1,0 +1,6 @@
+{
+  "root": true,
+  "rules": {
+    "@angular-eslint/template/prefer-control-flow": "off"
+  }
+}

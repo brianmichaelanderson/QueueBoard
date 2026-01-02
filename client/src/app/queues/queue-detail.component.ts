@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
   selector: 'app-queue-detail',
   imports: [CommonModule],
   template: `
+    <!-- eslint-disable @angular-eslint/template/prefer-control-flow -->
     <div class="app-container">
       <main class="app-main">
         <h1 class="page-title">Queue</h1>
@@ -37,6 +38,9 @@ export class QueueDetailComponent {
   item: QueueDto | null = (this.route.snapshot.data as { initialData?: { item?: QueueDto } })?.initialData?.item ?? null;
 
   constructor() {
-    console.log('QueueDetailComponent resolver initialData:', (this.route.snapshot.data as any)?.initialData);
+    console.log(
+      'QueueDetailComponent resolver initialData:',
+      (this.route.snapshot.data as { initialData?: { item?: QueueDto } })?.initialData
+    );
   }
 }

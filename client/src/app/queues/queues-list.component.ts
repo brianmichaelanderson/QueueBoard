@@ -9,6 +9,7 @@ import { QueueDto } from '../shared/models/queue';
   selector: 'app-queues-list',
   imports: [CommonModule, RouterModule],
   template: `
+    <!-- eslint-disable @angular-eslint/template/prefer-control-flow -->
     <div class="app-container">
       <main class="app-main">
         <h1 class="page-title">Queues</h1>

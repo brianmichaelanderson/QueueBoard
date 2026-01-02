@@ -14,7 +14,7 @@ export class QueueService {
     return { item, etag } as { item: QueueDto | null; etag?: string };
   }
 
-  list(search?: string, page?: number, pageSize?: number): Observable<{ items: QueueDto[]; total: number }> {
+  list(_search?: string, _page?: number, _pageSize?: number): Observable<{ items: QueueDto[]; total: number }> {
     // TODO: add query params; placeholder until API is wired
     return of({ items: [], total: 0 });
   }

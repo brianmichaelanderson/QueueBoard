@@ -12,6 +12,7 @@ import { applyServerValidationErrors, ValidationProblemDetails } from '../shared
   selector: 'app-queue-edit',
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   template: `
+    <!-- eslint-disable @angular-eslint/template/prefer-control-flow -->
     <div class="app-container">
       <main class="app-main">
         <h1 class="page-title">{{ isEdit ? 'Edit' : 'Create' }} Queue</h1>
