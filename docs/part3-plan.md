@@ -76,7 +76,7 @@ Top-level tasks
    - 3.2 [x] Feature services, models and shared types
       - 3.2.1 [x] Add `AgentService` and `AdminService` skeletons that will wrap `HttpClient` calls (implemented as placeholders at `client/src/app/services`)
       - 3.2.2 [x] Add typed models/interfaces for `Agent/Queue` and feature-specific DTOs in a shared models area (`client/src/app/shared/models`)
-      - 3.2.3 [ ] Add basic error/response mapping utilities (to map `ValidationProblemDetails` later)
+      - 3.2.3 [x] Add basic error/response mapping utilities (to map `ValidationProblemDetails` later)
    - 3.3 [x] Lazy-loading, route providers and guards
       - 3.3.1 [x] Ensure `app.routes.ts` lazy-loads feature routes via `loadChildren`/`loadComponent`
       - 3.3.2 [ ] Add feature-level providers (services, resolvers) registered at the route level when appropriate
