@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { QueueDto } from '../shared/models/queue';
+import { QueueService } from '../services/queue.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { applyServerValidationErrors, ValidationProblemDetails } from '../shared/utils/validation-mapper';
 
 @Component({
   standalone: true,
@@ -46,6 +49,7 @@ export class QueueEditComponent implements OnInit {
   private fb = inject(FormBuilder);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private queueService = inject(QueueService);
 
   form = this.fb.group({
     name: ['', Validators.required],
@@ -54,6 +58,7 @@ export class QueueEditComponent implements OnInit {
 
   isEdit = false;
   id: string | null = null;
+  private etag?: string;
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -62,9 +67,18 @@ export class QueueEditComponent implements OnInit {
     const data = this.route.snapshot.data as { initialData?: { item?: QueueDto } };
     if (data?.initialData?.item) {
       this.form.patchValue(data.initialData.item);
+      this.etag = data.initialData.item.rowVersion;
     } else if (this.isEdit) {
-      // placeholder: in a later step call QueueService.get(id)
-      this.form.patchValue({ name: 'Sample queue', description: 'Loaded from placeholder' });
+      if (this.id) {
+        this.queueService.get(this.id).subscribe({
+          next: res => {
+            if (res?.item) {
+              this.form.patchValue(res.item);
+              this.etag = res.etag;
+            }
+          }
+        });
+      }
     }
   }
 
@@ -74,16 +88,23 @@ export class QueueEditComponent implements OnInit {
       return;
     }
 
-    const payload = this.form.value;
-    if (this.isEdit) {
-      console.log('Update queue', this.id, payload);
-      // TODO: call QueueService.update(id, payload)
+    const payload = this.form.value as Partial<QueueDto>;
+    if (this.isEdit && this.id) {
+      this.queueService.update(this.id, payload, this.etag).subscribe({
+        next: () => this.router.navigate(['/queues']),
+        error: (err: unknown) => {
+          if (err instanceof HttpErrorResponse && err.status === 400) {
+            const body = err.error as ValidationProblemDetails;
+            applyServerValidationErrors(this.form, body);
+          } else if (err instanceof HttpErrorResponse && err.status === 412) {
+            // ETag precondition failed — resource was modified by someone else
+            alert('This queue has been modified by another user. Please reload and try again.');
+          }
+        }
+      });
     } else {
-      console.log('Create queue', payload);
-      // TODO: call QueueService.create(payload)
+      this.queueService.create(payload).subscribe({ next: () => this.router.navigate(['/queues']) });
     }
-
-    this.router.navigate(['/queues']);
   }
 
   onCancel() {
