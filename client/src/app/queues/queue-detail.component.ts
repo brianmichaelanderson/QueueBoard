@@ -12,15 +12,15 @@ import { ActivatedRoute } from '@angular/router';
       <main class="app-main">
         <h1 class="page-title">Queue</h1>
 
-        <section *if="!!item">
+        <section *ngIf="item">
           <h2>{{ item.name }}</h2>
           <p class="muted">{{ item.description }}</p>
           <p><strong>ID:</strong> {{ id }}</p>
         </section>
 
-        <section *if="!item">
+        <section *ngIf="!item">
           <p>Loading queue details...</p>
-          <p *if="!id">No queue id provided.</p>
+          <p *ngIf="!id">No queue id provided.</p>
         </section>
       </main>
     </div>

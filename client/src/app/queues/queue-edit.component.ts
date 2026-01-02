@@ -20,7 +20,7 @@ import { applyServerValidationErrors, ValidationProblemDetails } from '../shared
           <div class="form-row">
             <label for="name">Name</label>
             <input id="name" formControlName="name" />
-            <div *if="form.controls.name.touched && form.controls.name.invalid" class="error">
+            <div *ngIf="form.controls.name.touched && form.controls.name.invalid" class="error">
               Name is required
             </div>
           </div>

@@ -15,6 +15,10 @@ client/dist/
 client/out-tsc/
 .angular/
 
+# Ignore package tarballs and extracted package folders accidentally added
+*.tgz
+package/
+
 # .env files
 .env
 .env.*.local

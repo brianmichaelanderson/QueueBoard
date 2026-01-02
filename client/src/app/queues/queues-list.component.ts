@@ -19,13 +19,13 @@ import { QueueDto } from '../shared/models/queue';
         </div>
 
         <ul class="queue-list">
-          <li *for="let q of items" class="queue-item">
+          <li *ngFor="let q of items" class="queue-item">
             <a [routerLink]="['/queues', 'edit', q.id]">{{ q.name }}</a>
             <p class="muted">{{ q.description }}</p>
           </li>
         </ul>
 
-        <p *if="items.length === 0" class="empty">No queues found.</p>
+        <p *ngIf="items.length === 0" class="empty">No queues found.</p>
       </main>
     </div>
   `,
@@ -44,7 +44,7 @@ export class QueuesListComponent {
   items: QueueDto[] = [];
 
   constructor() {
-    const data = this.route.snapshot.data as { initialData?: { items?: QueueItem[] } };
+    const data = this.route.snapshot.data as { initialData?: { items?: QueueDto[] } };
     if (data?.initialData?.items) {
       this.items = data.initialData.items;
     } else {
