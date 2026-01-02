@@ -12,6 +12,11 @@ export const queuesRoutes: Routes = [
     loadComponent: () => import('./queue-edit.component').then(m => m.QueueEditComponent)
   },
   {
+    path: 'view/:id',
+    loadComponent: () => import('./queue-detail.component').then(m => m.QueueDetailComponent),
+    resolve: { initialData: queuesResolver }
+  },
+  {
     path: 'edit/:id',
     loadComponent: () => import('./queue-edit.component').then(m => m.QueueEditComponent)
   }
