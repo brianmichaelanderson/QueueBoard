@@ -95,8 +95,8 @@ Top-level tasks
 4. [ ] Queues UI (TDD order)
     - 4.1 [ ] Tests & verification (start here for TDD)
       - 4.1.1 [ ] Unit tests for the Queues feature: service, components, and validation utilities (shallow + small in-process integration)
-        - 4.1.1.1 [ ] QueueService unit (ETag behavior)
-        - 4.1.1.2 [ ] applyServerValidationErrors unit
+        - 4.1.1.1 [x] QueueService unit (ETag behavior)
+        - 4.1.1.2 [x] applyServerValidationErrors unit
         - 4.1.1.3 [ ] QueueEditComponent unit (create/edit/validation/412)
         - 4.1.1.4 [ ] QueuesListComponent unit
       - 4.1.2 [ ] Integration test: navigate to `/queues`, exercise search + pagination
@@ -110,7 +110,7 @@ Top-level tasks
     - 4.3 [ ] Forms, validation & concurrency (drive from tests)
      - 4.3.1 [x] Use Reactive Forms in `QueueEditComponent` with proper initial state
      - 4.3.2 [x] Map `ValidationProblemDetails` responses to field-level errors
-     - 4.3.3 [ ] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
+   - 4.3.3 [x] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
 
     - 4.4 [ ] Components & routing (implement after service + tests)
        - 4.4.1 [x] Add `QueuesListComponent` (standalone) — list view with item links
