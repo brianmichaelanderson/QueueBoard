@@ -3,20 +3,28 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { QueueDto } from '../shared/models/queue';
+import { API_BASE_URL } from '../app.tokens';
 
 @Injectable({ providedIn: 'root' })
 export class QueueService {
   private http = inject(HttpClient);
-  private baseUrl = '/api/queues';
+  private apiBase = inject(API_BASE_URL);
+  private baseUrl = `${this.apiBase}/queues`;
 
   // Result wrapper when we need to include the ETag header value
   interfaceGetResult(item: QueueDto | null, etag?: string) {
     return { item, etag } as { item: QueueDto | null; etag?: string };
   }
 
-  list(_search?: string, _page?: number, _pageSize?: number): Observable<{ items: QueueDto[]; total: number }> {
-    // TODO: add query params; placeholder until API is wired
-    return of({ items: [], total: 0 });
+  list(search?: string, page?: number, pageSize?: number): Observable<{ items: QueueDto[]; total: number }> {
+    let params: { [key: string]: string } = {};
+    if (search) params['search'] = search;
+    if (page !== undefined && page !== null) params['page'] = String(page);
+    if (pageSize !== undefined && pageSize !== null) params['pageSize'] = String(pageSize);
+
+    return this.http.get<{ items: QueueDto[]; total: number }>(this.baseUrl, { params }).pipe(
+      map(resp => ({ items: resp.items ?? [], total: resp.total ?? 0 }))
+    );
   }
 
   /**

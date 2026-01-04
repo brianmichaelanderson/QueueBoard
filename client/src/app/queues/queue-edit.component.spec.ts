@@ -1,7 +1,8 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { QueueEditComponent } from './queue-edit.component';
 import { QueueService } from '../services/queue.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -68,5 +69,34 @@ describe('QueueEditComponent', () => {
     expect(args[1]).toEqual({ name: 'Updated', description: 'updated desc' });
     expect(args[2]).toBe('r1');
     expect(router.navigate).toHaveBeenCalledWith(['/queues']);
+  });
+
+  it('applies server validation errors to form controls and shows alert on 412', () => {
+    component.isEdit = true;
+    component.id = '1';
+    (component as any).etag = 'r1';
+
+    spyOn(window, 'alert');
+
+    const validationBody = { errors: { name: ['Name required'] } } as any;
+    // ensure form is valid so submit proceeds
+    component.form.patchValue({ name: 'Some name', description: 'desc' });
+    queueService.update.and.returnValue(throwError(() => new HttpErrorResponse({ status: 400, error: validationBody })));
+
+    component.onSubmit();
+    fixture.detectChanges();
+
+    const nameErrors = component.form.controls.name.errors as any;
+    expect(nameErrors).toBeTruthy();
+    expect(nameErrors.server).toBe('Name required');
+
+    // clear server errors so the form becomes valid again and submit proceeds
+    component.form.controls.name.setErrors(null);
+    component.form.setErrors(null);
+
+    // now simulate 412 Precondition Failed
+    queueService.update.and.returnValue(throwError(() => new HttpErrorResponse({ status: 412 })));
+    component.onSubmit();
+    expect(window.alert).toHaveBeenCalledWith('This queue has been modified by another user. Please reload and try again.');
   });
 });
