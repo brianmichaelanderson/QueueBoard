@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { QueueDto } from '../shared/models/queue';
 import { Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, finalize } from 'rxjs/operators';
 import { QueueService } from '../services/queue.service';
 
 export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS');
@@ -20,22 +20,32 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
         <h1 class="page-title">Queues</h1>
 
         <div class="controls">
-          <input aria-label="Search queues" placeholder="Search queues" (input)="onSearch($event)" />
+          <input aria-label="Search queues" placeholder="Search queues" (input)="onSearch($event)" [disabled]="loading" />
           <a class="create-link" [routerLink]="['/queues', 'create']">Create queue</a>
         </div>
 
+        <div aria-live="polite" class="sr-only" *ngIf="loading">Loading queues…</div>
+
         <ul class="queue-list">
-          <li *ngFor="let q of items" class="queue-item">
-            <a [routerLink]="['/queues', 'edit', q.id]">{{ q.name }}</a>
-            <p class="muted">{{ q.description }}</p>
-          </li>
+          <ng-container *ngIf="loading; else itemsBlock">
+            <li *ngFor="let _ of skeletons" class="queue-item skeleton">
+              <div class="skeleton-title"></div>
+              <div class="skeleton-desc"></div>
+            </li>
+          </ng-container>
+          <ng-template #itemsBlock>
+            <li *ngFor="let q of items" class="queue-item">
+              <a [routerLink]="['/queues', 'edit', q.id]">{{ q.name }}</a>
+              <p class="muted">{{ q.description }}</p>
+            </li>
+          </ng-template>
         </ul>
 
-        <p *ngIf="items.length === 0" class="empty">No queues found.</p>
+        <p *ngIf="!loading && items.length === 0" class="empty">No queues found.</p>
 
         <div class="pagination" style="margin-top:1rem; display:flex; gap:1rem; align-items:center">
-          <button class="prev" (click)="prevPage()" [disabled]="page<=1">Previous</button>
-          <button class="next" (click)="nextPage()" [disabled]="total>0 && page>=totalPages">Next</button>
+          <button class="prev" (click)="prevPage()" [disabled]="loading || page<=1">Previous</button>
+          <button class="next" (click)="nextPage()" [disabled]="loading || (total>0 && page>=totalPages)">Next</button>
 
           <!-- page-size selector removed for MVP simplicity -->
         </div>
@@ -50,7 +60,12 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
     `.queue-list { list-style:none; padding:0; margin:0 }`,
     `.queue-item { padding:0.5rem 0; border-bottom:1px solid #eee }`,
     `.muted { color: #666; margin:0; font-size:0.9rem }`,
-    `.empty { color:#666 }`
+    `.empty { color:#666 }`,
+    `.skeleton { opacity:0.9 }`,
+    `.skeleton-title { height:1rem; width:35%; background:linear-gradient(90deg,#eee,#f5f5f5); border-radius:4px; margin-bottom:0.5rem }`,
+    `.skeleton-desc { height:0.8rem; width:55%; background:linear-gradient(90deg,#eee,#f5f5f5); border-radius:4px }`,
+    `.sr-only { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+`
   ]
 })
 export class QueuesListComponent {
@@ -66,6 +81,8 @@ export class QueuesListComponent {
   pageSize = 25;
   total = 0;
   totalPages = 1;
+  loading = false;
+  skeletons = Array.from({ length: 5 });
 
   constructor() {
     const data = this.route.snapshot.data as { initialData?: { items?: QueueDto[] } };
@@ -110,15 +127,25 @@ export class QueuesListComponent {
 
   private loadPage(search = '') {
     const term = search ?? this.currentSearch ?? '';
+    this.loading = true;
     // call list with current page and pageSize
-    this.queueService.list(term, this.page, this.pageSize).subscribe(res => {
-      this.items = res.items;
-      this.total = res.total ?? 0;
-      this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
-      console.log(`QueuesListComponent.loadPage: page=${this.page} total=${this.total} items=${this.items.length} first=${this.items[0]?.name ?? 'n/a'}`);
-      // ensure view updates in zoneless bootstrap scenarios
-      try { this.cdr.detectChanges(); } catch { /* noop */ }
-    });
+    this.queueService
+      .list(term, this.page, this.pageSize)
+      .pipe(finalize(() => {
+        this.loading = false;
+        try { this.cdr.detectChanges(); } catch { /* noop */ }
+      }))
+      .subscribe(res => {
+        this.items = res.items;
+        this.total = res.total ?? 0;
+        this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
+        console.log(`QueuesListComponent.loadPage: page=${this.page} total=${this.total} items=${this.items.length} first=${this.items[0]?.name ?? 'n/a'}`);
+      }, err => {
+        // keep empty list on error
+        this.items = [];
+        this.total = 0;
+        this.totalPages = 1;
+      });
   }
 
   nextPage() {
