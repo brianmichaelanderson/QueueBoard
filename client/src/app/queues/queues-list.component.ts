@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, InjectionToken } from '@angular/core';
+import { Component, inject, OnDestroy, InjectionToken, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
@@ -56,8 +56,10 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
 export class QueuesListComponent {
   private route = inject(ActivatedRoute);
   private queueService = inject(QueueService);
+  private cdr = inject(ChangeDetectorRef);
   private search$ = new Subject<string>();
   private sub?: Subscription;
+  currentSearch = '';
 
   items: QueueDto[] = [];
   page = 1;
@@ -92,11 +94,11 @@ export class QueuesListComponent {
     })();
 
     this.sub = this.search$
-      .pipe(debounceTime(debounceMs), distinctUntilChanged(), switchMap(term => this.queueService.list(term, this.page, this.pageSize)))
-      .subscribe(res => {
-        this.items = res.items;
-        this.total = res.total ?? 0;
-        this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
+      .pipe(debounceTime(debounceMs), distinctUntilChanged())
+      .subscribe(term => {
+        this.currentSearch = term;
+        this.page = 1; // reset to first page for new searches
+        this.loadPage(this.currentSearch);
       });
   }
 
@@ -107,23 +109,27 @@ export class QueuesListComponent {
   }
 
   private loadPage(search = '') {
+    const term = search ?? this.currentSearch ?? '';
     // call list with current page and pageSize
-    this.queueService.list(search, this.page, this.pageSize).subscribe(res => {
+    this.queueService.list(term, this.page, this.pageSize).subscribe(res => {
       this.items = res.items;
       this.total = res.total ?? 0;
       this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
+      console.log(`QueuesListComponent.loadPage: page=${this.page} total=${this.total} items=${this.items.length} first=${this.items[0]?.name ?? 'n/a'}`);
+      // ensure view updates in zoneless bootstrap scenarios
+      try { this.cdr.detectChanges(); } catch { /* noop */ }
     });
   }
 
   nextPage() {
     this.page += 1;
-    this.loadPage();
+    this.loadPage(this.currentSearch);
   }
 
   prevPage() {
     if (this.page > 1) {
       this.page -= 1;
-      this.loadPage();
+      this.loadPage(this.currentSearch);
     }
   }
 
