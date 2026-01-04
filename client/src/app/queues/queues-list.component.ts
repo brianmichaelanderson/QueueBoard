@@ -35,7 +35,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
 
         <div class="pagination" style="margin-top:1rem; display:flex; gap:1rem; align-items:center">
           <button class="prev" (click)="prevPage()" [disabled]="page<=1">Previous</button>
-          <button class="next" (click)="nextPage()">Next</button>
+          <button class="next" (click)="nextPage()" [disabled]="total>0 && page>=totalPages">Next</button>
 
           <label style="margin-left:1rem">Page size
             <select class="page-size-select" (change)="onPageSizeChange($event)">
@@ -45,6 +45,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
             </select>
           </label>
         </div>
+        <div style="margin-top:.5rem">Page {{page}} of {{totalPages}}</div>
       </main>
     </div>
   `,
@@ -67,6 +68,8 @@ export class QueuesListComponent {
   items: QueueDto[] = [];
   page = 1;
   pageSize = 25;
+  total = 0;
+  totalPages = 1;
 
   constructor() {
     const data = this.route.snapshot.data as { initialData?: { items?: QueueDto[] } };
@@ -92,9 +95,11 @@ export class QueuesListComponent {
     })();
 
     this.sub = this.search$
-      .pipe(debounceTime(debounceMs), distinctUntilChanged(), switchMap(term => this.queueService.list(term, 1, this.pageSize)))
+      .pipe(debounceTime(debounceMs), distinctUntilChanged(), switchMap(term => this.queueService.list(term, this.page, this.pageSize)))
       .subscribe(res => {
         this.items = res.items;
+        this.total = res.total ?? 0;
+        this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
       });
   }
 
@@ -108,6 +113,8 @@ export class QueuesListComponent {
     // call list with current page and pageSize
     this.queueService.list(search, this.page, this.pageSize).subscribe(res => {
       this.items = res.items;
+      this.total = res.total ?? 0;
+      this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
     });
   }
 
