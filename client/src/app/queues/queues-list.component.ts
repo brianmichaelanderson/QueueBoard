@@ -16,7 +16,8 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
   template: `
     <!-- eslint-disable @angular-eslint/template/prefer-control-flow -->
     <div class="app-container">
-      <main class="app-main">
+      <a class="skip-link" href="#main">Skip to content</a>
+      <main id="main" class="app-main">
         <h1 class="page-title">Queues</h1>
 
         <div class="controls">
@@ -44,8 +45,8 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
         <p *ngIf="!loading && items.length === 0" class="empty">No queues found.</p>
 
         <div class="pagination" style="margin-top:1rem; display:flex; gap:1rem; align-items:center">
-          <button class="prev" (click)="prevPage()" [disabled]="loading || page<=1">Previous</button>
-          <button class="next" (click)="nextPage()" [disabled]="loading || (total>0 && page>=totalPages)">Next</button>
+          <button class="prev" (click)="prevPage()" [disabled]="loading || page<=1" aria-label="Previous page">Previous</button>
+          <button class="next" (click)="nextPage()" [disabled]="loading || (total>0 && page>=totalPages)" aria-label="Next page">Next</button>
 
           <!-- page-size selector removed for MVP simplicity -->
         </div>
