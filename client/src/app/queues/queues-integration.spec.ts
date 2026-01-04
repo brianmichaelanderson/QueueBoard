@@ -4,6 +4,7 @@ import { RouterOutlet } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
+import { of } from 'rxjs';
 import { QueuesListComponent } from './queues-list.component';
 import { QueueDto } from '../shared/models/queue';
 
@@ -27,7 +28,14 @@ describe('Queues integration', () => {
         QueuesListComponent,
         TestHostComponent
       ],
-      providers: [provideZonelessChangeDetection()]
+      providers: [
+        provideZonelessChangeDetection(),
+        // provide a lightweight QueueService stub so the standalone component can inject it
+        {
+          provide: (await import('../services/queue.service')).QueueService,
+          useValue: { list: () => of({ items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto], total: 1 }) }
+        }
+      ]
     }).compileComponents();
 
     router = TestBed.inject(Router);

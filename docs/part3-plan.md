@@ -38,7 +38,7 @@ Top-level tasks
        - 1.7.2 [x] Add README snippets for `npm install` and `npm run start`
        - 1.7.3 [x] Document CI commands (lint/test/build) in README
 
-2. [ ] App shell & routing: Implement the root app shell and global routing. Configure lazy-loaded feature routes for `admin` and `agent` feature areas.
+2. [x] App shell & routing: Implement the root app shell and global routing. Configure lazy-loaded feature routes for `admin` and `agent` feature areas.
    - 2.1 [x] Create the root app shell — Add a minimal `AppShell`/`AppComponent` that provides header, footer and a `router-outlet` (or `Outlet` for standalone bootstrap). Keep layout responsive and accessible.
     - 2.2 [x] Global styles & layout container
        - 2.2.1 [x] Create `styles.scss` with base layout variables and container rules
@@ -111,14 +111,14 @@ Top-level tasks
      - 4.3.2 [x] Map `ValidationProblemDetails` responses to field-level errors
    - 4.3.3 [x] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
 
-    - 4.4 [ ] Components & routing (implement after service + tests)
+    - 4.4 [x] Components & routing (implement after service + tests)
        - 4.4.1 [x] Add `QueuesListComponent` (standalone) — list view with item links
        - 4.4.2 [x] Add `QueueEditComponent` (standalone) — create / edit reactive form
        - 4.4.3 [x] Add `QueueDetailComponent` (optional) — view-only detail page
        - 4.4.4 [x] Create `queues.routes.ts` and wire lazy route in `app.routes.ts`
 
    - 4.5 [ ] Search, paging & UX
-      - 4.5.1 [ ] Add search input with debounce and query binding
+      - 4.5.1 [x] Add search input with debounce and query binding
       - 4.5.2 [ ] Add pagination controls and pageSize support (server-side page params)
       - 4.5.3 [ ] Implement loading indicators, skeletons, and empty states
 
@@ -129,6 +129,7 @@ Top-level tasks
 
     - 4.7 [ ] Docs & dev notes
        - 4.7.1 [ ] Add README snippet describing queues dev workflow and test commands
+       
 5. [ ] Agents UI
    - Implement `AgentsListComponent` and `AgentDetail`/edit forms as needed for MVP.
 
