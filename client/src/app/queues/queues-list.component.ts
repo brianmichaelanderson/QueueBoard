@@ -53,20 +53,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
       </main>
     </div>
   `,
-  styles: [
-    `:host { display: block; }`,
-    `.page-title { margin-bottom: 0.5rem; }`,
-    `.controls { display:flex; gap:1rem; align-items:center; margin-bottom:1rem }`,
-    `.queue-list { list-style:none; padding:0; margin:0 }`,
-    `.queue-item { padding:0.5rem 0; border-bottom:1px solid #eee }`,
-    `.muted { color: #666; margin:0; font-size:0.9rem }`,
-    `.empty { color:#666 }`,
-    `.skeleton { opacity:0.9 }`,
-    `.skeleton-title { height:1rem; width:35%; background:linear-gradient(90deg,#eee,#f5f5f5); border-radius:4px; margin-bottom:0.5rem }`,
-    `.skeleton-desc { height:0.8rem; width:55%; background:linear-gradient(90deg,#eee,#f5f5f5); border-radius:4px }`,
-    `.sr-only { position: absolute; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
-`
-  ]
+  styleUrls: ['./queues-list.component.scss']
 })
 export class QueuesListComponent {
   private route = inject(ActivatedRoute);

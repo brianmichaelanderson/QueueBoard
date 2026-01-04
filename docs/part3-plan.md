@@ -117,13 +117,13 @@ Top-level tasks
        - 4.4.3 [x] Add `QueueDetailComponent` (optional) — view-only detail page
        - 4.4.4 [x] Create `queues.routes.ts` and wire lazy route in `app.routes.ts`
 
-   - 4.5 [ ] Search, paging & UX
+   - 4.5 [x] Search, paging & UX
       - 4.5.1 [x] Add search input with debounce and query binding
       - 4.5.2 [x] Add pagination controls and pageSize support (server-side page params)
-      - 4.5.3 [ ] Implement loading indicators, skeletons, and empty states
+      - 4.5.3 [x] Implement loading indicators, skeletons, and empty states
 
     - 4.6 [ ] Accessibility, styling & assets
-       - 4.6.1 [ ] Add feature-scoped SCSS and import shared variables from `styles.scss`
+       - 4.6.1 [x] Add feature-scoped SCSS and import shared variables from `styles.scss`
        - 4.6.2 [ ] Ensure semantic markup, keyboard focus order, and accessible names
        - 4.6.3 [ ] Run automated `axe` and Lighthouse checks for the queues views
 
