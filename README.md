@@ -72,6 +72,8 @@ ETag / optimistic concurrency and other API contract conventions are summarized 
 - SQL Server Express
 - Git
 
+For frontend-specific documentation about the `API_BASE_URL` injection token (usage, TestBed override and bootstrap/provider examples), see the frontend README: [client/README.md](client/README.md#api-base-url-token-frontend).
+
 ---
 
 ## Dev build note

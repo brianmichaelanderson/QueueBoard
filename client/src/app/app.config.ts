@@ -2,11 +2,14 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessC
 import { provideRouter, withInMemoryScrolling, withEnabledBlockingInitialNavigation } from '@angular/router';
 
 import { routes } from './app.routes';
+import { API_BASE_URL } from './app.tokens';
+import { environment } from '../environments/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
+    { provide: API_BASE_URL, useValue: environment.apiBaseUrl },
     provideRouter(
       routes,
       withInMemoryScrolling({

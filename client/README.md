@@ -94,3 +94,37 @@ Zoneless recommendation
 - **Caveats:** Some third-party libraries expect Zone.js; test any library that patches async APIs. Zoneless requires discipline (use `ChangeDetectionStrategy.OnPush`, Signals or manual `markForCheck()`), but is a small upfront cost for better runtime behavior.
 - **How to enable (high level):** remove or avoid importing `zone.js` in `polyfills.ts`, bootstrap with `bootstrapApplication()` and ensure components use `OnPush` or Signals-based reactivity.
 
+API base URL token (frontend)
+
+The frontend exposes an injectable `API_BASE_URL` token that centralizes the HTTP API base path used by services (for example, the `QueueService`). The application reads the value from the environment (`client/src/environments/environment.ts`) and provides it at bootstrap in `client/src/app/app.config.ts`.
+
+Test override example (unit tests / TestBed):
+
+```ts
+import { TestBed } from '@angular/core/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { API_BASE_URL } from 'src/app/app.tokens';
+
+TestBed.configureTestingModule({
+  imports: [HttpClientTestingModule],
+  providers: [
+    { provide: API_BASE_URL, useValue: 'http://localhost:5000' }
+  ]
+});
+```
+
+Bootstrap/provider example (app startup):
+
+```ts
+import { API_BASE_URL } from './app/app.tokens';
+import { environment } from '../environments/environment';
+
+bootstrapApplication(AppComponent, {
+  providers: [
+    { provide: API_BASE_URL, useValue: environment.apiBaseUrl }
+  ]
+});
+```
+
+Using the token makes it simple to swap API hosts for local dev, CI, or when running the backend in a container.
+

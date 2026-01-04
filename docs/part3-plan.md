@@ -103,8 +103,8 @@ Top-level tasks
       - 4.1.3 [x] Acceptance: confirm lazy chunk request when navigating to `/queues` and resolver/guard wiring
 
     - 4.2 [ ] Services & API integration (implement to satisfy tests)
-       - 4.2.1 [ ] Implement `QueueService` methods: `list`, `get`, `create`, `update`, `delete`
-       - 4.2.2 [ ] Use typed DTOs and centralize API base URL in environment config
+       - 4.2.1 [x] Implement `QueueService` methods: `list`, `get`, `create`, `update`, `delete`
+       - 4.2.2 [x] Use typed DTOs and centralize API base URL in environment config
        - 4.2.3 [ ] Register `QueueService` as a route-level provider when appropriate
 
     - 4.3 [ ] Forms, validation & concurrency (drive from tests)
