@@ -95,19 +95,5 @@ describe('QueuesListComponent', () => {
     expect(args[1]).toBe(2); // page 2
   });
 
-  it('calls QueueService.list with pageSize when changing page size', async () => {
-    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
-    const el = fixture.nativeElement as HTMLElement;
-
-    const pageSizeSelect = el.querySelector('.page-size-select') as HTMLSelectElement | null;
-    expect(pageSizeSelect).toBeTruthy(); // should exist once page-size UI is added
-
-    pageSizeSelect!.value = '50';
-    pageSizeSelect!.dispatchEvent(new Event('change'));
-    await new Promise(r => setTimeout(r, 0));
-
-    expect(queueSvc.list).toHaveBeenCalled();
-    const args = queueSvc.list.calls.mostRecent().args;
-    expect(args[2]).toBe(50); // pageSize 50
-  });
+  // page-size selector test removed for MVP (page-size UI intentionally omitted)
 });

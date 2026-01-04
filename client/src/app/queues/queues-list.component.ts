@@ -37,13 +37,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
           <button class="prev" (click)="prevPage()" [disabled]="page<=1">Previous</button>
           <button class="next" (click)="nextPage()" [disabled]="total>0 && page>=totalPages">Next</button>
 
-          <label style="margin-left:1rem">Page size
-            <select class="page-size-select" (change)="onPageSizeChange($event)">
-              <option value="10">10</option>
-              <option value="25" selected>25</option>
-              <option value="50">50</option>
-            </select>
-          </label>
+          <!-- page-size selector removed for MVP simplicity -->
         </div>
         <div style="margin-top:.5rem">Page {{page}} of {{totalPages}}</div>
       </main>
@@ -131,11 +125,7 @@ export class QueuesListComponent {
   }
 
   onPageSizeChange(ev: Event) {
-    const v = (ev.target as HTMLSelectElement).value;
-    const n = parseInt(v, 10) || 25;
-    this.pageSize = n;
-    this.page = 1;
-    this.loadPage();
+    // removed: page-size selector was intentionally removed
   }
 
   ngOnDestroy(): void {
