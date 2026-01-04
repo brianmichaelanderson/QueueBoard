@@ -97,10 +97,10 @@ Top-level tasks
       - 4.1.1 [ ] Unit tests for the Queues feature: service, components, and validation utilities (shallow + small in-process integration)
         - 4.1.1.1 [x] QueueService unit (ETag behavior)
         - 4.1.1.2 [x] applyServerValidationErrors unit
-        - 4.1.1.3 [ ] QueueEditComponent unit (create/edit/validation/412)
-        - 4.1.1.4 [ ] QueuesListComponent unit
-      - 4.1.2 [ ] Integration test: navigate to `/queues`, exercise search + pagination
-      - 4.1.3 [ ] Acceptance: confirm lazy chunk request when navigating to `/queues` and resolver/guard wiring
+      - 4.1.1.3 [x] QueueEditComponent unit (create/edit/validation/412)
+      - 4.1.1.4 [x] QueuesListComponent unit
+      - 4.1.2 [x] Integration test: navigate to `/queues`, exercise search + pagination
+      - 4.1.3 [x] Acceptance: confirm lazy chunk request when navigating to `/queues` and resolver/guard wiring
 
     - 4.2 [ ] Services & API integration (implement to satisfy tests)
        - 4.2.1 [ ] Implement `QueueService` methods: `list`, `get`, `create`, `update`, `delete`
