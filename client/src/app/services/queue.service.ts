@@ -22,8 +22,11 @@ export class QueueService {
     if (page !== undefined && page !== null) params['page'] = String(page);
     if (pageSize !== undefined && pageSize !== null) params['pageSize'] = String(pageSize);
 
-    return this.http.get<{ items: QueueDto[]; total: number }>(this.baseUrl, { params }).pipe(
-      map(resp => ({ items: resp.items ?? [], total: resp.total ?? 0 }))
+    return this.http.get<{ items: QueueDto[]; total?: number; totalCount?: number }>(this.baseUrl, { params }).pipe(
+      map(resp => {
+        const total = resp.total ?? resp.totalCount ?? 0;
+        return { items: resp.items ?? [], total };
+      })
     );
   }
 

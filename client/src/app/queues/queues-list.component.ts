@@ -69,6 +69,9 @@ export class QueuesListComponent {
     const data = this.route.snapshot.data as { initialData?: { items?: QueueDto[] } };
     if (data?.initialData?.items) {
       this.items = data.initialData.items;
+      // initialize pagination totals from resolver-provided data when available
+      this.total = (data as any).initialData.total ?? this.total;
+      this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
     } else {
       // Placeholder sample data for local dev
       this.items = [
