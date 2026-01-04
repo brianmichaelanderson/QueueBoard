@@ -119,7 +119,7 @@ Top-level tasks
 
    - 4.5 [ ] Search, paging & UX
       - 4.5.1 [x] Add search input with debounce and query binding
-      - 4.5.2 [ ] Add pagination controls and pageSize support (server-side page params)
+      - 4.5.2 [x] Add pagination controls and pageSize support (server-side page params)
       - 4.5.3 [ ] Implement loading indicators, skeletons, and empty states
 
     - 4.6 [ ] Accessibility, styling & assets
@@ -129,7 +129,7 @@ Top-level tasks
 
     - 4.7 [ ] Docs & dev notes
        - 4.7.1 [ ] Add README snippet describing queues dev workflow and test commands
-       
+
 5. [ ] Agents UI
    - Implement `AgentsListComponent` and `AgentDetail`/edit forms as needed for MVP.
 

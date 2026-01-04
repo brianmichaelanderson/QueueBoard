@@ -4,23 +4,29 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { QueuesListComponent } from './queues-list.component';
 import { ActivatedRoute } from '@angular/router';
 import { QueueDto } from '../shared/models/queue';
+import { QueueService } from '../services/queue.service';
+import { SEARCH_DEBOUNCE_MS } from './queues-list.component';
+import { of, Observable } from 'rxjs';
 
 describe('QueuesListComponent', () => {
   let fixture: ComponentFixture<QueuesListComponent>;
   let component: QueuesListComponent;
 
   beforeEach(async () => {
+    const queueSvc = jasmine.createSpyObj('QueueService', ['list']);
+    queueSvc.list.and.returnValue(of({ items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto], total: 1 }));
+
     await TestBed.configureTestingModule({
       imports: [RouterTestingModule, QueuesListComponent],
       providers: [
         provideZonelessChangeDetection(),
+        { provide: QueueService, useValue: queueSvc },
+        { provide: SEARCH_DEBOUNCE_MS, useValue: 0 },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              data: {
-                initialData: { items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto] }
-              }
+              data: { initialData: { items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto] } }
             }
           }
         }
@@ -40,5 +46,177 @@ describe('QueuesListComponent', () => {
     const items = el.querySelectorAll('.queue-item');
     expect(items.length).toBe(1);
     expect(el.textContent).toContain('Support');
+  });
+
+  it('calls onSearch when typing in the search input', () => {
+    spyOn(component, 'onSearch');
+    const el = fixture.nativeElement as HTMLElement;
+    const input = el.querySelector('input[aria-label="Search queues"]') as HTMLInputElement;
+    expect(input).toBeTruthy();
+
+    input.value = 'sup';
+    input.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+
+    expect(component.onSearch).toHaveBeenCalled();
+  });
+
+  it('debounces input and calls QueueService.list with search param', async () => {
+    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
+
+    // Emit into the debounced pipeline
+    (component as any).search$.next('sup');
+    fixture.detectChanges();
+
+    // Wait one macrotask to let debounce/scheduler run
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    expect(queueSvc.list).toHaveBeenCalled();
+    const args = queueSvc.list.calls.mostRecent().args;
+    expect(args[0]).toBe('sup');
+    expect(args[1]).toBe(1);
+    expect(args[2]).toBe(25);
+  });
+
+  // Pagination tests (4.5.2) - TDD: tests added first and expected to fail until UI implemented
+  it('calls QueueService.list with page param when changing page', async () => {
+    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
+    const el = fixture.nativeElement as HTMLElement;
+
+    const nextBtn = el.querySelector('.pagination .next') as HTMLButtonElement | null;
+    expect(nextBtn).toBeTruthy(); // should exist once pagination UI is added
+
+    nextBtn!.click();
+    // allow any async pipeline to run
+    await new Promise(r => setTimeout(r, 0));
+
+    expect(queueSvc.list).toHaveBeenCalled();
+    const args = queueSvc.list.calls.mostRecent().args;
+    expect(args[1]).toBe(2); // page 2
+  });
+
+  it('calls QueueService.list with pageSize when changing page size', async () => {
+    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
+    const el = fixture.nativeElement as HTMLElement;
+
+    const pageSizeSelect = el.querySelector('.page-size-select') as HTMLSelectElement | null;
+    expect(pageSizeSelect).toBeTruthy(); // should exist once page-size UI is added
+
+    pageSizeSelect!.value = '50';
+    pageSizeSelect!.dispatchEvent(new Event('change'));
+    await new Promise(r => setTimeout(r, 0));
+
+    expect(queueSvc.list).toHaveBeenCalled();
+    const args = queueSvc.list.calls.mostRecent().args;
+    expect(args[2]).toBe(50); // pageSize 50
+  });
+
+  it('shows empty state when items array is empty', () => {
+    const localFixture = TestBed.createComponent(QueuesListComponent);
+    const localComp = localFixture.componentInstance;
+    localComp.items = [];
+    localFixture.detectChanges();
+
+    const el = localFixture.nativeElement as HTMLElement;
+    const empty = el.querySelector('.empty');
+    expect(empty).toBeTruthy();
+    expect(empty?.textContent).toContain('No queues found');
+  });
+
+  it('disables prev when on first page', () => {
+    component.page = 1;
+    fixture.detectChanges();
+    const el = fixture.nativeElement as HTMLElement;
+    const prevBtn = el.querySelector('.pagination .prev') as HTMLButtonElement | null;
+    expect(prevBtn).toBeTruthy();
+    expect(prevBtn!.disabled).toBeTrue();
+  });
+
+  it('changing pageSize resets to page 1 and calls QueueService.list with new pageSize', async () => {
+    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
+    const localFixture = TestBed.createComponent(QueuesListComponent);
+    const localComp = localFixture.componentInstance;
+    localComp.page = 2;
+    localFixture.detectChanges();
+
+    const el = localFixture.nativeElement as HTMLElement;
+    const pageSizeSelect = el.querySelector('.page-size-select') as HTMLSelectElement | null;
+    expect(pageSizeSelect).toBeTruthy();
+
+    pageSizeSelect!.value = '50';
+    pageSizeSelect!.dispatchEvent(new Event('change'));
+
+    // allow any async pipeline to run
+    await new Promise(r => setTimeout(r, 0));
+
+    expect(localComp.page).toBe(1);
+    expect(queueSvc.list).toHaveBeenCalled();
+    const args = queueSvc.list.calls.mostRecent().args;
+    expect(args[2]).toBe(50);
+    expect(args[1]).toBe(1);
+  });
+
+  it('shows loader while QueueService.list is pending', async () => {
+    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
+
+    const delayed = new Observable<any>(observer => {
+      setTimeout(() => {
+        observer.next({ items: [{ id: '1', name: 'Support', description: 'desc' }], total: 1 });
+        observer.complete();
+      }, 50);
+    });
+
+    queueSvc.list.and.returnValue(delayed);
+
+    // trigger a load via nextPage
+    component.page = 1;
+    component.nextPage();
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const loader = el.querySelector('.loader');
+    expect(loader).toBeTruthy(); // expect loader while pending (component not implemented yet)
+
+    // wait for response
+    await new Promise(r => setTimeout(r, 60));
+    fixture.detectChanges();
+    expect(el.querySelector('.loader')).toBeFalsy();
+  });
+
+  it('hides loader after response resolves', async () => {
+    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
+    const delayed = new Observable<any>(observer => {
+      setTimeout(() => {
+        observer.next({ items: [{ id: '1', name: 'Support', description: 'desc' }], total: 1 });
+        observer.complete();
+      }, 30);
+    });
+    queueSvc.list.and.returnValue(delayed);
+
+    component.page = 1;
+    component.nextPage();
+    fixture.detectChanges();
+
+    await new Promise(r => setTimeout(r, 40));
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    expect(el.querySelector('.loader')).toBeFalsy(); // loader should be gone after resolve
+    const items = el.querySelectorAll('.queue-item');
+    expect(items.length).toBeGreaterThan(0);
+  });
+
+  it('does not show loader for very fast responses (no flicker)', async () => {
+    const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;
+    // immediate response
+    queueSvc.list.and.returnValue(of({ items: [{ id: '1', name: 'Support', description: 'desc' }], total: 1 }));
+
+    component.page = 1;
+    component.nextPage();
+    fixture.detectChanges();
+
+    const el = fixture.nativeElement as HTMLElement;
+    const loader = el.querySelector('.loader');
+    expect(loader).toBeFalsy();
   });
 });
