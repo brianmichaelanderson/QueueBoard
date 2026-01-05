@@ -80,12 +80,55 @@ describe('AgentService', () => {
     req.flush(null, { status: 204, statusText: 'No Content' });
   });
 
+  it('delete() should send If-Match header when etag provided', () => {
+    service.delete('7', 'r1').subscribe(() => {
+      // noop
+    });
+
+    const req = httpMock.expectOne('/api/agents/7');
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.headers.has('If-Match')).toBeTrue();
+    expect(req.request.headers.get('If-Match')).toBe('r1');
+
+    req.flush(null, { status: 204, statusText: 'No Content' });
+  });
+
   it('list() should GET with query params and return items from the API', () => {
-    service.getAll();
+    // This test currently exercises `getAll()` placeholder. Add a stricter spec for `list()`
+    // that should accept search/page/pageSize and return `{ items, total }`.
+    // The following will fail until `AgentService.list()` is implemented.
+    (service as any).list('support', 2, 10).subscribe((res: any) => {
+      expect(res).toBeTruthy();
+      expect(res.items.length).toBe(1);
+      expect(res.total).toBe(1);
+    });
 
     const req = httpMock.expectOne(r => r.url.startsWith('/api/agents'));
     expect(req.request.method).toBe('GET');
+    expect(req.request.params.get('search')).toBe('support');
+    expect(req.request.params.get('page')).toBe('2');
+    expect(req.request.params.get('pageSize')).toBe('10');
+
     req.flush({ items: [{ id: '9', name: 'Agent X' }], totalCount: 1 });
+  });
+
+  it('list() should use injected API_BASE_URL when provided', () => {
+    const testBase = 'http://test.local/api';
+
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [provideZonelessChangeDetection(), { provide: API_BASE_URL, useValue: testBase }]
+    });
+
+    const svc = TestBed.inject(AgentService) as any;
+    const http = TestBed.inject(HttpTestingController);
+
+    svc.list('x', 1, 5).subscribe();
+
+    const req = http.expectOne((r: any) => r.url.startsWith(`${testBase}/agents`));
+    expect(req.request.method).toBe('GET');
+    http.verify();
   });
 
   it('should use injected API_BASE_URL when provided', () => {

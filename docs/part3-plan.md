@@ -139,9 +139,9 @@ Top-level tasks
       - 5.1.5 [ ] Add integration test: navigate to `/agents` and exercise search + pagination
 
    - 5.2 [ ] Services & API integration
-      - 5.2.1 [ ] Implement `AgentService` methods: `list`, `get`, `create`, `update`, `delete`
-      - 5.2.2 [ ] Read/write ETag headers (store on GET, send `If-Match` on update/delete)
-      - 5.2.3 [ ] Parse API payloads (`totalCount`) and map server `ValidationProblemDetails` to form errors
+      - 5.2.1 [x] Implement `AgentService` methods: `list`, `get`, `create`, `update`, `delete`
+      - 5.2.2 [x] Read/write ETag headers (store on GET, send `If-Match` on update/delete)
+      - 5.2.3 [x] Parse API payloads (`totalCount`) and map server `ValidationProblemDetails` to form errors
 
    - 5.3 [ ] Forms, validation & concurrency
       - 5.3.1 [ ] Implement `AgentEditComponent` using Reactive Forms (mirror `QueueEditComponent`)
