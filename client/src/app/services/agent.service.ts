@@ -1,23 +1,34 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { API_BASE_URL } from '../app.tokens';
 
 // Lightweight AgentService skeleton — replace placeholder implementations
 // with real API calls once `Agent` DTOs and backend endpoints are available.
 @Injectable({ providedIn: 'root' })
 export class AgentService {
-  private baseUrl = '/api/agents';
-
   private http = inject(HttpClient);
+  private apiBase = inject(API_BASE_URL);
+  private baseUrl = `${this.apiBase}/agents`;
 
   getAll(): Observable<any[]> {
     // TODO: return this.http.get<any[]>(this.baseUrl);
     return of([]);
   }
 
-  getById(_id: string): Observable<any | null> {
-    // TODO: return this.http.get<any>(`${this.baseUrl}/${_id}`);
-    return of(null);
+  getById(id: string): Observable<any | null> {
+    return this.http.get<any>(`${this.baseUrl}/${id}`, { observe: 'response' }).pipe(
+      map(resp => {
+        const body = resp.body ?? null;
+        const rawEtag = resp.headers.get('ETag') ?? resp.headers.get('etag') ?? undefined;
+        const etag = rawEtag ? rawEtag.replace(/"/g, '') : undefined;
+        if (body && etag) {
+          body.rowVersion = etag;
+        }
+        return body;
+      })
+    );
   }
 
   create(_payload: any): Observable<any> {

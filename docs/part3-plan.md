@@ -92,9 +92,9 @@ Top-level tasks
       - 3.5.2 [ ] Add a simple integration/interaction test that navigates to each feature route (optional)
       - 3.5.3 [x] Acceptance: automated checks — ran `axe` and Lighthouse against `/`, `/admin`, and `/agent`; verified lazy chunk network requests, resolver console logs, and route guards are wired; manual accessibility smoke tests deferred
 
-4. [ ] Queues UI (TDD order)
-    - 4.1 [ ] Tests & verification (start here for TDD)
-      - 4.1.1 [ ] Unit tests for the Queues feature: service, components, and validation utilities (shallow + small in-process integration)
+4. [x] Queues UI (TDD order)
+    - 4.1 [x] Tests & verification (start here for TDD)
+      - 4.1.1 [x] Unit tests for the Queues feature: service, components, and validation utilities (shallow + small in-process integration)
         - 4.1.1.1 [x] QueueService unit (ETag behavior)
         - 4.1.1.2 [x] applyServerValidationErrors unit
       - 4.1.1.3 [x] QueueEditComponent unit (create/edit/validation/412)
@@ -127,11 +127,49 @@ Top-level tasks
        - 4.6.2 [x] Ensure semantic markup, keyboard focus order, and accessible names
        - 4.6.3 [ ] Run automated `axe` and Lighthouse checks for the queues views
 
-    - 4.7 [ ] Docs & dev notes
+    - 4.7 [x] Docs & dev notes
        - 4.7.1 [x] Add README snippet describing queues dev workflow and test commands
 
-5. [ ] Agents UI
-   - Implement `AgentsListComponent` and `AgentDetail`/edit forms as needed for MVP.
+5. [ ] Agents UI (TDD-first, mirror Queues)
+   - 5.1 [ ] Tests & verification (TDD-first)
+      - 5.1.1 [ ] Add `AgentService` unit tests (ETag + error mapping)
+      - 5.1.2 [ ] Reuse `applyServerValidationErrors` tests for agent form errors
+      - 5.1.3 [ ] Add `AgentEditComponent` unit tests (create/edit/412 flows)
+      - 5.1.4 [ ] Add `AgentsListComponent` unit tests (search + paging + empty state)
+      - 5.1.5 [ ] Add integration test: navigate to `/agents` and exercise search + pagination
+
+   - 5.2 [ ] Services & API integration
+      - 5.2.1 [ ] Implement `AgentService` methods: `list`, `get`, `create`, `update`, `delete`
+      - 5.2.2 [ ] Read/write ETag headers (store on GET, send `If-Match` on update/delete)
+      - 5.2.3 [ ] Parse API payloads (`totalCount`) and map server `ValidationProblemDetails` to form errors
+
+   - 5.3 [ ] Forms, validation & concurrency
+      - 5.3.1 [ ] Implement `AgentEditComponent` using Reactive Forms (mirror `QueueEditComponent`)
+      - 5.3.2 [ ] Reuse `applyServerValidationErrors` to surface field errors
+      - 5.3.3 [ ] Handle 412 precondition-failed flows and show a friendly concurrency message
+
+   - 5.4 [ ] Components & routing (agents feature)
+      - 5.4.1 [ ] Add `AgentsListComponent` (standalone) with links to edit/detail
+      - 5.4.2 [ ] Add `AgentEditComponent` (create/edit) and optional `AgentDetailComponent`
+      - 5.4.3 [ ] Create `agents.routes.ts` and wire lazy route in `app.routes.ts`
+      - 5.4.4 [ ] Add a resolver for initial list data (mirror `queues.resolver.ts`)
+
+   - 5.5 [ ] Search, paging & UX
+      - 5.5.1 [ ] Add debounced search input and server-side paging params (copy `queues` pattern)
+      - 5.5.2 [ ] Add pagination controls, loading skeletons, and empty states (reuse `queues` patterns)
+      - 5.5.3 [ ] Disable controls while loading and surface an ARIA live region for loading
+
+   - 5.6 [ ] Accessibility, styling & assets
+      - 5.6.1 [ ] Add feature-scoped SCSS (import `styles.scss`) for agents feature
+      - 5.6.2 [ ] Ensure semantic markup, keyboard focus order, and accessible names (reuse `queues` fixes)
+
+   - 5.7 [ ] Docs & dev notes
+      - 5.7.1 [ ] Add README snippet describing `agents` dev workflow and test commands (mirror queues)
+      - 5.7.2 [ ] Add or reference API curl examples in `docs/agents.md` where helpful
+
+   - 5.8 [ ] Tests & acceptance checks
+      - 5.8.1 [ ] Run unit and integration tests; fix failures
+      - 5.8.2 [ ] (Optional) Run `axe`/Lighthouse spot-check for `agents` views and address blocking issues
 
 6. [ ] API services
    - Add typed Angular services (`QueueService`, `AgentService`) using `HttpClient` to call the API and centralize request/response handling (including `ETag` usage where relevant).
