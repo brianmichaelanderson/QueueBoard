@@ -124,11 +124,11 @@ Top-level tasks
 
     - 4.6 [ ] Accessibility, styling & assets
        - 4.6.1 [x] Add feature-scoped SCSS and import shared variables from `styles.scss`
-       - 4.6.2 [ ] Ensure semantic markup, keyboard focus order, and accessible names
+       - 4.6.2 [x] Ensure semantic markup, keyboard focus order, and accessible names
        - 4.6.3 [ ] Run automated `axe` and Lighthouse checks for the queues views
 
     - 4.7 [ ] Docs & dev notes
-       - 4.7.1 [ ] Add README snippet describing queues dev workflow and test commands
+       - 4.7.1 [x] Add README snippet describing queues dev workflow and test commands
 
 5. [ ] Agents UI
    - Implement `AgentsListComponent` and `AgentDetail`/edit forms as needed for MVP.

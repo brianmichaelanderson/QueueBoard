@@ -35,7 +35,7 @@ Installs formatting (`prettier`) to keep source formatted consistently.
 ```json
 {
   "/api": {
-    "target": "http://localhost:5000",
+    "target": "http://localhost:8080",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
@@ -108,7 +108,7 @@ import { API_BASE_URL } from 'src/app/app.tokens';
 TestBed.configureTestingModule({
   imports: [HttpClientTestingModule],
   providers: [
-    { provide: API_BASE_URL, useValue: 'http://localhost:5000' }
+    { provide: API_BASE_URL, useValue: 'http://localhost:8080' }
   ]
 });
 ```
@@ -124,6 +124,49 @@ bootstrapApplication(AppComponent, {
     { provide: API_BASE_URL, useValue: environment.apiBaseUrl }
   ]
 });
+
+## Queues dev workflow (MVP)
+
+A short checklist and commands to run the Queues feature locally with the backend.
+
+- Start the backend (Docker recommended):
+
+```bash
+# from repo root
+docker compose up -d --build api
+```
+
+- Reset or seed the dev database (server):
+
+```bash
+./scripts/reset-db.sh
+# or see server/README.md for EF / Docker-based reset instructions
+```
+
+- Start the frontend dev server (with proxy):
+
+```bash
+cd client
+npm install
+npm run start
+```
+
+- If your backend is available on a non-default host/port (e.g. Docker binds the API to `http://localhost:8080`), override the `API_BASE_URL` in tests or the environment. Example TestBed override:
+
+```ts
+TestBed.configureTestingModule({
+  providers: [ { provide: API_BASE_URL, useValue: 'http://localhost:8080' } ]
+});
+```
+
+- Run only the queues-related frontend tests (quick pattern):
+
+```bash
+# Run Karma for queues specs only
+npm run test -- --include "src/app/queues/**" --watch=false
+```
+
+This snippet intentionally links to existing sections above and to `server/README.md` for backend-specific commands to avoid duplication.
 ```
 
 Using the token makes it simple to swap API hosts for local dev, CI, or when running the backend in a container.
