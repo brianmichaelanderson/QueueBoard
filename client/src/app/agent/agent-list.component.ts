@@ -34,7 +34,7 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
           </ng-container>
           <ng-template #itemsBlock>
             <li *ngFor="let a of items" class="agent-item">
-              <a [routerLink]="['/agents','edit', a.id]">{{ a.firstName }} {{ a.lastName }}</a>
+              <a [routerLink]="['/agents','view', a.id]">{{ a.firstName }} {{ a.lastName }}</a>
               <p class="muted">{{ a.email }}</p>
             </li>
           </ng-template>

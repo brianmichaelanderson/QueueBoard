@@ -36,7 +36,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
           </ng-container>
           <ng-template #itemsBlock>
             <li *ngFor="let q of items" class="queue-item">
-              <a [routerLink]="['/queues', 'edit', q.id]">{{ q.name }}</a>
+              <a [routerLink]="['/queues', 'view', q.id]">{{ q.name }}</a>
               <p class="muted">{{ q.description }}</p>
             </li>
           </ng-template>
