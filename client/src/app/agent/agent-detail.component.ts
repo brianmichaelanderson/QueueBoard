@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { AgentDto } from '../shared/models/agent.model';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -11,23 +11,43 @@ import { ActivatedRoute } from '@angular/router';
     <div class="app-container">
       <main class="app-main">
         <h1 class="page-title">Agent Detail</h1>
-
-        <section *ngIf="item">
-          <h2>{{ item.firstName }} {{ item.lastName }}</h2>
-          <p class="muted">{{ item.email }}</p>
-          <p><strong>ID:</strong> {{ id }}</p>
+        <section *ngIf="item; else loading">
+          <div>
+            <label><strong>First name:</strong></label>
+            <div>{{ item.firstName }}</div>
+          </div>
+          <div>
+            <label><strong>Last name:</strong></label>
+            <div>{{ item.lastName }}</div>
+          </div>
+          <div>
+            <label><strong>Email:</strong></label>
+            <div class="muted">{{ item.email }}</div>
+          </div>
+          <div>
+            <label><strong>Active:</strong></label>
+            <div>{{ item.isActive ? 'Yes' : 'No' }}</div>
+          </div>
+          <div style="margin-top:1rem">
+            <p><strong>ID:</strong> {{ id }}</p>
+            <button (click)="edit()">Edit</button>
+            <button (click)="cancel()">Cancel</button>
+          </div>
         </section>
 
-        <section *ngIf="!item">
-          <p>Loading agent details...</p>
-          <p *ngIf="!id">No agent id provided.</p>
-        </section>
+        <ng-template #loading>
+          <section>
+            <p>Loading agent details...</p>
+            <p *ngIf="!id">No agent id provided.</p>
+          </section>
+        </ng-template>
       </main>
     </div>
   `
 })
 export class AgentDetailComponent {
   private route = inject(ActivatedRoute);
+  private router: Router = inject(Router);
   id: string | null = this.route.snapshot.paramMap.get('id');
   item: AgentDto | null = (this.route.snapshot.data as { initialData?: { item?: AgentDto } })?.initialData?.item ?? null;
 
@@ -35,5 +55,15 @@ export class AgentDetailComponent {
     // Helpful for debugging resolver-provided data
     // eslint-disable-next-line no-console
     console.log('AgentDetailComponent resolver initialData:', (this.route.snapshot.data as { initialData?: { item?: AgentDto } })?.initialData);
+  }
+
+  edit() {
+    if (this.id) {
+      this.router.navigate(['/agents', 'edit', this.id]);
+    }
+  }
+
+  cancel() {
+    this.router.navigate(['/agents']);
   }
 }
