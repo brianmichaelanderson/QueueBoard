@@ -45,6 +45,22 @@ describe('AgentEditComponent (5.3.1)', () => {
     expect(mockAgentService.update).toHaveBeenCalledWith('1', jasmine.objectContaining({ name: 'Updated Name' }), 'r1');
   });
 
+  it('should call create on save when creating a new agent', () => {
+    // Simulate create mode (no id) without re-running ngOnInit
+    component.isEdit = false;
+    component.id = null;
+
+    component.form.setValue({ name: 'New Agent' });
+
+    mockAgentService.create = jasmine.createSpy('create').and.returnValue(of({ id: '10', name: 'New Agent' } as any));
+
+    component.save();
+
+    expect((mockAgentService.create as jasmine.Spy).calls.any()).toBeTrue();
+    const args = (mockAgentService.create as jasmine.Spy).calls.mostRecent().args[0];
+    expect(args).toEqual(jasmine.objectContaining({ name: 'New Agent' }));
+  });
+
   it('applies server validation errors to form controls and shows alert on 412', () => {
     fixture.detectChanges();
     component.form.patchValue({ name: 'Some name' });

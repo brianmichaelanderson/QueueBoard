@@ -81,9 +81,23 @@ export class AgentEditComponent implements OnInit {
       return;
     }
 
-    // For create flow, navigate back after saving — create not implemented yet
-    console.log('Agent save', { id: this.id, ...payload });
-    this.router.navigate(['/agent']);
+    // Create flow: call service and navigate on success, handle validation errors
+    const createResult = this.agentService.create(payload);
+    if (createResult && typeof (createResult as any).subscribe === 'function') {
+      (createResult as any).subscribe({
+        next: () => this.router.navigate(['/agent']),
+        error: (err: unknown) => {
+          if (err instanceof HttpErrorResponse && err.status === 400) {
+            const body = (err as HttpErrorResponse).error as ValidationProblemDetails;
+            applyServerValidationErrors(this.form, body);
+          } else if (err instanceof HttpErrorResponse && err.status === 412) {
+            alert('This agent has been modified by another user. Please reload and try again.');
+          }
+        }
+      });
+    } else {
+      this.router.navigate(['/agent']);
+    }
   }
 
   cancel() {
