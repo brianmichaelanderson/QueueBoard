@@ -68,7 +68,7 @@ describe('QueueEditComponent', () => {
     expect(args[0]).toBe('1');
     expect(args[1]).toEqual({ name: 'Updated', description: 'updated desc' });
     expect(args[2]).toBe('r1');
-    expect(router.navigate).toHaveBeenCalledWith(['/queues']);
+    expect(router.navigate).toHaveBeenCalledWith(['/queues', 'view', '1']);
   });
 
   it('applies server validation errors to form controls and shows alert on 412', () => {

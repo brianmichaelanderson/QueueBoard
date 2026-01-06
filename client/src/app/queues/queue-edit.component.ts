@@ -92,7 +92,7 @@ export class QueueEditComponent implements OnInit {
     const payload = this.form.value as Partial<QueueDto>;
     if (this.isEdit && this.id) {
       this.queueService.update(this.id, payload, this.etag).subscribe({
-        next: () => this.router.navigate(['/queues']),
+        next: () => this.router.navigate(['/queues', 'view', this.id]),
         error: (err: unknown) => {
           if (err instanceof HttpErrorResponse && err.status === 400) {
             const body = err.error as ValidationProblemDetails;
@@ -104,12 +104,16 @@ export class QueueEditComponent implements OnInit {
         }
       });
     } else {
-      this.queueService.create(payload).subscribe({ next: () => this.router.navigate(['/queues']) });
+      this.queueService.create(payload).subscribe({ next: (_created: QueueDto) => this.router.navigate(['/queues']) });
     }
   }
 
   onCancel() {
-    this.router.navigate(['/queues']);
+    if (this.isEdit && this.id) {
+      this.router.navigate(['/queues', 'view', this.id]);
+    } else {
+      this.router.navigate(['/queues']);
+    }
   }
 }
 

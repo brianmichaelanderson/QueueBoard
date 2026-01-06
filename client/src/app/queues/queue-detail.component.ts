@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { QueueDto } from '../shared/models/queue';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   standalone: true,
@@ -13,16 +13,34 @@ import { ActivatedRoute } from '@angular/router';
       <main class="app-main">
         <h1 class="page-title">Queue</h1>
 
-        <section *ngIf="item">
-          <h2>{{ item.name }}</h2>
-          <p class="muted">{{ item.description }}</p>
-          <p><strong>ID:</strong> {{ id }}</p>
+        <section *ngIf="item; else loading">
+          <div class="form-row">
+            <label>Name</label>
+            <div>{{ item.name }}</div>
+          </div>
+
+          <div class="form-row">
+            <label>Description</label>
+            <div class="muted">{{ item.description }}</div>
+          </div>
+
+          <div class="form-row">
+            <label>ID</label>
+            <div>{{ id }}</div>
+          </div>
+
+          <div class="actions">
+            <button (click)="edit()">Edit</button>
+            <button (click)="cancel()">Cancel</button>
+          </div>
         </section>
 
-        <section *ngIf="!item">
-          <p>Loading queue details...</p>
-          <p *ngIf="!id">No queue id provided.</p>
-        </section>
+        <ng-template #loading>
+          <section>
+            <p>Loading queue details...</p>
+            <p *ngIf="!id">No queue id provided.</p>
+          </section>
+        </ng-template>
       </main>
     </div>
   `,
@@ -30,10 +48,13 @@ import { ActivatedRoute } from '@angular/router';
     `:host { display:block }`,
     `.muted { color:#666 }`,
     `.page-title { margin-bottom: 0.5rem }`
+    ,`.form-row { margin-bottom: 0.75rem }`,
+    `.actions { display:flex; gap:0.5rem; margin-top:1rem }`
   ]
 })
 export class QueueDetailComponent {
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   id: string | null = this.route.snapshot.paramMap.get('id');
   item: QueueDto | null = (this.route.snapshot.data as { initialData?: { item?: QueueDto } })?.initialData?.item ?? null;
 
@@ -42,5 +63,15 @@ export class QueueDetailComponent {
       'QueueDetailComponent resolver initialData:',
       (this.route.snapshot.data as { initialData?: { item?: QueueDto } })?.initialData
     );
+  }
+
+  edit() {
+    if (this.id) {
+      this.router.navigate(['/queues', 'edit', this.id]);
+    }
+  }
+
+  cancel() {
+    this.router.navigate(['/queues']);
   }
 }
