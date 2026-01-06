@@ -119,7 +119,8 @@ Top-level tasks
 
    - 4.5 [x] Search, paging & UX
       - 4.5.1 [x] Add search input with debounce and query binding
-      - 4.5.2 [x] Add pagination controls and pageSize support (server-side page params)
+      - 4.5.2 [x] Add pagination controls (server-side page params)
+        - 4.5.2.1 [ ] Implement page size support (optional)
       - 4.5.3 [x] Implement loading indicators, skeletons, and empty states
 
     - 4.6 [ ] Accessibility, styling & assets
@@ -149,15 +150,17 @@ Top-level tasks
       - 5.3.3 [x] Handle 412 precondition-failed flows and show a friendly concurrency message
 
    - 5.4 [ ] Components & routing (agents feature)
-      - 5.4.1 [ ] Add `AgentsListComponent` (standalone) with links to edit/detail
-      - 5.4.2 [ ] Add `AgentEditComponent` (create/edit) and optional `AgentDetailComponent`
-      - 5.4.3 [ ] Create `agents.routes.ts` and wire lazy route in `app.routes.ts`
-      - 5.4.4 [ ] Add a resolver for initial list data (mirror `queues.resolver.ts`)
+      - 5.4.1 [x] Add `AgentsListComponent` (standalone) with links to edit/detail
+      - 5.4.2 [x] Add `AgentEditComponent` (create/edit) 
+        - 5.4.2.1 [x] Add optional `AgentDetailComponent`
+      - 5.4.3 [x] Add a resolver for initial list data (mirror `queues.resolver.ts`)
+      - 5.4.4 [x] Create `agents.routes.ts` and wire lazy route in `app.routes.ts`
 
-   - 5.5 [ ] Search, paging & UX
-      - 5.5.1 [ ] Add debounced search input and server-side paging params (copy `queues` pattern)
-      - 5.5.2 [ ] Add pagination controls, loading skeletons, and empty states (reuse `queues` patterns)
-      - 5.5.3 [ ] Disable controls while loading and surface an ARIA live region for loading
+   - 5.5 [ ] Search, paging & UX (copy `queues` pattern)
+      - 5.5.1 [ ] Add search input with debounce and query binding (agents list should send search + paging params to the API)
+      - 5.5.2 [ ] Add pagination controls (server-side page params for agents list)
+        - 5.5.2.1 [ ] Implement page size support (optional)
+      - 5.5.3 [ ] Implement loading indicators, skeleton screens, and empty states for agents list views
 
    - 5.6 [ ] Accessibility, styling & assets
       - 5.6.1 [ ] Add feature-scoped SCSS (import `styles.scss`) for agents feature

@@ -65,7 +65,7 @@ export class AgentEditComponent implements OnInit {
       const result = this.agentService.update(this.id, payload, this.rowVersion as any);
       if (result && typeof (result as any).subscribe === 'function') {
         (result as any).subscribe({
-          next: () => this.router.navigate(['/agent']),
+            next: () => this.router.navigate(['/agents']),
           error: (err: unknown) => {
             if (err instanceof HttpErrorResponse && err.status === 400) {
               const body = (err as HttpErrorResponse).error as ValidationProblemDetails;
@@ -76,7 +76,7 @@ export class AgentEditComponent implements OnInit {
           }
         });
       } else {
-        this.router.navigate(['/agent']);
+          this.router.navigate(['/agents']);
       }
       return;
     }
@@ -85,7 +85,7 @@ export class AgentEditComponent implements OnInit {
     const createResult = this.agentService.create(payload);
     if (createResult && typeof (createResult as any).subscribe === 'function') {
       (createResult as any).subscribe({
-        next: () => this.router.navigate(['/agent']),
+          next: () => this.router.navigate(['/agents']),
         error: (err: unknown) => {
           if (err instanceof HttpErrorResponse && err.status === 400) {
             const body = (err as HttpErrorResponse).error as ValidationProblemDetails;
@@ -96,11 +96,11 @@ export class AgentEditComponent implements OnInit {
         }
       });
     } else {
-      this.router.navigate(['/agent']);
+        this.router.navigate(['/agents']);
     }
   }
 
   cancel() {
-    this.router.navigate(['/agent']);
+      this.router.navigate(['/agents']);
   }
 }

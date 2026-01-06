@@ -7,7 +7,7 @@ export const routes: Routes = [
 		loadChildren: () => import('./queues/queues.routes').then(m => m.queuesRoutes)
 	},
 	{
-		path: 'agent',
+		path: 'agents',
 		loadChildren: () => import('./agent/agent.routes').then(m => m.agentRoutes)
 	},
 	{
