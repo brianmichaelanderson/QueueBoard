@@ -144,7 +144,7 @@ Top-level tasks
       - 5.2.3 [x] Parse API payloads (`totalCount`) and map server `ValidationProblemDetails` to form errors
 
    - 5.3 [ ] Forms, validation & concurrency
-      - 5.3.1 [ ] Implement `AgentEditComponent` using Reactive Forms (mirror `QueueEditComponent`)
+      - 5.3.1 [x] Implement `AgentEditComponent` using Reactive Forms (mirror `QueueEditComponent`)
       - 5.3.2 [ ] Reuse `applyServerValidationErrors` to surface field errors
       - 5.3.3 [ ] Handle 412 precondition-failed flows and show a friendly concurrency message
 
