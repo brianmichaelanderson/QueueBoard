@@ -167,8 +167,8 @@ Top-level tasks
       - 5.6.2 [x] Ensure semantic markup, keyboard focus order, and accessible names (reuse `queues` fixes)
 
    - 5.7 [ ] Docs & dev notes
-      - 5.7.1 [ ] Add README snippet describing `agents` dev workflow and test commands (mirror queues)
-      - 5.7.2 [ ] Add or reference API curl examples in `docs/agents.md` where helpful
+      - 5.7.1 [x] Add README snippet describing `agents` dev workflow and test commands (mirror queues)
+      - 5.7.2 [x] Add or reference API curl examples in `docs/agents.md` where helpful
 
    - 5.8 [ ] Tests & acceptance checks
       - 5.8.1 [ ] Run unit and integration tests; fix failures

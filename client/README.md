@@ -167,6 +167,49 @@ npm run test -- --include "src/app/queues/**" --watch=false
 ```
 
 This snippet intentionally links to existing sections above and to `server/README.md` for backend-specific commands to avoid duplication.
+
+## Agents dev workflow (MVP)
+
+A short checklist and commands to run the Agents feature locally with the backend (mirrors the Queues section).
+
+- Start the backend (Docker recommended):
+
+```bash
+# from repo root
+docker compose up -d --build api
+```
+
+- Reset or seed the dev database (server):
+
+```bash
+./scripts/reset-db.sh
+# or see server/README.md for EF / Docker-based reset instructions
+```
+
+- Start the frontend dev server (with proxy):
+
+```bash
+cd client
+npm install
+npm run start
+```
+
+- If your backend is available on a non-default host/port (e.g. Docker binds the API to `http://localhost:8080`), override the `API_BASE_URL` in tests or the environment. Example TestBed override:
+
+```ts
+TestBed.configureTestingModule({
+  providers: [ { provide: API_BASE_URL, useValue: 'http://localhost:8080' } ]
+});
+```
+
+- Run only the agents-related frontend tests (quick pattern):
+
+```bash
+# Run Karma for agents specs only
+npm run test -- --include "src/app/agent/**" --watch=false
+```
+
+This snippet intentionally mirrors the Queues workflow and links to `server/README.md` for backend-specific commands to avoid duplication.
 ```
 
 Using the token makes it simple to swap API hosts for local dev, CI, or when running the backend in a container.

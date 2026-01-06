@@ -74,6 +74,8 @@ ETag / optimistic concurrency and other API contract conventions are summarized 
 
 For frontend-specific documentation about the `API_BASE_URL` injection token (usage, TestBed override and bootstrap/provider examples), see the frontend README: [client/README.md](client/README.md#api-base-url-token-frontend).
 
+For developer-focused instructions for the Agents feature (local dev, reset/seed, and focused frontend tests), see the Agents dev workflow in the frontend README: [client/README.md](client/README.md#agents-dev-workflow-mvp).
+
 ---
 
 ## Dev build note

@@ -68,6 +68,8 @@ Scripts and helpers
 - `scripts/reset-db.sh` — reset dev DB
 - `scripts/run_http_checks.sh` — quick HTTP checks against running API
 
+For frontend developer guidance related to the Agents feature (dev workflow, focused frontend tests), see the frontend README: [../client/README.md](../client/README.md#agents-dev-workflow-mvp)
+
 Notes
 - EF migrations live inside the API project so `dotnet ef` runs naturally from that folder.
 - The API registers a custom `ProblemDetailsFactory` and global exception middleware; see `docs/error-handling.md` for details and examples.

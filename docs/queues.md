@@ -35,13 +35,14 @@ Content-Type: application/json; charset=utf-8
 }
 ```
 
+
 Get a queue and use the returned `ETag` for updates
 
 ```bash
-# fetch queue and save ETag
+# fetch queue and inspect headers (look for ETag)
 curl -i http://localhost:8080/queues/11111111-1111-1111-1111-111111111111
 
-# use If-Match with the ETag value when updating or deleting
+# Example: use If-Match with the ETag value when updating or deleting
 ETAG='"<base64-token>"'
 curl -i -X PUT -H "Content-Type: application/json" -H "If-Match: $ETAG" \
   -d '{"name":"Support","description":"Updated","isActive":true,"rowVersion":"<base64-token>"}' \
@@ -59,7 +60,7 @@ Expected error responses
 
 - `400 Bad Request` — invalid payload or missing required fields (`application/problem+json` with `errors`).
 - `404 Not Found` — unknown `id`.
-- `409 Conflict` or `412 Precondition Failed` — optimistic concurrency failure when provided `rowVersion`/`If-Match` does not match current state.
+- `412 Precondition Failed` — optimistic concurrency failure when provided `rowVersion`/`If-Match` does not match current state.
 
 Notes
 
