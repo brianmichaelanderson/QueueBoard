@@ -108,8 +108,8 @@ Top-level tasks
 
     - 4.3 [x] Forms, validation & concurrency (drive from tests)
      - 4.3.1 [x] Use Reactive Forms in `QueueEditComponent` with proper initial state
-     - 4.3.2 [x] Map `ValidationProblemDetails` responses to field-level errors
-   - 4.3.3 [x] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
+     - 4.3.2 [x] Map `ValidationProblemDetails` responses to field-level errors.
+     - 4.3.3 [x] Implement `ETag` handling: read ETag on GET, send `If-Match` on update
 
     - 4.4 [x] Components & routing (implement after service + tests)
        - 4.4.1 [x] Add `QueuesListComponent` (standalone) — list view with item links
@@ -145,8 +145,8 @@ Top-level tasks
 
    - 5.3 [ ] Forms, validation & concurrency
       - 5.3.1 [x] Implement `AgentEditComponent` using Reactive Forms (mirror `QueueEditComponent`)
-      - 5.3.2 [ ] Reuse `applyServerValidationErrors` to surface field errors
-      - 5.3.3 [ ] Handle 412 precondition-failed flows and show a friendly concurrency message
+      - 5.3.2 [x] Reuse `applyServerValidationErrors` to surface field errors
+      - 5.3.3 [x] Handle 412 precondition-failed flows and show a friendly concurrency message
 
    - 5.4 [ ] Components & routing (agents feature)
       - 5.4.1 [ ] Add `AgentsListComponent` (standalone) with links to edit/detail

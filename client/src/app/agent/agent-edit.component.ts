@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AgentService } from '../services/agent.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import { applyServerValidationErrors, ValidationProblemDetails } from '../shared/utils/validation-mapper';
 
 @Component({
   standalone: true,
@@ -62,7 +64,17 @@ export class AgentEditComponent implements OnInit {
     if (this.isEdit && this.id) {
       const result = this.agentService.update(this.id, payload, this.rowVersion as any);
       if (result && typeof (result as any).subscribe === 'function') {
-        (result as any).subscribe(() => this.router.navigate(['/agent']));
+        (result as any).subscribe({
+          next: () => this.router.navigate(['/agent']),
+          error: (err: unknown) => {
+            if (err instanceof HttpErrorResponse && err.status === 400) {
+              const body = (err as HttpErrorResponse).error as ValidationProblemDetails;
+              applyServerValidationErrors(this.form, body);
+            } else if (err instanceof HttpErrorResponse && err.status === 412) {
+              alert('This agent has been modified by another user. Please reload and try again.');
+            }
+          }
+        });
       } else {
         this.router.navigate(['/agent']);
       }

@@ -1,9 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { AgentEditComponent } from './agent-edit.component';
 import { AgentService } from '../services/agent.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('AgentEditComponent (5.3.1)', () => {
   let fixture: any;
@@ -42,5 +43,26 @@ describe('AgentEditComponent (5.3.1)', () => {
     component.form.setValue({ name: 'Updated Name' });
     component.save();
     expect(mockAgentService.update).toHaveBeenCalledWith('1', jasmine.objectContaining({ name: 'Updated Name' }), 'r1');
+  });
+
+  it('applies server validation errors to form controls and shows alert on 412', () => {
+    fixture.detectChanges();
+    component.form.patchValue({ name: 'Some name' });
+
+    spyOn(window, 'alert');
+
+    const validationBody = { errors: { name: ['Name required'] } } as any;
+    mockAgentService.update.and.returnValue(throwError(() => new HttpErrorResponse({ status: 400, error: validationBody })));
+
+    component.save();
+    // After error handling, the form control should have server errors
+    const nameErrors = component.form.controls.name.errors as any;
+    expect(nameErrors).toBeTruthy();
+    expect(nameErrors.server).toBe('Name required');
+
+    // Now simulate 412 Precondition Failed
+    mockAgentService.update.and.returnValue(throwError(() => new HttpErrorResponse({ status: 412 })));
+    component.save();
+    expect((window as any).alert).toHaveBeenCalled();
   });
 });
