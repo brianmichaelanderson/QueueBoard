@@ -157,10 +157,10 @@ Top-level tasks
       - 5.4.4 [x] Create `agents.routes.ts` and wire lazy route in `app.routes.ts`
 
    - 5.5 [ ] Search, paging & UX (copy `queues` pattern)
-      - 5.5.1 [ ] Add search input with debounce and query binding (agents list should send search + paging params to the API)
-      - 5.5.2 [ ] Add pagination controls (server-side page params for agents list)
+      - 5.5.1 [x] Add search input with debounce and query binding (agents list should send search + paging params to the API)
+      - 5.5.2 [x] Add pagination controls (server-side page params for agents list)
         - 5.5.2.1 [ ] Implement page size support (optional)
-      - 5.5.3 [ ] Implement loading indicators, skeleton screens, and empty states for agents list views
+      - 5.5.3 [x] Implement loading indicators, skeleton screens, and empty states for agents list views
 
    - 5.6 [ ] Accessibility, styling & assets
       - 5.6.1 [ ] Add feature-scoped SCSS (import `styles.scss`) for agents feature
