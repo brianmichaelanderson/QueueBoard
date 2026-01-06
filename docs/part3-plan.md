@@ -139,17 +139,17 @@ Top-level tasks
       - 5.1.4 [ ] Add `AgentsListComponent` unit tests (search + paging + empty state)
       - 5.1.5 [ ] Add integration test: navigate to `/agents` and exercise search + pagination
 
-   - 5.2 [ ] Services & API integration
+   - 5.2 [x] Services & API integration
       - 5.2.1 [x] Implement `AgentService` methods: `list`, `get`, `create`, `update`, `delete`
       - 5.2.2 [x] Read/write ETag headers (store on GET, send `If-Match` on update/delete)
       - 5.2.3 [x] Parse API payloads (`totalCount`) and map server `ValidationProblemDetails` to form errors
 
-   - 5.3 [ ] Forms, validation & concurrency
+   - 5.3 [x] Forms, validation & concurrency
       - 5.3.1 [x] Implement `AgentEditComponent` using Reactive Forms (mirror `QueueEditComponent`)
       - 5.3.2 [x] Reuse `applyServerValidationErrors` to surface field errors
       - 5.3.3 [x] Handle 412 precondition-failed flows and show a friendly concurrency message
 
-   - 5.4 [ ] Components & routing (agents feature)
+   - 5.4 [x] Components & routing (agents feature)
       - 5.4.1 [x] Add `AgentsListComponent` (standalone) with links to edit/detail
       - 5.4.2 [x] Add `AgentEditComponent` (create/edit) 
         - 5.4.2.1 [x] Add optional `AgentDetailComponent`
@@ -162,8 +162,8 @@ Top-level tasks
         - 5.5.2.1 [ ] Implement page size support (optional)
       - 5.5.3 [x] Implement loading indicators, skeleton screens, and empty states for agents list views
 
-   - 5.6 [ ] Accessibility, styling & assets
-      - 5.6.1 [ ] Add feature-scoped SCSS (import `styles.scss`) for agents feature
+   - 5.6 [ ] Accessibility, styling & assets follow patterns from queues
+      - 5.6.1 [x] Add feature-scoped SCSS (import `styles.scss`) for agents feature
       - 5.6.2 [ ] Ensure semantic markup, keyboard focus order, and accessible names (reuse `queues` fixes)
 
    - 5.7 [ ] Docs & dev notes

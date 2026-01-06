@@ -50,6 +50,7 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
       </main>
     </div>
   `,
+  styleUrls: ['./agent-list.component.scss']
 })
 export class AgentListComponent implements OnDestroy {
   private route = inject(ActivatedRoute);
