@@ -29,9 +29,14 @@ import { ActivatedRoute, Router } from '@angular/router';
             <div>{{ item.isActive ? 'Yes' : 'No' }}</div>
           </div>
           <div style="margin-top:1rem">
-            <p><strong>ID:</strong> {{ id }}</p>
-            <button (click)="edit()">Edit</button>
-            <button (click)="cancel()">Cancel</button>
+            <div>
+              <label><strong>ID:</strong></label>
+              <div>{{ id }}</div>
+            </div>
+            <div style="margin-top:.5rem">
+              <button (click)="edit()">Edit</button>
+              <button (click)="cancel()">Cancel</button>
+            </div>
           </div>
         </section>
 
