@@ -19,13 +19,13 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
         <h1 class="page-title">Agents</h1>
 
         <div class="controls">
-          <input aria-label="Search agents" placeholder="Search agents" (input)="onSearch($event)" [disabled]="loading" />
+          <input aria-label="Search agents" placeholder="Search agents" (input)="onSearch($event)" [disabled]="loading" aria-controls="agent-list" />
           <a class="create-link" [routerLink]="['/agents', 'create']">Create agent</a>
         </div>
 
-        <div aria-live="polite" class="sr-only" *ngIf="loading">Loading agents…</div>
+        <div aria-live="polite" role="status" class="sr-only" *ngIf="loading">Loading agents…</div>
 
-        <ul class="agent-list">
+        <ul id="agent-list" class="agent-list">
           <ng-container *ngIf="loading; else itemsBlock">
             <li *ngFor="let _ of skeletons" class="agent-item skeleton">
               <div class="skeleton-title"></div>
@@ -42,7 +42,7 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
 
         <p *ngIf="!loading && items.length === 0" class="empty">No agents found.</p>
 
-        <div class="pagination" style="margin-top:1rem; display:flex; gap:1rem; align-items:center">
+        <div class="pagination" role="navigation" aria-label="Pagination" style="margin-top:1rem; display:flex; gap:1rem; align-items:center">
           <button class="prev" (click)="prevPage()" [disabled]="loading || page<=1" aria-label="Previous page">Previous</button>
           <button class="next" (click)="nextPage()" [disabled]="loading || (total>0 && page>=totalPages)" aria-label="Next page">Next</button>
         </div>

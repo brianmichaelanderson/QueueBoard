@@ -164,7 +164,7 @@ Top-level tasks
 
    - 5.6 [ ] Accessibility, styling & assets follow patterns from queues
       - 5.6.1 [x] Add feature-scoped SCSS (import `styles.scss`) for agents feature
-      - 5.6.2 [ ] Ensure semantic markup, keyboard focus order, and accessible names (reuse `queues` fixes)
+      - 5.6.2 [x] Ensure semantic markup, keyboard focus order, and accessible names (reuse `queues` fixes)
 
    - 5.7 [ ] Docs & dev notes
       - 5.7.1 [ ] Add README snippet describing `agents` dev workflow and test commands (mirror queues)
