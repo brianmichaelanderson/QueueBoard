@@ -9,7 +9,13 @@ export interface AgentsResolveResult { items: AgentDto[]; total: number; item?: 
 
 export const agentsResolver: ResolveFn<AgentsResolveResult> = async (_route, _state) => {
   const agentService = inject(AgentService);
+  const id = _route.paramMap.get('id');
   try {
+    if (id) {
+      // Resolve a single item for detail routes
+      const item = await firstValueFrom(agentService.getById(id));
+      return { items: [], total: 0, item: item ?? undefined };
+    }
     const res = await firstValueFrom(agentService.list('', 1, 25));
     return { items: res.items ?? [], total: res.total ?? 0 };
   } catch {

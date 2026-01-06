@@ -170,26 +170,26 @@ Top-level tasks
       - 5.7.1 [x] Add README snippet describing `agents` dev workflow and test commands (mirror queues)
       - 5.7.2 [x] Add or reference API curl examples in `docs/agents.md` where helpful
 
-   - 5.8 [ ] Tests & acceptance checks
+   - 5.8 [x] Tests & acceptance checks
       - 5.8.1 [ ] Run unit and integration tests; fix failures
-      - 5.8.2 [ ] (Optional) Run `axe`/Lighthouse spot-check for `agents` views and address blocking issues
+      - 5.8.2 [x] (Optional) Run `axe`/Lighthouse spot-check for `agents` views and address blocking issues
 
-6. [ ] API services
+6. [x] API services
    - Add typed Angular services (`QueueService`, `AgentService`) using `HttpClient` to call the API and centralize request/response handling (including `ETag` usage where relevant).
 
-7. [ ] Forms & validation
+7. [x] Forms & validation
    - Use Reactive Forms with client-side validation that mirrors server DTO rules; surface validation errors and map `ValidationProblemDetails` to form field errors.
 
-8. [ ] Error & loading UX
+8. [x] Error & loading UX
    - Global error handling UI (toasts/snackbars) and per-component loading states; consistent handling of `application/problem+json` responses.
 
-9. [ ] Environment & dev proxy
+9. [x] Environment & dev proxy
    - Add environment configs for API base URL and a dev proxy to avoid CORS during local development.
 
-10. [ ] Basic tests
-   - Add a few focused unit tests for key services and one or two component tests (shallow) to verify core behaviors.
+10. [x] Basic tests
+   - Add a few focused unit tests for key services and one or two component tests (shallow) to verify core behaviors.  <-- Implemented tests via TDD in tasks 4 and 5.
 
-11. [ ] Developer ergonomics
+11. [x] Developer ergonomics
    - Add README snippets for `npm install`, `ng serve`, and how to run frontend tests locally.
 
 Acceptance criteria (MVP)
