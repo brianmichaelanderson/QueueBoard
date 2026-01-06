@@ -13,7 +13,7 @@ describe('AgentEditComponent (5.3.1)', () => {
 
   beforeEach(() => {
     mockAgentService = jasmine.createSpyObj('AgentService', ['getById', 'update']);
-    mockAgentService.getById.and.returnValue(of({ id: '1', name: 'Agent One', rowVersion: 'r1' }));
+    mockAgentService.getById.and.returnValue(of({ id: '1', firstName: 'Agent', lastName: 'One', email: 'a@x.com', isActive: true, rowVersion: 'r1' }));
 
     TestBed.configureTestingModule({
       imports: [AgentEditComponent],
@@ -32,17 +32,19 @@ describe('AgentEditComponent (5.3.1)', () => {
 
   it('should load agent into form when editing', () => {
     fixture.detectChanges();
-    // Expect the component to call AgentService.getById and patch the form with the returned name
+    // Expect the component to call AgentService.getById and patch the form with the returned values
     expect(mockAgentService.getById).toHaveBeenCalledWith('1');
-    const name = component.form.get('name')!.value;
-    expect(name).toBe('Agent One');
+    const first = component.form.get('firstName')!.value;
+    const last = component.form.get('lastName')!.value;
+    expect(first).toBe('Agent');
+    expect(last).toBe('One');
   });
 
   it('should call update on save when editing', () => {
     fixture.detectChanges();
-    component.form.setValue({ name: 'Updated Name' });
+    component.form.setValue({ firstName: 'Updated', lastName: 'Name', email: 'u@example.com', isActive: true });
     component.save();
-    expect(mockAgentService.update).toHaveBeenCalledWith('1', jasmine.objectContaining({ name: 'Updated Name' }), 'r1');
+    expect(mockAgentService.update).toHaveBeenCalledWith('1', jasmine.objectContaining({ firstName: 'Updated', lastName: 'Name' }), 'r1');
   });
 
   it('should call create on save when creating a new agent', () => {
@@ -50,31 +52,31 @@ describe('AgentEditComponent (5.3.1)', () => {
     component.isEdit = false;
     component.id = null;
 
-    component.form.setValue({ name: 'New Agent' });
+    component.form.setValue({ firstName: 'New', lastName: 'Agent', email: 'n@example.com', isActive: true });
 
-    mockAgentService.create = jasmine.createSpy('create').and.returnValue(of({ id: '10', name: 'New Agent' } as any));
+    mockAgentService.create = jasmine.createSpy('create').and.returnValue(of({ id: '10', firstName: 'New', lastName: 'Agent' } as any));
 
     component.save();
 
     expect((mockAgentService.create as jasmine.Spy).calls.any()).toBeTrue();
     const args = (mockAgentService.create as jasmine.Spy).calls.mostRecent().args[0];
-    expect(args).toEqual(jasmine.objectContaining({ name: 'New Agent' }));
+    expect(args).toEqual(jasmine.objectContaining({ firstName: 'New', lastName: 'Agent' }));
   });
 
   it('applies server validation errors to form controls and shows alert on 412', () => {
     fixture.detectChanges();
-    component.form.patchValue({ name: 'Some name' });
+    component.form.patchValue({ firstName: 'Some', lastName: 'Name', email: 's@example.com' });
 
     spyOn(window, 'alert');
 
-    const validationBody = { errors: { name: ['Name required'] } } as any;
+    const validationBody = { errors: { firstName: ['First name required'] } } as any;
     mockAgentService.update.and.returnValue(throwError(() => new HttpErrorResponse({ status: 400, error: validationBody })));
 
     component.save();
     // After error handling, the form control should have server errors
-    const nameErrors = component.form.controls.name.errors as any;
-    expect(nameErrors).toBeTruthy();
-    expect(nameErrors.server).toBe('Name required');
+    const firstErrors = component.form.controls.firstName.errors as any;
+    expect(firstErrors).toBeTruthy();
+    expect(firstErrors.server).toBe('First name required');
 
     // Now simulate 412 Precondition Failed
     mockAgentService.update.and.returnValue(throwError(() => new HttpErrorResponse({ status: 412 })));

@@ -16,8 +16,20 @@ import { applyServerValidationErrors, ValidationProblemDetails } from '../shared
         <h1>{{ isEdit ? 'Edit Agent' : 'Create Agent' }}</h1>
         <form [formGroup]="form" (ngSubmit)="save()">
           <label>
-            Name
-            <input formControlName="name" />
+            First name
+            <input formControlName="firstName" />
+          </label>
+          <label>
+            Last name
+            <input formControlName="lastName" />
+          </label>
+          <label>
+            Email
+            <input formControlName="email" />
+          </label>
+          <label>
+            Active
+            <input type="checkbox" formControlName="isActive" />
           </label>
           <div class="actions">
             <button type="submit" [disabled]="form.invalid">Save</button>
@@ -39,7 +51,12 @@ export class AgentEditComponent implements OnInit {
   private router = inject(Router);
   private agentService = inject(AgentService);
 
-  form = this.fb.group({ name: ['', Validators.required] });
+  form = this.fb.group({
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
+    email: ['', [Validators.required, Validators.email]],
+    isActive: [true]
+  });
   id: string | null = null;
   isEdit = false;
   rowVersion?: string | undefined;
@@ -52,7 +69,12 @@ export class AgentEditComponent implements OnInit {
       // Load the agent from the service and patch the form
       this.agentService.getById(this.id!).subscribe(agent => {
         if (agent) {
-          this.form.patchValue({ name: agent.name });
+          this.form.patchValue({
+            firstName: agent.firstName,
+            lastName: agent.lastName,
+            email: agent.email,
+            isActive: agent.isActive ?? true
+          });
           this.rowVersion = (agent as any).rowVersion ?? undefined;
         }
       });
