@@ -10,13 +10,13 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
    - [ ] 0.5 Commit with a descriptive message and ensure CI runs the focused test suite.
 
 - [ ] 1. Routing & lazy modules
-   - [ ] 1.1 Add app-level routes that lazy-load `AgentModule` at `/agents` and `AdminModule` at `/admin`.
-      - [ ] 1.1.0 Write a failing router spec that asserts the lazy routes exist, then implement the routes to make the test pass.
-        - [ ] 1.1.1 Scaffold `AgentModule` and `AdminModule` folders and route files (`agent.routes.ts`, `admin.routes.ts`).
+   - [x] 1.1 Add app-level routes that lazy-load `AgentModule` at `/agents` and `AdminModule` at `/admin`.
+      - [x] 1.1.0 Write a failing router spec that asserts the lazy routes exist, then implement the routes to make the test pass.
+        - [x] 1.1.1 Scaffold `AgentModule` and `AdminModule` folders and route files (`agent.routes.ts`, `admin.routes.ts`).
         - [x] 1.1.2 Add module barrels (`index.ts`) and export declarations in `client/src/app` routing.
         - [x] 1.1.3 Update root routes (`app.routes.ts`) with lazy imports and a small comment documenting the intent.
-   - [ ] 1.2 Verify `ng build` produces separate lazy chunks for the two modules.
-      - [ ] 1.2.1 Add a quick `ng build --configuration=development` smoke step and check generated chunk names.
+   - [x] 1.2 Verify `ng build` produces separate lazy chunks for the two modules.
+      - [x] 1.2.1 Add a quick `ng build --configuration=development` smoke step and check generated chunk names.
    - [ ] 1.3 Add an optional `PreloadingStrategy` entry (documented but disabled for MVP).
 
 - [ ] 2. Route guards & auth shape (minimal)
