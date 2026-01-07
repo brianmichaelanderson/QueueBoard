@@ -24,31 +24,6 @@ docker compose up -d --build api
 docker compose exec api bash -lc 'cd /src/server/QueueBoard.Api && dotnet test'
 ```
 
-Backend folder structure
-
-```
-server/
-  QueueBoard.Api/
-    Program.cs
-    appsettings.json
-    Controllers/
-      QueuesController.cs
-      AgentsController.cs
-    DTOs/
-      QueueDto.cs
-      AgentDto.cs
-    Entities/
-      Queue.cs
-      Agent.cs
-    QueueBoardDbContext.cs
-    Migrations/
-    Services/
-      QueueService.cs
-    Tests/
-      Integration/
-      Unit/
-```
-
 Running backend tests (recommended inside SDK container)
 
 ```bash

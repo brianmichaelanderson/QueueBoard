@@ -83,7 +83,3 @@ Acceptance criteria (MVP)
 - Navigating to `/admin` loads the admin bundle; admin edit routes are guarded and use the same detail/list components (or thin wrappers) to perform edit flows.
 - Tests assert lazy loading, resolver behavior, guard enforcement, and list→detail navigation.
 
-Next actions (after approval)
-1. Break each checked high-level task into concrete steps and sub-steps.
-2. Implement routing + guard + resolver wiring and run focused tests.
-3. Iteratively address failures and document small deviations.

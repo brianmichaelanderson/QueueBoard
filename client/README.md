@@ -83,13 +83,12 @@ ng e2e
 
 Notes
 - If you prefer `pnpm` or `yarn`, substitute the package manager commands.
-- After scaffolding, consider creating a minimal `src/app/app.routes.ts` and a lazy-loaded feature route for `queues` to match the project's standalone-component conventions.
 
 Routing preloading strategy
 - Routing preloading: `NoPreloading` (default) for the MVP to keep initial bundles small and only load feature code when the user navigates there. 
 
-Zoneless recommendation
-- **Recommendation:** Use a zoneless setup for the Angular 20 frontend and adopt Signals + `OnPush` change detection for components.
+Zoneless implementation
+- Use a zoneless setup for the Angular 20 frontend and adopt Signals + `OnPush` change detection for components.
 - **Why:** Zoneless apps avoid Zone.js implicit change-detection side-effects, are easier to reason about, and pair naturally with Signals (Angular's forward direction) for predictable, high-performance UI updates.
 - **Caveats:** Some third-party libraries expect Zone.js; test any library that patches async APIs. Zoneless requires discipline (use `ChangeDetectionStrategy.OnPush`, Signals or manual `markForCheck()`), but is a small upfront cost for better runtime behavior.
 - **How to enable (high level):** remove or avoid importing `zone.js` in `polyfills.ts`, bootstrap with `bootstrapApplication()` and ensure components use `OnPush` or Signals-based reactivity.
@@ -125,13 +124,15 @@ bootstrapApplication(AppComponent, {
   ]
 });
 
+```
 ## Queues dev workflow (MVP)
 
 A short checklist and commands to run the Queues feature locally with the backend.
 
 - Start the backend (Docker recommended):
 
-```bash
+```
+bash
 # from repo root
 docker compose up -d --build api
 ```
@@ -207,9 +208,6 @@ TestBed.configureTestingModule({
 ```bash
 # Run Karma for agents specs only
 npm run test -- --include "src/app/agent/**" --watch=false
-```
-
-This snippet intentionally mirrors the Queues workflow and links to `server/README.md` for backend-specific commands to avoid duplication.
 ```
 
 Using the token makes it simple to swap API hosts for local dev, CI, or when running the backend in a container.

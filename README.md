@@ -2,6 +2,8 @@
 
 QueueBoard is a small, end-to-end reference application that demonstrates an ASP.NET Core API and an Angular SPA.
 
+Project MVP requirements were derived from [QueueBoard-outline.md](QueueBoard-outline.md).
+
 See the platform-specific README files for detailed setup and run instructions:
 
 - Server (backend): [server/README.md](server/README.md)
@@ -102,77 +104,14 @@ The frontend is built using Angular 20's standalone APIs. NgModules are intentio
 
 Feature areas are structured to preserve clear boundaries and make lazy loading obvious.
 
-### Frontend Folder Structure
-
-```
-client/
-  src/
-    app/
-      app.component.ts
-      app.config.ts
-      app.routes.ts
-
-      admin/
-        admin.routes.ts
-        admin-shell.component.ts
-        queue-list.component.ts
-        queue-edit.component.ts
-
-      agent/
-        agent.routes.ts
-        agent-dashboard.component.ts
-
-      shared/
-        api/
-          queue.service.ts
-          agent.service.ts
-        models/
-          queue.model.ts
-          agent.model.ts
-        guards/
-          auth.guard.ts
-        interceptors/
-          auth.interceptor.ts
-```
-
-### Key Points
+### Key Points Frontend
 
 - Each feature area (`admin`, `agent`) owns its own route configuration
 - Feature areas are lazy-loaded via `loadChildren`
 - Shared services, models, guards, and interceptors live under `shared`
 - No `CoreModule` / `SharedModule` patterns are used
 
----
-
-### Backend Folder Structure
-
-```
-server/
-  QueueBoard.Api/
-    Program.cs
-    appsettings.json
-    Controllers/
-      QueuesController.cs
-      AgentsController.cs
-    DTOs/
-      QueueDto.cs
-      AgentDto.cs
-    Entities/
-      Queue.cs
-      Agent.cs
-    QueueBoardDbContext.cs
-    Migrations/
-    Services/
-      QueueService.cs
-    Tests/
-      Integration/
-        WebAppFactoryTests.cs
-      Unit/
-  docker-compose.yml (repo root)
-    sqlserver/Dockerfile
-```
-
-### Key Points (backend)
+### Key Points Backend
 
 - Single API project (`QueueBoard.Api`) holds controllers, DTOs, DbContext, entities, migrations and small services — keeps the layout minimal while preserving separation-of-concerns.
 - Keep EF Core `Migrations/` inside the API project so `dotnet ef` runs naturally from that folder.
@@ -303,7 +242,8 @@ ng serve
 
 Running `docker compose up --build -d` from the repo root will start both the `db` and `api` services defined in `docker-compose.yml` (the `api` service maps `${API_PORT:-8080}:8080` by default).
 
-- Development note: the `api` service runs the API using `dotnet watch` so source edits on the host are picked up automatically without restarting the container. This is convenient for the non-production exercise in this repo. To run a production-style image instead, build a publish image (multi-stage Dockerfile) and run `docker compose up --build` or run the API locally with `dotnet run`.
+- Development note: the `api` service runs the API using `dotnet run` inside the SDK image by default (see the `command` in `docker-compose.yml`). This runs without hot-reload. To enable automatic reloads during development either run `dotnet watch run` inside the API project locally or update the `api` service `command` in `docker-compose.yml` to use `dotnet watch`.
+  To run a production-style image instead, build a publish image (multi-stage Dockerfile) and run `docker compose up --build` or run the API locally with `dotnet run`.
 
 
 ## Data persistence (Docker)
@@ -434,9 +374,6 @@ var items = await _db.Queues
 ```
 
 Applying `.AsNoTracking()` together with projection (`Select(...)`) gives the best performance for read endpoints because EF does not construct tracked entity instances and the query returns only the fields needed by the DTO.
-
-
-
 
 
 ## Documentation
