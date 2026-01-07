@@ -19,16 +19,18 @@ import { applyServerValidationErrors, ValidationProblemDetails } from '../shared
 
         <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
           <div class="form-row">
-            <label for="name">Name</label>
-            <input id="name" formControlName="name" />
+            <label for="name">Name
+              <input id="name" formControlName="name" />
+            </label>
             <div *ngIf="form.controls.name.touched && form.controls.name.invalid" class="error">
               Name is required
             </div>
           </div>
 
           <div class="form-row">
-            <label for="description">Description</label>
-            <textarea id="description" formControlName="description"></textarea>
+            <label for="description">Description
+              <textarea id="description" formControlName="description"></textarea>
+            </label>
           </div>
 
           <div class="actions">
@@ -43,7 +45,8 @@ import { applyServerValidationErrors, ValidationProblemDetails } from '../shared
     `:host { display:block }`,
     `.form-row { margin-bottom: 0.75rem }`,
     `.error { color: #b91c1c; font-size: 0.9rem }`,
-    `.actions { display:flex; gap:0.5rem; margin-top:1rem }`
+    `.actions { display:flex; gap:0.5rem; margin-top:1rem }`,
+    `input, textarea { display:block; margin-top:0.5rem; padding:0.25rem }`
   ]
 })
 export class QueueEditComponent implements OnInit {
