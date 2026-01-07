@@ -9,17 +9,9 @@ export const agentRoutes: Routes = [
     resolve: { initialData: agentsResolver }
   },
   {
-    path: 'create',
-    loadComponent: () => import('./agent-edit.component').then(m => m.AgentEditComponent),
-    
-  },
-  {
     path: 'view/:id',
     loadComponent: () => import('./agent-detail.component').then(m => m.AgentDetailComponent),
     resolve: { initialData: agentsResolver }
   },
-  {
-    path: 'edit/:id',
-    loadComponent: () => import('./agent-edit.component').then(m => m.AgentEditComponent)
-  }
+  // Note: edit/create flows are provided via AdminModule per routing policy (AgentModule is read-only)
 ];

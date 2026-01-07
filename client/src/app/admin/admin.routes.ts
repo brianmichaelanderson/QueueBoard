@@ -13,16 +13,16 @@ export const adminRoutes: Routes = [
   },
   {
     path: 'create',
-    loadComponent: () => import('./admin-edit.component').then(m => m.AdminEditComponent),
+    loadComponent: () => import('./admin-edit-wrapper.component').then(m => m.AdminEditWrapperComponent),
     canActivate: [adminGuard, authGuard],
-    data: { roles: ['admin'] },
+    data: { roles: ['admin'], showEditButtons: true },
     providers: [AdminService]
   },
   {
     path: ':id',
-    loadComponent: () => import('./admin-detail.component').then(m => m.AdminDetailComponent),
+    loadComponent: () => import('./admin-detail-wrapper.component').then(m => m.AdminDetailWrapperComponent),
     canActivate: [adminGuard, authGuard],
-    data: { roles: ['admin'] },
+    data: { roles: ['admin'], showEditButtons: true },
     providers: [AdminService]
   }
 ];
