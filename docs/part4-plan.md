@@ -20,10 +20,10 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
    - [ ] 1.3 Add an optional `PreloadingStrategy` entry (documented but disabled for MVP).
 
 - [ ] 2. Route guards & auth shape (minimal)
-   - [ ] 2.1 Implement a tiny `AuthService` stub and an `AuthGuard` that can be configured with role checks (`isAdmin` flag).
-      - [ ] 2.1.0 Write a failing unit test for `AuthGuard` behavior (admin vs non-admin), then implement `AuthService`/`AuthGuard` to make it pass.
-        - [ ] 2.1.1 Create `AuthService` stub with `isAdmin()` and `isAuthenticated()` helpers.
-        - [ ] 2.1.2 Implement `AuthGuard` that accepts route-data (e.g., `roles: ['admin']`) and a small failure redirect `/login` or `/`.
+   - [x] 2.1 Implement a tiny `AuthService` stub and an `AuthGuard` that can be configured with role checks (`isAdmin` flag).
+      - [x] 2.1.0 Write a failing unit test for `AuthGuard` behavior (admin vs non-admin), then implement `AuthService`/`AuthGuard` to make it pass.
+        - [x] 2.1.1 Create `AuthService` stub with `isAdmin()` and `isAuthenticated()` helpers.
+        - [x] 2.1.2 Implement `AuthGuard` that accepts route-data (e.g., `roles: ['admin']`) and a small failure redirect `/login` or `/`.
    - [ ] 2.2 Protect `/admin/**` routes with the admin guard. Keep `AgentModule` routes readable without admin privileges.
       - [ ] 2.2.0 Write a failing integration test that asserts `/admin` routes are blocked for non-admin users, then implement guard wiring.
         - [ ] 2.2.1 Add route-data metadata to `/admin` routes and apply the guard.
