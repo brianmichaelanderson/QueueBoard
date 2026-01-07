@@ -8,11 +8,11 @@ export const routes: Routes = [
 	},
 	{
 		path: 'agents',
-		loadChildren: () => import('./agent/agent.routes').then(m => m.agentRoutes)
+		loadChildren: () => import('./agent').then(m => m.agentRoutes)
 	},
 	{
 		path: 'admin',
-		loadChildren: () => import('./admin/admin.routes').then(m => m.adminRoutes)
+		loadChildren: () => import('./admin').then(m => m.adminRoutes)
 	},
 	{
 		path: '**',
