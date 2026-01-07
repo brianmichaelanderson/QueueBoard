@@ -1,6 +1,9 @@
 import { CanActivateFn } from '@angular/router';
+import { inject } from '@angular/core';
+import { AuthService } from '../services/auth.service';
 
-// Simple admin guard stub — replace with real auth checks later
+// Admin guard: allow navigation only for users where `AuthService.isAdmin()` emits true.
 export const adminGuard: CanActivateFn = (_route, _state) => {
-  return true;
+  const auth = inject(AuthService);
+  return auth.isAdmin();
 };

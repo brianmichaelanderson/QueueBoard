@@ -25,7 +25,7 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
         - [x] 2.1.1 Create `AuthService` stub with `isAdmin()` and `isAuthenticated()` helpers.
         - [x] 2.1.2 Implement `AuthGuard` that accepts route-data (e.g., `roles: ['admin']`) and a small failure redirect `/login` or `/`.
    - [ ] 2.2 Protect `/admin/**` routes with the admin guard. Keep `AgentModule` routes readable without admin privileges.
-      - [ ] 2.2.0 Write a failing integration test that asserts `/admin` routes are blocked for non-admin users, then implement guard wiring.
+      - [i] 2.2.0 Write a failing integration test that asserts `/admin` routes are blocked for non-admin users, then implement guard wiring.
         - [ ] 2.2.1 Add route-data metadata to `/admin` routes and apply the guard.
         - [ ] 2.2.2 Hide admin nav links using `AuthService` (update header/nav component markup).
 
