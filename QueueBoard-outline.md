@@ -43,6 +43,8 @@ Build "QueueBoard": a simple ACD-like app with CRUD and search.
 - Global exception middleware + consistent problem details
 - API conventions: status codes, idempotency, pagination shape
 
+- See the detailed plan: [docs/part1-plan.md](docs/part1-plan.md).
+
 ### Checkpoint
 - `GET /health`
 - `GET /queues?search=...&page=1&pageSize=25`
@@ -87,6 +89,8 @@ Build "QueueBoard": a simple ACD-like app with CRUD and search.
 - Environment config + API base URL
 - Dev proxy config to avoid CORS during local dev
 
+- See the detailed plan: [docs/part3-plan.md](docs/part3-plan.md).
+
 ### Checkpoint
 - `QueuesListComponent` with search + paging
 - `QueueEditComponent` as a reactive form for create/update
@@ -105,6 +109,8 @@ Build "QueueBoard": a simple ACD-like app with CRUD and search.
 - Route guards (a simple auth guard is fine)
 - Route resolvers or a "fetch-on-enter" pattern
 - Optional: `PreloadingStrategy` (e.g., preload `AgentModule` but not `AdminModule`)
+
+- See the detailed plan: [docs/part4-plan.md](docs/part4-plan.md).
 
 ### Checkpoint
 - `ng build` produces separate lazy chunks
