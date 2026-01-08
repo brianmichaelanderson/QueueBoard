@@ -39,15 +39,15 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
        - [x] `5.4.3` Add a resolver for initial list data (agents feature mirrors queues resolver).
     - Rationale: feature-level `ResolveFn`s exist (e.g. `agents.resolver.ts`, `queues.resolver.ts`) and are wired into the lazy routes with `resolve: { initialData: ... }`. They return `{ items, total }` for list routes and `{ item }` for detail routes and are exercised by existing integration/component tests. The planned shared resolver base is a refactor and not required for MVP.
 
- - [ ] 4. Admin vs Agent routing policy (MVP decision)
+ - [x] 4. Admin vs Agent routing policy (MVP decision)
     - [x] 4.1 `AgentModule` provides read-only pages for both Agents and Queues (list + detail only). No edit/create actions exposed in this module.
-         - [x] 4.1.0 Write a failing test that asserts `AgentModule` routes do not expose edit/create routes, then implement route configs to satisfy it.
-        - [x] 4.1.1 If reusing shared components: update `agent.routes.ts`/`queues.routes.ts` comments to reflect read-only policy.
-   - [ ] 4.2 `AdminModule` provides the edit/create flows using thin `admin-*` wrapper components that render the existing admin components in `src/app/admin` and set `route.data = { showEditButtons: true }`.
-      - [x] 4.2.0 Write a failing test that admin routes render edit flows and are guarded; implement admin routing to make it pass.
-        - [x] 4.2.1 Use existing admin components in `src/app/admin` (e.g., `admin-agent-list`, `admin-agent-detail`, `admin-agent-edit`) and create thin wrapper components that render these shared components and set route-data.
-        - [x] 4.2.2 Ensure edit/create routes are defined under `AdminModule` only and protected with `AuthGuard`.
-        - [ ] 4.2.3 Add inline docs in `admin.routes.ts` showing the route-data example and the wrapper pattern.
+       - [x] 4.1.0 Write a failing test that asserts `AgentModule` routes do not expose edit/create routes, then implement route configs to satisfy it.
+      - [x] 4.1.1 If reusing shared components: update `agent.routes.ts`/`queues.routes.ts` comments to reflect read-only policy.
+   - [x] 4.2 `AdminModule` provides the edit/create flows using thin `admin-*` wrapper components that render the existing admin components in `src/app/admin` and set `route.data = { showEditButtons: true }`.
+    - [x] 4.2.0 Write a failing test that admin routes render edit flows and are guarded; implement admin routing to make it pass.
+      - [x] 4.2.1 Use existing admin components in `src/app/admin` (e.g., `admin-agent-list`, `admin-agent-detail`, `admin-agent-edit`) and create thin wrapper components that render these shared components and set route-data.
+      - [x] 4.2.2 Ensure edit/create routes are defined under `AdminModule` only and protected with `AuthGuard`.
+      - [x] 4.2.3 Add inline docs in `admin.routes.ts` showing the route-data example and the wrapper pattern.
 
 - [ ] 5. Navigation and UX parity
    - [ ] 5.1 Ensure list items in both lists navigate to the `view/:id` detail routes.

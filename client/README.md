@@ -88,12 +88,14 @@ Routing preloading strategy
 - Routing preloading: `NoPreloading` (default) for the MVP to keep initial bundles small and only load feature code when the user navigates there. 
 
 Admin wrapper pattern
-- Admin edit/create flows are provided via thin wrapper components under `src/app/admin`.
-  - Rationale: wrappers reuse shared admin components (e.g. `AdminEditComponent`, `AdminDetailComponent`) to avoid duplication while allowing admin-specific
-    route metadata (for example, `data.showEditButtons = true`) and providers to be applied at the route level. This keeps `AgentModule` read-only while
-    `AdminModule` exposes guarded edit/create flows.
-  - Files: `src/app/admin/admin.routes.ts`, `src/app/admin/admin-edit-wrapper.component.ts`, `src/app/admin/admin-detail-wrapper.component.ts`.
-  - Pattern: prefer using `route.data` toggles (e.g. `showEditButtons`) so shared components can conditionally enable edit UI when rendered under admin routes.
+- Admin edit/create flows are implemented via thin wrapper components under `src/app/admin` that reuse shared feature components (agents/queues).
+  - Rationale: wrappers avoid duplicating templates while allowing admin-only route metadata and providers to be applied at the route level. This keeps
+    `AgentModule` read-only while `AdminModule` exposes guarded edit/create flows.
+  - Files (examples): `src/app/admin/admin.routes.ts`, `src/app/admin/admin-agent-list.component.ts`, `src/app/admin/admin-agent-detail.component.ts`, `src/app/admin/admin-agent-edit.component.ts`.
+  - Route-data conventions used:
+    - `roles: ['admin']` — indicates the route requires the admin role (checked by guards).
+    - `showEditButtons: true` — hint for shared components to reveal admin-only edit/create UI when rendered under admin routes.
+  - Tests: see `src/app/admin/admin.routes.blocking.integration.spec.ts` and `src/app/admin/admin.routes.editing.integration.spec.ts` for guard and routing coverage. Add wrapper rendering tests when you introduce admin-specific UI.
 
 Zoneless implementation
 - Use a zoneless setup for the Angular 20 frontend and adopt Signals + `OnPush` change detection for components.
