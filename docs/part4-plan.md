@@ -51,7 +51,7 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
 
 - [ ] 5. Navigation and UX parity
    - [ ] 5.1 Ensure list items in both lists navigate to the `view/:id` detail routes.
-      - [ ] 5.1.0 Write a failing component test that clicks a list item and expects navigation to `view/:id`, then implement routerLink/click behavior.
+      - [i] 5.1.0 Write a failing component test that clicks a list item and expects navigation to `view/:id`, then implement routerLink/click behavior.
         - [ ] 5.1.1 Confirm `routerLink` points to `view/:id` and optionally make the whole row clickable if desired.
    - [ ] 5.2 Ensure edit/create routes are reachable only via admin routes (guarded) and that cancel/save behavior routes back to the correct view (detail or list) per MVP policy.
       - [ ] 5.2.0 Write a failing test that asserts save/cancel navigation semantics (create→list, edit→detail), then implement navigation logic.
