@@ -6,21 +6,21 @@ import { AdminService } from '../services/admin.service';
 export const adminRoutes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./admin-list.component').then(m => m.AdminListComponent),
+    loadComponent: () => import('./admin-agent-list.component').then(m => m.AdminAgentListComponent),
     canActivate: [adminGuard, authGuard],
     data: { roles: ['admin'] },
     providers: [AdminService]
   },
   {
     path: 'create',
-    loadComponent: () => import('./admin-edit-wrapper.component').then(m => m.AdminEditWrapperComponent),
+    loadComponent: () => import('./admin-agent-edit.component').then(m => m.AdminAgentEditComponent),
     canActivate: [adminGuard, authGuard],
     data: { roles: ['admin'], showEditButtons: true },
     providers: [AdminService]
   },
   {
     path: ':id',
-    loadComponent: () => import('./admin-detail-wrapper.component').then(m => m.AdminDetailWrapperComponent),
+    loadComponent: () => import('./admin-agent-detail.component').then(m => m.AdminAgentDetailComponent),
     canActivate: [adminGuard, authGuard],
     data: { roles: ['admin'], showEditButtons: true },
     providers: [AdminService]

@@ -87,6 +87,14 @@ Notes
 Routing preloading strategy
 - Routing preloading: `NoPreloading` (default) for the MVP to keep initial bundles small and only load feature code when the user navigates there. 
 
+Admin wrapper pattern
+- Admin edit/create flows are provided via thin wrapper components under `src/app/admin`.
+  - Rationale: wrappers reuse shared admin components (e.g. `AdminEditComponent`, `AdminDetailComponent`) to avoid duplication while allowing admin-specific
+    route metadata (for example, `data.showEditButtons = true`) and providers to be applied at the route level. This keeps `AgentModule` read-only while
+    `AdminModule` exposes guarded edit/create flows.
+  - Files: `src/app/admin/admin.routes.ts`, `src/app/admin/admin-edit-wrapper.component.ts`, `src/app/admin/admin-detail-wrapper.component.ts`.
+  - Pattern: prefer using `route.data` toggles (e.g. `showEditButtons`) so shared components can conditionally enable edit UI when rendered under admin routes.
+
 Zoneless implementation
 - Use a zoneless setup for the Angular 20 frontend and adopt Signals + `OnPush` change detection for components.
 - **Why:** Zoneless apps avoid Zone.js implicit change-detection side-effects, are easier to reason about, and pair naturally with Signals (Angular's forward direction) for predictable, high-performance UI updates.
