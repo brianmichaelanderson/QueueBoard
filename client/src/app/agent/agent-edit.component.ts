@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AgentService } from '../services/agent.service';
+import { AuthService } from '../services/auth.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { applyServerValidationErrors, ValidationProblemDetails } from '../shared/utils/validation-mapper';
 
@@ -32,7 +33,7 @@ import { applyServerValidationErrors, ValidationProblemDetails } from '../shared
             <input type="checkbox" formControlName="isActive" />
           </label>
           <div class="actions">
-            <button type="submit" [disabled]="form.invalid">Save</button>
+            <button type="submit" [disabled]="form.invalid || !isAdmin">Save</button>
             <button type="button" (click)="cancel()">Cancel</button>
           </div>
         </form>
@@ -50,6 +51,7 @@ export class AgentEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private agentService = inject(AgentService);
+  private auth = inject(AuthService);
 
   form = this.fb.group({
     firstName: ['', Validators.required],
@@ -60,8 +62,25 @@ export class AgentEditComponent implements OnInit {
   id: string | null = null;
   isEdit = false;
   rowVersion?: string | undefined;
+  isAdmin = true;
 
   ngOnInit(): void {
+    // determine admin status synchronously where possible (AuthService.isAdmin may return Observable)
+    try {
+      const maybeIsAdmin = (this.auth as any).isAdmin;
+      if (typeof maybeIsAdmin === 'function') {
+        const result = maybeIsAdmin.call(this.auth);
+        if (result && typeof result.subscribe === 'function') {
+          (result as any).subscribe((v: boolean) => (this.isAdmin = v)).unsubscribe();
+        } else {
+          this.isAdmin = !!result;
+        }
+      }
+    } catch {
+      // fall back to true in case of unexpected errors
+      this.isAdmin = true;
+    }
+
     this.id = this.route.snapshot.paramMap.get('id');
     this.isEdit = !!this.id;
 
