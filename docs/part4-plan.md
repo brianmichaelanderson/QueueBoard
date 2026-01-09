@@ -74,7 +74,7 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
       - [x] 6.1.2 `/admin` routes are protected by the guard,
       - [x] 6.1.3 detail resolvers provide `initialData.item` for `view/:id` routes,
       - [?] 6.1.4 list items route to `view/:id`. **(skipped/pending per 5.1.0 & 5.2.0)**
-      - [ ] 6.1.5 Add test harness utilities (test router config helper, `AuthService` mock, resolver mock) to `client/src/test-helpers/`.
+      - [x] 6.1.5 Add test harness utilities (test router config helper, `AuthService` mock, resolver mock) to `client/src/test-helpers/`.
    - [x] 6.2 Run the focused component/spec test suites (queues + agents) and fix any failing expectations caused by routing/data changes.
       - [ ] 6.2.1 Add one smoke integration test that loads the router and asserts lazy route config exists (run in CI as a smoke check).
 

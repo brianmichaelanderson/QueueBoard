@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import createRouterTestModule from '../../test-helpers/router-test-helpers';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { of } from 'rxjs';
@@ -16,19 +16,22 @@ describe('Queues integration', () => {
   let router: Router;
 
   beforeEach(async () => {
+    const cfg = createRouterTestModule([
+      {
+        path: 'queues',
+        component: QueuesListComponent,
+        data: { initialData: { items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto] } }
+      }
+    ], { useFakeNgZone: true });
+
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes([
-          {
-            path: 'queues',
-            component: QueuesListComponent,
-            data: { initialData: { items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto] } }
-          }
-        ]),
+        ...(cfg.imports || []),
         QueuesListComponent,
         TestHostComponent
       ],
       providers: [
+        ...(cfg.providers || []),
         provideZonelessChangeDetection(),
         // provide a lightweight QueueService stub so the standalone component can inject it
         {

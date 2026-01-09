@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { RouterTestingModule } from '@angular/router/testing';
+import createRouterTestModule from '../../test-helpers/router-test-helpers';
 import { routes } from '../app.routes';
 import { AuthService } from '../services/auth.service';
 import { NgZone } from '@angular/core';
@@ -23,11 +23,12 @@ describe('Admin routes (integration - edit flows & guard)', () => {
   }
 
   it('blocks /admin/create for non-admin users', async () => {
+    const cfg = createRouterTestModule(routes, { useFakeNgZone: true });
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes(routes)],
+      imports: cfg.imports,
       providers: [
-        { provide: AuthService, useValue: { isAdmin: () => of(false), isAuthenticated: () => of(true) } },
-        { provide: NgZone, useValue: makeFakeZone() }
+        ...(cfg.providers || []),
+        { provide: AuthService, useValue: { isAdmin: () => of(false), isAuthenticated: () => of(true) } }
       ]
     });
 
@@ -41,11 +42,12 @@ describe('Admin routes (integration - edit flows & guard)', () => {
   });
 
   it('allows /admin/create for admin users', async () => {
+    const cfg = createRouterTestModule(routes, { useFakeNgZone: true });
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes(routes)],
+      imports: cfg.imports,
       providers: [
-        { provide: AuthService, useValue: { isAdmin: () => of(true), isAuthenticated: () => of(true) } },
-        { provide: NgZone, useValue: makeFakeZone() }
+        ...(cfg.providers || []),
+        { provide: AuthService, useValue: { isAdmin: () => of(true), isAuthenticated: () => of(true) } }
       ]
     });
 

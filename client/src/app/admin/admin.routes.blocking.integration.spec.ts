@@ -7,27 +7,18 @@ import { AuthService } from '../services/auth.service';
 import { NgZone } from '@angular/core';
 import { Subject } from 'rxjs';
 import { of } from 'rxjs';
+import createRouterTestModule from '../../test-helpers/router-test-helpers';
 
 describe('Admin routes (integration - blocking)', () => {
   beforeEach(() => {
-    const fakeZone = {
-      run: (fn: any) => fn(),
-      runOutsideAngular: (fn: any) => fn(),
-      runTask: (fn: any) => fn(),
-      // Angular subscribes to these zone event observables; provide Subjects
-      onUnstable: new Subject<void>(),
-      onMicrotaskEmpty: new Subject<void>(),
-      onStable: new Subject<void>(),
-      isStable: true,
-      hasPendingMicrotasks: false,
-    } as unknown as NgZone;
+    const cfg = createRouterTestModule(routes, { useFakeNgZone: true });
 
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes(routes)],
+      imports: cfg.imports,
       providers: [
+        ...(cfg.providers || []),
         // non-admin AuthService stub — navigation to /admin should be blocked by guard
-        { provide: AuthService, useValue: { isAdmin: () => of(false), isAuthenticated: () => of(true) } },
-        { provide: NgZone, useValue: fakeZone }
+        { provide: AuthService, useValue: { isAdmin: () => of(false), isAuthenticated: () => of(true) } }
       ]
     });
   });

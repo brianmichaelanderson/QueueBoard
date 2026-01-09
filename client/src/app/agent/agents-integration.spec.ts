@@ -1,7 +1,7 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
+import createRouterTestModule from '../../test-helpers/router-test-helpers';
 import { Router } from '@angular/router';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { of } from 'rxjs';
@@ -16,19 +16,22 @@ describe('Agents integration', () => {
   let router: Router;
 
   beforeEach(async () => {
+    const cfg = createRouterTestModule([
+      {
+        path: 'agents',
+        component: AgentListComponent,
+        data: { initialData: { items: [{ id: '1', firstName: 'Agent', lastName: 'One', email: 'a@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto] } }
+      }
+    ], { useFakeNgZone: true });
+
     await TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes([
-          {
-            path: 'agents',
-            component: AgentListComponent,
-            data: { initialData: { items: [{ id: '1', firstName: 'Agent', lastName: 'One', email: 'a@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto] } }
-          }
-        ]),
+        ...(cfg.imports || []),
         AgentListComponent,
         TestHostComponent
       ],
       providers: [
+        ...(cfg.providers || []),
         provideZonelessChangeDetection(),
         // provide a lightweight AgentService stub so the standalone component can inject it
         {
