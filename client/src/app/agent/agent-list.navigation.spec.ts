@@ -28,6 +28,12 @@ describe('AgentListComponent navigation', () => {
     });
   });
 
+  // Skipped: this navigation spec is fragile in the current zoneless
+  // test environment (NgZone/Zone.js interactions). It was converted
+  // to a lightweight unit assertion but still triggers Angular's
+  // NgZone requirements when the component is instantiated. Keep
+  // skipped for now; re-enable after deciding to run tests with
+  // Zone.js or adopt a different test harness.
   xit('builds a routerLink to view/:id for the first item', () => {
     const fixture = TestBed.createComponent(AgentListComponent as any);
     fixture.detectChanges();
