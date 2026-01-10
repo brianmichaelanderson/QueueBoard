@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   standalone: true,
@@ -19,10 +20,24 @@ import { RouterModule } from '@angular/router';
       
       <section>
         <h2>Admins</h2>
-        <p><a routerLink="/admin">View Agents (admin — edit enabled)</a></p>
-        <p><a routerLink="/admin/queues">View Queues (admin — edit enabled)</a></p>
+        <p><a href="/admin" (click)="enterAdmin($event, '/admin')">View Agents (admin — edit enabled)</a></p>
+        <p><a href="/admin/queues" (click)="enterAdmin($event, '/admin/queues')">View Queues (admin — edit enabled)</a></p>
       </section>
     </main>
   `
 })
-export class LandingComponent {}
+export class LandingComponent {
+  private router = inject(Router);
+  private auth = inject(AuthService);
+
+  enterAdmin(event: Event, path: string) {
+    event.preventDefault();
+    // mark current session as admin for admin flows
+    try {
+      this.auth.becomeAdmin();
+    } catch {
+      // noop — tests may stub AuthService
+    }
+    this.router.navigate([path]);
+  }
+}

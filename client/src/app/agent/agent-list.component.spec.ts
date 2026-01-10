@@ -26,7 +26,7 @@ describe('AgentListComponent (5.4.1 + 5.5.1-3 tests)', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              data: { initialData: { items: [{ id: '1', firstName: 'Agent', lastName: 'One', email: 'a@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto] } }
+              data: { initialData: { items: [{ id: '1', firstName: 'Agent', lastName: 'One', email: 'a@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto] }, showEditButtons: true }
             }
           }
         }
@@ -89,5 +89,15 @@ describe('AgentListComponent (5.4.1 + 5.5.1-3 tests)', () => {
     expect(agentSvc.list).toHaveBeenCalled();
     const args = agentSvc.list.calls.mostRecent().args;
     expect(args[1]).toBe(2);
+  });
+
+  it('honors admin context and sets baseRoute to /admin when showEditButtons is true', () => {
+    expect((component as any).baseRoute).toBe('/admin');
+
+    const el = fixture.nativeElement as HTMLElement;
+    const createLink = el.querySelector('.create-link') as HTMLAnchorElement | null;
+    expect(createLink).toBeTruthy();
+    // href may be rendered as absolute path; assert it contains the admin create path
+    expect(createLink!.getAttribute('href') || '').toContain('/admin');
   });
 });

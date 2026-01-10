@@ -21,7 +21,7 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
         <div class="controls">
           <input aria-label="Search agents" placeholder="Search agents" (input)="onSearch($event)" [disabled]="loading" aria-controls="agent-list" />
           <a class="home-link" [routerLink]="['/']">Home</a>
-          <a class="create-link" [routerLink]="['/agents', 'create']">Create agent</a>
+          <a class="create-link" [routerLink]="[baseRoute, 'create']">Create agent</a>
         </div>
 
         <div aria-live="polite" role="status" class="sr-only" *ngIf="loading">Loading agents…</div>
@@ -35,7 +35,7 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
           </ng-container>
           <ng-template #itemsBlock>
             <li *ngFor="let a of items" class="agent-item">
-              <a [routerLink]="['/agents','view', a.id]">{{ a.firstName }} {{ a.lastName }}</a>
+              <a [routerLink]="baseRoute === '/admin' ? ['/admin', a.id] : ['/agents','view', a.id]">{{ a.firstName }} {{ a.lastName }}</a>
               <p class="muted">{{ a.email }}</p>
             </li>
           </ng-template>
@@ -61,6 +61,7 @@ export class AgentListComponent implements OnDestroy {
   private sub?: Subscription;
 
   items: AgentDto[] = [];
+  baseRoute = '/agents';
   page = 1;
   pageSize = 25;
   total = 0;
@@ -75,6 +76,8 @@ export class AgentListComponent implements OnDestroy {
       this.items = data.initialData.items;
       this.total = (data as any).initialData.total ?? this.total;
       this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
+      // If route-data indicates admin context, use admin base route for links
+      this.baseRoute = !!((data as any).showEditButtons) ? '/admin' : '/agents';
     } else {
       this.items = [
         { id: '1', firstName: 'Agent', lastName: 'A', email: 'a@x.com', isActive: true, createdAt: new Date().toISOString() },

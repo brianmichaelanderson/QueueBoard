@@ -25,7 +25,7 @@ export const adminRoutes: Routes = [
     loadComponent: () => import('./admin-agent-list.component').then(m => m.AdminAgentListComponent),
     canActivate: [adminGuard, authGuard],
     // admin list is guarded; wrapper reuses AgentListComponent
-    data: { roles: ['admin'] },
+    data: { roles: ['admin'], showEditButtons: true },
     resolve: { initialData: agentsResolver },
     providers: [AdminService]
   },

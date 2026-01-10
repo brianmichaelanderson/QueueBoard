@@ -18,9 +18,9 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
       - [x] 1.1.4 Add root `LandingComponent` and route: `'' -> LandingComponent` with links to `/agents` and `/queues` (non-admin read-only entry points);
          - [x] 1.1.4.1 Add a small shallow spec verifying `routerLink` targets (route-level spec to avoid NgZone fragility).
          - [x] 1.1.4.2 Update `LandingComponent` registration and route to be the canonical app entry for non-admin flows.
-         - [x] 1.1.4.3 Add `Home` links to `AgentListComponent` and `QueuesListComponent` controls that route to `/` (Landing). Add shallow specs asserting the `Home` link exists and its `routerLink` target. (done for Agents; Queues task listed below)
-         - [x] 1.1.4.4 Apply the same Landing/Home/disabled-edit changes to Queues components: add `Home` link to `QueuesListComponent`, adjust `LandingComponent` links if needed, and add matching shallow route-level specs. (pending — no code changes yet)
-         - [ ] 1.1.4.5 
+         - [x] 1.1.4.3 Add `Home` links to `AgentListComponent` and `QueuesListComponent` controls that route to `/` (Landing). Add shallow specs asserting the `Home` link exists and its `routerLink` target. (Agents: done; Queues: pending)
+         - [x] 1.1.4.4 Add admin entry links on `LandingComponent` that mark the session as admin before navigating to admin routes (calls `AuthService.becomeAdmin()` then navigates). (Agents: done; Queues: pending)
+         - [ ] 1.1.4.5 Apply the same Landing/Home/disabled-edit changes to Queues components: add `Home` link to `QueuesListComponent`, adjust `LandingComponent` links if needed, and add matching shallow route-level specs. (pending — no code changes yet)
    - [x] 1.2 Verify `ng build` produces separate lazy chunks for the two modules.
       - [x] 1.2.1 Add a quick `ng build --configuration=development` smoke step and check generated chunk names.
    - [ ] 1.3 Add an optional `PreloadingStrategy` entry (documented but disabled for MVP).
@@ -49,6 +49,10 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
    - [x] 4.2 `AdminModule` provides the edit/create flows using thin `admin-*` wrapper components that render the existing admin components in `src/app/admin` and set `route.data = { showEditButtons: true }`.
     - [x] 4.2.0 Write a failing test that admin routes render edit flows and are guarded; implement admin routing to make it pass.
       - [x] 4.2.1 Use existing admin components in `src/app/admin` (e.g., `admin-agent-list`, `admin-agent-detail`, `admin-agent-edit`) and create thin wrapper components that render these shared components and set route-data.
+         - [x] 4.2.1.4 Attach `agentsResolver` to admin list and detail wrapper routes so shared components receive `initialData` when rendered via admin wrappers. (done)
+         - [x] 4.2.1.5 Set `data.showEditButtons = true` on admin list and admin detail wrapper routes so shared components render admin UI when used under admin routes. (done)
+         - [x] 4.2.1.6 Update `AgentListComponent` to honor `route.snapshot.data.showEditButtons` and render links that route into the admin wrapper (`/admin/:id`) when appropriate. (done)
+         - [x] 4.2.1.7 Add `AuthService.becomeAdmin()` and update `LandingComponent.enterAdmin()` to mark the current session as admin before navigating to admin flows. (done)
       - [x] 4.2.2 Ensure edit/create routes are defined under `AdminModule` only and protected with `AuthGuard`.
       - [x] 4.2.3 Add inline docs in `admin.routes.ts` showing the route-data example and the wrapper pattern.
 
@@ -78,6 +82,7 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
       - [x] 6.1.3 detail resolvers provide `initialData.item` for `view/:id` routes,
       - [?] 6.1.4 list items route to `view/:id`. **(skipped/pending per 5.1.0 & 5.2.0)**
       - [x] 6.1.5 Add test harness utilities (test router config helper, `AuthService` mock, resolver mock) to `client/src/test-helpers/`.
+      - [x] 6.1.6 Add a unit test asserting admin wrapper routes attach `agentsResolver` as `resolve.initialData` (admin routes config spec). (done)
    - [x] 6.2 Run the focused component/spec test suites (queues + agents) and fix any failing expectations caused by routing/data changes.
       - [x] 6.2.1 Add one smoke integration test that loads the router and asserts lazy route config exists (run in CI as a smoke check).
 
