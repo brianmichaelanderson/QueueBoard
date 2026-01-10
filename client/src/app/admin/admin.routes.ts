@@ -37,6 +37,13 @@ export const adminRoutes: Routes = [
     providers: [AdminService]
   },
   {
+    path: 'edit/:id',
+    loadComponent: () => import('./admin-agent-edit.component').then(m => m.AdminAgentEditComponent),
+    canActivate: [adminGuard, authGuard],
+    data: { roles: ['admin'], showEditButtons: true },
+    providers: [AdminService]
+  },
+  {
     path: ':id',
     loadComponent: () => import('./admin-agent-detail.component').then(m => m.AdminAgentDetailComponent),
     canActivate: [adminGuard, authGuard],

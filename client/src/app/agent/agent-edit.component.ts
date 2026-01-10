@@ -101,12 +101,19 @@ export class AgentEditComponent implements OnInit {
   }
 
   save() {
+    const isAdminRoute = !!((this.route.snapshot.data as any)?.showEditButtons);
     const payload = { ...this.form.value };
     if (this.isEdit && this.id) {
       const result = this.agentService.update(this.id, payload, this.rowVersion as any);
       if (result && typeof (result as any).subscribe === 'function') {
         (result as any).subscribe({
-          next: () => this.router.navigate(['/agents', 'view', this.id]),
+          next: () => {
+            if (isAdminRoute) {
+              this.router.navigate(['/admin', this.id]);
+            } else {
+              this.router.navigate(['/agents', 'view', this.id]);
+            }
+          },
           error: (err: unknown) => {
             if (err instanceof HttpErrorResponse && err.status === 400) {
               const body = (err as HttpErrorResponse).error as ValidationProblemDetails;
@@ -117,7 +124,11 @@ export class AgentEditComponent implements OnInit {
           }
         });
       } else {
-          this.router.navigate(['/agents']);
+          if (isAdminRoute) {
+            this.router.navigate(['/admin']);
+          } else {
+            this.router.navigate(['/agents']);
+          }
       }
       return;
     }
@@ -126,7 +137,14 @@ export class AgentEditComponent implements OnInit {
     const createResult = this.agentService.create(payload);
     if (createResult && typeof (createResult as any).subscribe === 'function') {
       (createResult as any).subscribe({
-          next: (_created: any) => this.router.navigate(['/agents']),
+          next: (_created: any) => {
+            const isAdminRoute = !!((this.route.snapshot.data as any)?.showEditButtons);
+            if (isAdminRoute) {
+              this.router.navigate(['/admin']);
+            } else {
+              this.router.navigate(['/agents']);
+            }
+          },
         error: (err: unknown) => {
           if (err instanceof HttpErrorResponse && err.status === 400) {
             const body = (err as HttpErrorResponse).error as ValidationProblemDetails;
@@ -137,15 +155,29 @@ export class AgentEditComponent implements OnInit {
         }
       });
     } else {
-        this.router.navigate(['/agents']);
+        const isAdminRoute = !!((this.route.snapshot.data as any)?.showEditButtons);
+        if (isAdminRoute) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/agents']);
+        }
     }
   }
 
   cancel() {
+      const isAdminRoute = !!((this.route.snapshot.data as any)?.showEditButtons);
       if (this.isEdit && this.id) {
-        this.router.navigate(['/agents', 'view', this.id]);
+        if (isAdminRoute) {
+          this.router.navigate(['/admin', this.id]);
+        } else {
+          this.router.navigate(['/agents', 'view', this.id]);
+        }
       } else {
-        this.router.navigate(['/agents']);
+        if (isAdminRoute) {
+          this.router.navigate(['/admin']);
+        } else {
+          this.router.navigate(['/agents']);
+        }
       }
   }
 }

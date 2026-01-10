@@ -57,11 +57,11 @@ describe('AgentDetailComponent (failing spec)', () => {
     expect(editBtn).toBeTruthy();
     expect(cancelBtn).toBeTruthy();
 
-    // Simulate clicks and expect navigation calls
+    // Simulate clicks and expect navigation calls (admin context -> admin routes)
     editBtn!.click();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/agents', 'edit', '7']);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin', 'edit', '7']);
 
     cancelBtn!.click();
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/agents']);
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin']);
   });
 });

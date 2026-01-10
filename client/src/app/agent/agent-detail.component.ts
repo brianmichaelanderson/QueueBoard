@@ -65,11 +65,19 @@ export class AgentDetailComponent {
 
   edit() {
     if (this.id) {
-      this.router.navigate(['/agents', 'edit', this.id]);
+      if (this.showEditButtons) {
+        this.router.navigate(['/admin', 'edit', this.id]);
+      } else {
+        this.router.navigate(['/agents', 'edit', this.id]);
+      }
     }
   }
 
   cancel() {
-    this.router.navigate(['/agents']);
+    if (this.showEditButtons) {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/agents']);
+    }
   }
 }
