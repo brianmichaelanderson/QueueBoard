@@ -100,4 +100,33 @@ describe('AgentListComponent (5.4.1 + 5.5.1-3 tests)', () => {
     // href may be rendered as absolute path; assert it contains the admin create path
     expect(createLink!.getAttribute('href') || '').toContain('/admin');
   });
+
+  it('hides create link when not in admin context', async () => {
+    await TestBed.resetTestingModule();
+    const agentSvc = jasmine.createSpyObj('AgentService', ['list']);
+    agentSvc.list.and.returnValue(of({ items: [{ id: '1', firstName: 'Agent', lastName: 'One', email: 'a@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto], total: 1 }));
+
+    await TestBed.configureTestingModule({
+      imports: [RouterTestingModule, AgentListComponent],
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: AgentService, useValue: agentSvc },
+        { provide: SEARCH_DEBOUNCE_MS, useValue: 0 },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: { initialData: { items: [{ id: '1', firstName: 'Agent', lastName: 'One', email: 'a@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto] }, showEditButtons: false }
+            }
+          }
+        }
+      ]
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(AgentListComponent);
+    fx.detectChanges();
+    const el = fx.nativeElement as HTMLElement;
+    const createLink = el.querySelector('.create-link') as HTMLAnchorElement | null;
+    expect(createLink).toBeNull();
+  });
 });
