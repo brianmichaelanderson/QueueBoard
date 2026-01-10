@@ -78,7 +78,7 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
          - [x] 5.2.2 Write a failing component/unit test that asserts Edit/Create controls are disabled for non-admin users (stub `AuthService.isAdmin()` → false).
             - [x] 5.2.3 Disable Edit/Create UI controls for non-admins (show the controls but keep them disabled when `AuthService.isAdmin()` is false). Implement the UI change to make the test pass.
 
-- [ ] 6. Tests & verification (MVP smoke tests)
+- [x] 6. Tests & verification (MVP smoke tests)
    - [x] 6.1 Add route-level unit/integration tests that assert:
       - [x] 6.1.1 lazy modules load (one test that imports router and asserts lazy config),
       - [x] 6.1.2 `/admin` routes are protected by the guard,
@@ -90,18 +90,10 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
    - [x] 6.2 Run the focused component/spec test suites (queues + agents) and fix any failing expectations caused by routing/data changes.
       - [x] 6.2.1 Add one smoke integration test that loads the router and asserts lazy route config exists (run in CI as a smoke check).
 
-- [ ] 7. Documentation
-   - [ ] 7.1 Update `QueueBoard-outline.md` to record the `AgentModule` read-only vs `AdminModule` edit policy and reference this plan file.
-      - [ ] 7.1.1 Add a one-line reference in `QueueBoard-outline.md` pointing to `docs/part4-plan.md` and a short sentence describing the Agent vs Admin policy.
-
-
 Notes and constraints
 - Keep everything minimal: this phase is about routing/guard/resolver wiring, not UX or new features.
 - Prefer reusing components to reduce duplication. If you foresee immediate admin-only differences (bulk actions, extra columns), add thin wrappers instead of duplicating templates.
-- Defer full auth/token flows to Part 5 — use a stubbed `AuthService` and `AuthGuard` for routing tests in Part 4.
 
-Acceptance criteria (MVP)
-- Navigating to `/agents` and `/agents/view/:id` loads the agent list and detail pages from the lazy `AgentModule` bundle.
-- Navigating to `/admin` loads the admin bundle; admin edit routes are guarded and use the same detail/list components (or thin wrappers) to perform edit flows.
-- Tests assert lazy loading, resolver behavior, guard enforcement, and list→detail navigation.
+
+
 

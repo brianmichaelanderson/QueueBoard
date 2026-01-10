@@ -21,7 +21,7 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
         <div class="controls">
           <input aria-label="Search agents" placeholder="Search agents" (input)="onSearch($event)" [disabled]="loading" aria-controls="agent-list" />
           <a class="home-link" [routerLink]="['/']">Home</a>
-          <a class="create-link" [routerLink]="[baseRoute, 'create']">Create agent</a>
+          <a *ngIf="baseRoute === '/admin'" class="create-link" [routerLink]="[baseRoute, 'create']">Create agent</a>
         </div>
 
         <div aria-live="polite" role="status" class="sr-only" *ngIf="loading">Loading agents…</div>
