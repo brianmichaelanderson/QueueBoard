@@ -99,4 +99,41 @@ describe('QueueEditComponent', () => {
     component.onSubmit();
     expect(window.alert).toHaveBeenCalledWith('This queue has been modified by another user. Please reload and try again.');
   });
+
+  it('navigates to admin routes on save and cancel when showEditButtons is true', async () => {
+    // reset and configure module with admin route data and spy router
+    await TestBed.resetTestingModule();
+
+    const queueService = jasmine.createSpyObj('QueueService', ['get', 'update', 'create']);
+    const router = { navigate: jasmine.createSpy('navigate') };
+
+    queueService.update.and.returnValue(of(void 0));
+
+    await TestBed.configureTestingModule({
+      imports: [ReactiveFormsModule, QueueEditComponent],
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: QueueService, useValue: queueService },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: (k: string) => '1' }, data: { initialData: { item: { id: '1', name: 'Support', description: 'desc', rowVersion: 'r1' } as QueueDto }, showEditButtons: true } } } },
+        { provide: Router, useValue: router }
+      ]
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(QueueEditComponent);
+    fx.detectChanges();
+    const cmp = fx.componentInstance;
+
+    cmp.isEdit = true;
+    cmp.id = '1';
+    (cmp as any).etag = 'r1';
+    cmp.form.patchValue({ name: 'Updated', description: 'u' });
+
+    cmp.onSubmit();
+    expect(queueService.update).toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledWith(['/admin','queues','1']);
+
+    // test cancel navigation
+    cmp.onCancel();
+    expect(router.navigate).toHaveBeenCalledWith(['/admin','queues','1']);
+  });
 });

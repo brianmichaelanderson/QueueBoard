@@ -23,7 +23,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
         <div class="controls">
           <input aria-label="Search queues" placeholder="Search queues" (input)="onSearch($event)" [disabled]="loading" />
           <a class="home-link" [routerLink]="['/']">Home</a>
-          <a class="create-link" [routerLink]="['/queues', 'create']">Create queue</a>
+          <a class="create-link" [routerLink]="isAdmin ? ['/admin','queues','create'] : ['/queues','create']">Create queue</a>
         </div>
 
         <div aria-live="polite" class="sr-only" *ngIf="loading">Loading queues…</div>
@@ -37,7 +37,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
           </ng-container>
           <ng-template #itemsBlock>
             <li *ngFor="let q of items" class="queue-item">
-              <a [routerLink]="['/queues', 'view', q.id]">{{ q.name }}</a>
+              <a [routerLink]="isAdmin ? ['/admin','queues', q.id] : ['/queues','view', q.id]">{{ q.name }}</a>
               <p class="muted">{{ q.description }}</p>
             </li>
           </ng-template>
@@ -59,6 +59,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
 })
 export class QueuesListComponent {
   private route = inject(ActivatedRoute);
+  isAdmin = false;
   private queueService = inject(QueueService);
   private cdr = inject(ChangeDetectorRef);
   private search$ = new Subject<string>();
@@ -80,6 +81,7 @@ export class QueuesListComponent {
       // initialize pagination totals from resolver-provided data when available
       this.total = (data as any).initialData.total ?? this.total;
       this.totalPages = Math.max(1, Math.ceil(this.total / this.pageSize));
+      this.isAdmin = !!((data as any).showEditButtons);
     } else {
       // Placeholder sample data for local dev
       this.items = [

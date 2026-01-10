@@ -3,6 +3,7 @@ import { adminGuard } from './admin.guard';
 import { authGuard } from '../auth/auth.guard';
 import { AdminService } from '../services/admin.service';
 import { agentsResolver } from '../agent/agents.resolver';
+import { queuesResolver } from '../queues/queues.resolver';
 
 /**
  * Admin feature routes (wrapper pattern)
@@ -43,6 +44,40 @@ export const adminRoutes: Routes = [
     data: { roles: ['admin'], showEditButtons: true },
     providers: [AdminService]
   },
+
+  // Admin queues wrapper routes (specific routes first to avoid being captured by ':id')
+  {
+    path: 'queues',
+    loadComponent: () => import('./admin-queue-list.component').then(m => m.AdminQueueListComponent),
+    canActivate: [adminGuard, authGuard],
+    data: { roles: ['admin'], showEditButtons: true },
+    resolve: { initialData: queuesResolver },
+    providers: [AdminService]
+  },
+  {
+    path: 'queues/create',
+    loadComponent: () => import('./admin-queue-edit.component').then(m => m.AdminQueueEditComponent),
+    canActivate: [adminGuard, authGuard],
+    data: { roles: ['admin'], showEditButtons: true },
+    providers: [AdminService]
+  },
+  {
+    path: 'queues/edit/:id',
+    loadComponent: () => import('./admin-queue-edit.component').then(m => m.AdminQueueEditComponent),
+    canActivate: [adminGuard, authGuard],
+    data: { roles: ['admin'], showEditButtons: true },
+    providers: [AdminService]
+  },
+  {
+    path: 'queues/:id',
+    loadComponent: () => import('./admin-queue-detail.component').then(m => m.AdminQueueDetailComponent),
+    canActivate: [adminGuard, authGuard],
+    data: { roles: ['admin'], showEditButtons: true },
+    resolve: { initialData: queuesResolver },
+    providers: [AdminService]
+  },
+
+  // Agent detail route must be last so it doesn't capture other top-level child paths like 'queues'
   {
     path: ':id',
     loadComponent: () => import('./admin-agent-detail.component').then(m => m.AdminAgentDetailComponent),

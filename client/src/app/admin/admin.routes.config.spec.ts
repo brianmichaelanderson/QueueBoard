@@ -1,5 +1,6 @@
 import { adminRoutes } from './admin.routes';
 import { agentsResolver } from '../agent/agents.resolver';
+import { queuesResolver } from '../queues/queues.resolver';
 
 describe('Admin routes config (4.2.2 - smoke)', () => {
   it('has create and :id routes protected for admin', () => {
@@ -28,5 +29,13 @@ describe('Admin routes config (4.2.2 - smoke)', () => {
 
     expect((idRoute as any).resolve).toBeDefined();
     expect((idRoute as any).resolve.initialData).toBe(agentsResolver);
+  });
+
+  it('attaches queuesResolver and showEditButtons for admin queues routes', () => {
+    const queuesRoute = adminRoutes.find(r => r.path === 'queues');
+    expect(queuesRoute).toBeDefined();
+    expect((queuesRoute as any).resolve).toBeDefined();
+    expect((queuesRoute as any).resolve.initialData).toBe(queuesResolver);
+    expect((queuesRoute as any).data && (queuesRoute as any).data.showEditButtons).toBeTrue();
   });
 });

@@ -78,6 +78,45 @@ describe('QueuesListComponent', () => {
     expect(args[2]).toBe(25);
   });
 
+  it('shows admin links when route data.showEditButtons is true', async () => {
+    // reset and configure module with admin route data
+    await TestBed.resetTestingModule();
+    const queueSvc = jasmine.createSpyObj('QueueService', ['list']);
+    queueSvc.list.and.returnValue(of({ items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto], total: 1 }));
+
+    await TestBed.configureTestingModule({
+      imports: [RouterTestingModule, QueuesListComponent],
+      providers: [
+        provideZonelessChangeDetection(),
+        { provide: QueueService, useValue: queueSvc },
+        { provide: SEARCH_DEBOUNCE_MS, useValue: 0 },
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            snapshot: {
+              data: { initialData: { items: [{ id: '1', name: 'Support', description: 'desc' } as QueueDto] }, showEditButtons: true }
+            }
+          }
+        }
+      ]
+    }).compileComponents();
+
+    const fx = TestBed.createComponent(QueuesListComponent);
+    fx.detectChanges();
+    const cmp = fx.componentInstance;
+
+    expect(cmp.isAdmin).toBeTrue();
+
+    const el = fx.nativeElement as HTMLElement;
+    const createLink = el.querySelector('.create-link') as HTMLAnchorElement | null;
+    expect(createLink).toBeTruthy();
+    expect((createLink as HTMLAnchorElement).getAttribute('href') || '').toContain('/admin/queues/create');
+
+    const itemLink = el.querySelector('.queue-item a') as HTMLAnchorElement | null;
+    expect(itemLink).toBeTruthy();
+    expect((itemLink as HTMLAnchorElement).getAttribute('href') || '').toContain('/admin/queues/1');
+  });
+
   // Pagination tests (4.5.2) - TDD: tests added first and expected to fail until UI implemented
   it('calls QueueService.list with page param when changing page', async () => {
     const queueSvc = TestBed.inject(QueueService) as jasmine.SpyObj<QueueService>;

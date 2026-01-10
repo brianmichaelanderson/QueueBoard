@@ -18,9 +18,9 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
       - [x] 1.1.4 Add root `LandingComponent` and route: `'' -> LandingComponent` with links to `/agents` and `/queues` (non-admin read-only entry points);
          - [x] 1.1.4.1 Add a small shallow spec verifying `routerLink` targets (route-level spec to avoid NgZone fragility).
          - [x] 1.1.4.2 Update `LandingComponent` registration and route to be the canonical app entry for non-admin flows.
-         - [x] 1.1.4.3 Add `Home` links to `AgentListComponent` and `QueuesListComponent` controls that route to `/` (Landing). Add shallow specs asserting the `Home` link exists and its `routerLink` target. (Agents: done; Queues: pending)
-         - [x] 1.1.4.4 Add admin entry links on `LandingComponent` that mark the session as admin before navigating to admin routes (calls `AuthService.becomeAdmin()` then navigates). (Agents: done; Queues: pending)
-         - [ ] 1.1.4.5 Apply the same Landing/Home/disabled-edit changes to Queues components: add `Home` link to `QueuesListComponent`, adjust `LandingComponent` links if needed, and add matching shallow route-level specs. (pending — no code changes yet)
+         - [x] 1.1.4.3 Add `Home` links to `AgentListComponent` and `QueuesListComponent` controls that route to `/` (Landing). Add shallow specs asserting the `Home` link exists and its `routerLink` target. (Agents: done; Queues: done)
+         - [x] 1.1.4.4 Add admin entry links on `LandingComponent` that mark the session as admin before navigating to admin routes (calls `AuthService.becomeAdmin()` then navigates). (Agents: done; Queues: done)
+         - [x] 1.1.4.5 Apply the same Landing/Home/disabled-edit changes to Queues components: add `Home` link to `QueuesListComponent`, adjust `LandingComponent` links if needed, and add matching shallow route-level specs. 
    - [x] 1.2 Verify `ng build` produces separate lazy chunks for the two modules.
       - [x] 1.2.1 Add a quick `ng build --configuration=development` smoke step and check generated chunk names.
    - [ ] 1.3 Add an optional `PreloadingStrategy` entry (documented but disabled for MVP).
@@ -53,15 +53,18 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
          - [x] 4.2.1.5 Set `data.showEditButtons = true` on admin list and admin detail wrapper routes so shared components render admin UI when used under admin routes. (done)
          - [x] 4.2.1.6 Update `AgentListComponent` to honor `route.snapshot.data.showEditButtons` and render links that route into the admin wrapper (`/admin/:id`) when appropriate. (done)
          - [x] 4.2.1.7 Add `AuthService.becomeAdmin()` and update `LandingComponent.enterAdmin()` to mark the current session as admin before navigating to admin flows. (done)
+         - [x] 4.2.1.8 Apply the admin wrapper pattern to `Queues` feature: added `admin-queue-list`, `admin-queue-detail`, `admin-queue-edit` thin wrappers, wired `queuesResolver`, and set `data.showEditButtons = true` so queues render admin UI under `/admin/queues`. (done)
+         - [x] 4.2.1.9 Preserve admin context in edit flows: `AgentEditComponent` and `QueueEditComponent` now detect `route.snapshot.data.showEditButtons` and navigate back to the admin detail/list on save or cancel. (done)
+         - [x] 4.2.1.10 Fix routing ordering: place specific `queues` admin child routes before the generic `:id` agent admin route so `/admin/queues` is not captured by `:id`. (done)
       - [x] 4.2.2 Ensure edit/create routes are defined under `AdminModule` only and protected with `AuthGuard`.
       - [x] 4.2.3 Add inline docs in `admin.routes.ts` showing the route-data example and the wrapper pattern.
 
 - [ ] 5. Navigation and UX parity
    - [ ] 5.1 Ensure list items in both lists navigate to the `view/:id` detail routes.
-      - [?] 5.1.0 Write a failing component test that clicks a list item and expects navigation to `view/:id`, then implement routerLink/click behavior.  **(Currently marked pending (xit) due to Router/NgZone internals fail under the repo's zoneless test config; verify manually in browser for MVP.)**
+      - [?] 5.1.0 Write a failing component test that clicks a list item and expects navigation to `view/:id`, then implement routerLink/click behavior.  **(Currently marked pending (xit) due to Router/NgZone internals fail under the repo's zoneless test config; we validate link targets via shallow tests instead.)**
         - [x] 5.1.1 Confirm `routerLink` points to `view/:id` and optionally make the whole row clickable if desired.
    - [ ] 5.2 Ensure edit/create routes are reachable only via admin routes (guarded) and that cancel/save behavior routes back to the correct view (detail or list) per MVP policy.
-      - [?] 5.2.0 Write a failing test that asserts save/cancel navigation semantics (create→list, edit→detail), then implement navigation logic.  **(Pending due to same issues as 5.1.0; verify manually in browser for MVP.)**
+      - [x] 5.2.0 Write a failing test that asserts save/cancel navigation semantics (create→list, edit→detail), then implement navigation logic.  (Implemented as unit tests that mock services and assert `Router.navigate` calls; avoids NgZone internals.)
       - [x] 5.2.1 Verify save/cancel navigation semantics for both create and edit and document expected behavior in docs/part4-plan.md.
          - **Expected behavior:**
             - **Create:** after a successful create/save, navigate to the list page for the resource (create → list). Cancel on create should return to the list without saving (cancel → list).
@@ -80,9 +83,10 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
       - [x] 6.1.1 lazy modules load (one test that imports router and asserts lazy config),
       - [x] 6.1.2 `/admin` routes are protected by the guard,
       - [x] 6.1.3 detail resolvers provide `initialData.item` for `view/:id` routes,
-      - [?] 6.1.4 list items route to `view/:id`. **(skipped/pending per 5.1.0 & 5.2.0)**
+      - [?] 6.1.4 list items route to `view/:id`. **(skipped/pending per 5.1.0; we validate `routerLink` targets via shallow unit specs.)**
       - [x] 6.1.5 Add test harness utilities (test router config helper, `AuthService` mock, resolver mock) to `client/src/test-helpers/`.
       - [x] 6.1.6 Add a unit test asserting admin wrapper routes attach `agentsResolver` as `resolve.initialData` (admin routes config spec). (done)
+      - [x] 6.1.7 Add unit tests asserting admin `queues` routes wire `queuesResolver` and `data.showEditButtons` (admin routes config spec updated). (done)
    - [x] 6.2 Run the focused component/spec test suites (queues + agents) and fix any failing expectations caused by routing/data changes.
       - [x] 6.2.1 Add one smoke integration test that loads the router and asserts lazy route config exists (run in CI as a smoke check).
 

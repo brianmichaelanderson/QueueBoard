@@ -68,11 +68,19 @@ export class QueueDetailComponent {
 
   edit() {
     if (this.id) {
-      this.router.navigate(['/queues', 'edit', this.id]);
+      if (this.showEditButtons) {
+        this.router.navigate(['/admin','queues','edit', this.id]);
+      } else {
+        this.router.navigate(['/queues', 'edit', this.id]);
+      }
     }
   }
 
   cancel() {
-    this.router.navigate(['/queues']);
+    if (this.showEditButtons) {
+      this.router.navigate(['/admin','queues']);
+    } else {
+      this.router.navigate(['/queues']);
+    }
   }
 }
