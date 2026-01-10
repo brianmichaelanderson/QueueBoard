@@ -15,6 +15,7 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
         - [x] 1.1.1 Scaffold `AgentModule` and `AdminModule` folders and route files (`agent.routes.ts`, `admin.routes.ts`).
         - [x] 1.1.2 Add module barrels (`index.ts`) and export declarations in `client/src/app` routing.
         - [x] 1.1.3 Update root routes (`app.routes.ts`) with lazy imports and a small comment documenting the intent.
+      - [x] 1.1.4 Add root `LandingComponent` and route: `'' -> LandingComponent` with links to `/agents` and `/queues` (non-admin read-only entry points); add a small shallow spec verifying `routerLink` targets.
    - [x] 1.2 Verify `ng build` produces separate lazy chunks for the two modules.
       - [x] 1.2.1 Add a quick `ng build --configuration=development` smoke step and check generated chunk names.
    - [ ] 1.3 Add an optional `PreloadingStrategy` entry (documented but disabled for MVP).
@@ -27,9 +28,6 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
    - [x] 2.2 Protect `/admin/**` routes with the admin guard. Keep `AgentModule` routes readable without admin privileges.
          - [x] 2.2.0 Write a failing integration test that asserts `/admin` routes are blocked for non-admin users, then implement guard wiring.
             - [x] 2.2.1 Add route-data metadata to `/admin` routes and apply the guard.
-   - [ ] 2.3 Hide admin nav links using `AuthService` (update header/nav component markup). 
-      - [ ] 2.3.1 Write a failing component test that asserts admin links are hidden for non-admin users, then implement the conditional rendering.
-      - [ ] 2.3.2 Update header/nav component template to use `AuthService.isAdmin()` to conditionally show/hide admin links.
 
  - [x] 3. Resolvers / fetch-on-enter (implemented in Part 3)
     - Note: the resolver functionality required for Part 4's MVP is already implemented in Part 3. See `docs/part3-plan.md` for the tasks that covered this behavior:
@@ -81,8 +79,7 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
 - [ ] 7. Documentation
    - [ ] 7.1 Update `QueueBoard-outline.md` to record the `AgentModule` read-only vs `AdminModule` edit policy and reference this plan file.
       - [ ] 7.1.1 Add a one-line reference in `QueueBoard-outline.md` pointing to `docs/part4-plan.md` and a short sentence describing the Agent vs Admin policy.
-   - [ ] 7.2 Add short notes in module route files (comments) describing whether they reuse shared components or use wrappers.
-      - [ ] 7.2.1 Update `client/README.md` with a quick dev note about lazy routes and how to run focused tests.
+
 
 Notes and constraints
 - Keep everything minimal: this phase is about routing/guard/resolver wiring, not UX or new features.

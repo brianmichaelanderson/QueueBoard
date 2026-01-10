@@ -1,7 +1,11 @@
 import { Routes } from '@angular/router';
 
+
 export const routes: Routes = [
-	{ path: '', redirectTo: 'queues', pathMatch: 'full' },
+  {
+    path: '',
+    loadComponent: () => import('./landing/landing.component').then(m => m.LandingComponent)
+  },
 	{
 		path: 'queues',
 		loadChildren: () => import('./queues/queues.routes').then(m => m.queuesRoutes)

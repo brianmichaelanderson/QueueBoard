@@ -30,7 +30,7 @@ import { ActivatedRoute, Router } from '@angular/router';
           </div>
 
           <div class="actions">
-            <button (click)="edit()">Edit</button>
+            <button [disabled]="!showEditButtons" (click)="edit()">Edit</button>
             <button (click)="cancel()">Cancel</button>
           </div>
         </section>
@@ -57,6 +57,7 @@ export class QueueDetailComponent {
   private router = inject(Router);
   id: string | null = this.route.snapshot.paramMap.get('id');
   item: QueueDto | null = (this.route.snapshot.data as { initialData?: { item?: QueueDto } })?.initialData?.item ?? null;
+  showEditButtons: boolean = !!((this.route.snapshot.data as any)?.showEditButtons);
 
   constructor() {
     console.log(

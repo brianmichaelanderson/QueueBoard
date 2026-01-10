@@ -24,7 +24,7 @@ describe('AgentDetailComponent (failing spec)', () => {
           useValue: {
             snapshot: {
               paramMap: { get: (k: string) => '7' },
-              data: { initialData: { item: { id: '7', firstName: 'Agent', lastName: 'Seven', email: 's@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto } }
+              data: { initialData: { item: { id: '7', firstName: 'Agent', lastName: 'Seven', email: 's@x.com', isActive: true, createdAt: new Date().toISOString() } as AgentDto }, showEditButtons: true }
             }
           }
         }

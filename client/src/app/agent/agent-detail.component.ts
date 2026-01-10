@@ -33,10 +33,10 @@ import { ActivatedRoute, Router } from '@angular/router';
               <label><strong>ID:</strong></label>
               <div>{{ id }}</div>
             </div>
-            <div style="margin-top:.5rem">
-              <button (click)="edit()">Edit</button>
-              <button (click)="cancel()">Cancel</button>
-            </div>
+              <div style="margin-top:.5rem">
+                <button [disabled]="!showEditButtons" (click)="edit()">Edit</button>
+                <button (click)="cancel()">Cancel</button>
+              </div>
           </div>
         </section>
 
@@ -55,6 +55,7 @@ export class AgentDetailComponent {
   private router: Router = inject(Router);
   id: string | null = this.route.snapshot.paramMap.get('id');
   item: AgentDto | null = (this.route.snapshot.data as { initialData?: { item?: AgentDto } })?.initialData?.item ?? null;
+  showEditButtons: boolean = !!((this.route.snapshot.data as any)?.showEditButtons);
 
   constructor() {
     // Helpful for debugging resolver-provided data

@@ -20,6 +20,7 @@ import { SEARCH_DEBOUNCE_MS } from '../queues/queues-list.component';
 
         <div class="controls">
           <input aria-label="Search agents" placeholder="Search agents" (input)="onSearch($event)" [disabled]="loading" aria-controls="agent-list" />
+          <a class="home-link" [routerLink]="['/']">Home</a>
           <a class="create-link" [routerLink]="['/agents', 'create']">Create agent</a>
         </div>
 
