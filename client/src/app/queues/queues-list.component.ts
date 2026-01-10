@@ -22,6 +22,7 @@ export const SEARCH_DEBOUNCE_MS = new InjectionToken<number>('SEARCH_DEBOUNCE_MS
 
         <div class="controls">
           <input aria-label="Search queues" placeholder="Search queues" (input)="onSearch($event)" [disabled]="loading" />
+          <a class="home-link" [routerLink]="['/']">Home</a>
           <a class="create-link" [routerLink]="['/queues', 'create']">Create queue</a>
         </div>
 
