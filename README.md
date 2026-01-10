@@ -59,12 +59,9 @@ The domain is intentionally lightweight and exists only to support the technical
 ETag / optimistic concurrency and other API contract conventions are summarized in `docs/api-conventions.md`. For protocol-level examples and curl snippets, see `docs/etag.md`, `docs/queues.md`, and `docs/agents.md`.
 
 ### Frontend
+- Angular 20 SPA using standalone components and lazy-loaded feature routes.
 
-- Angular 20
-- Standalone components (standalone-first APIs)
-- Angular Router with lazy-loaded routes
-- Reactive Forms
-- HttpClient
+For developer setup, run instructions, testing notes, and details about the Landing/admin demo and zoneless test setup, see the client README: [client/README.md](client/README.md).
 
 ### Tooling
 
@@ -142,6 +139,12 @@ Lazy loading is implemented explicitly using route-level imports.
 ```
 
 Navigating to a feature route triggers loading of that feature's bundle.
+
+Admin vs Agent surfaces (developer note)
+- The frontend exposes two UX surfaces:
+  - `AgentModule` (lazy, `/agents`) — read-only list + detail pages.
+  - `AdminModule` (lazy, `/admin`) — guarded edit/create flows implemented via thin wrapper components that reuse the shared feature components.
+- For quick local admin access the Landing page includes admin demo links that call a dev helper (`AuthService.becomeAdmin()`) before navigating to `/admin/...`. See the client README for developer details and testing guidance: [client/README.md](client/README.md#landing--admin-demo).
 
 ---
 

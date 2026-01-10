@@ -222,3 +222,33 @@ npm run test -- --include "src/app/agent/**" --watch=false
 
 Using the token makes it simple to swap API hosts for local dev, CI, or when running the backend in a container.
 
+## Landing & Admin demo
+
+- The app includes a simple Landing page that exposes both read-only and admin demo links. Admin links call a small dev helper (`AuthService.becomeAdmin()`) to mark the session as an admin and then navigate to the guarded admin routes (for example `/admin` or `/admin/queues`). This is a convenience for local development only — it is not a production auth flow.
+
+## Agent vs Admin routing policy
+
+- `AgentModule` (`/agents`) is intended to be read-only: list and detail views only.
+- `AdminModule` (`/admin`) exposes edit/create flows. Edit/create are implemented using thin `admin-*` wrapper components that reuse the shared feature components and set `route.data.showEditButtons = true` so the same components render admin UI when used under admin routes.
+- Routing ordering note: specific admin child paths (for example `queues`, `queues/:id`) must appear before generic parameter routes such as `:id` to avoid accidental route capture (see `src/app/admin/admin.routes.ts`).
+
+## Dev auth helpers
+
+- `AuthService` exposes development helpers useful for local testing:
+  - `becomeAdmin()` — mark the session as admin (used by Landing admin links).
+  - `becomeUser()` — clear admin state.
+  - `isAdmin()` — observable checking admin state.
+
+These are intended for local development and tests; they simplify exploring guarded flows without a full auth implementation.
+
+## Testing notes (client)
+
+- The frontend test setup prefers a zoneless approach. Tests avoid relying on Zone.js by using `provideZonelessChangeDetection()` and small test helpers in `src/app/test-helpers`.
+- Prefer asserting `routerLink` values or spying on `Router.navigate` in unit tests rather than triggering full Router navigation; this keeps specs fast and avoids NgZone fragility.
+- When adding admin-related tests, mock or provide `ActivatedRoute.snapshot.data.showEditButtons = true` so shared components render admin UI in unit tests.
+
+## Troubleshooting
+
+- If navigating to `/admin/queues` renders an unexpected agent detail page, check `src/app/admin/admin.routes.ts` route ordering — ensure `queues` routes are declared before the generic `:id` admin route.
+- If unit tests fail due to Router/NgZone issues, prefer shallow assertions (routerLink) or spy on `Router.navigate` and use `provideZonelessChangeDetection()` in TestBed providers.
+
