@@ -16,6 +16,12 @@ import { RouterModule } from '@angular/router';
         <p><a routerLink="/agents">View Agents (read-only)</a></p>
         <p><a routerLink="/queues">View Queues (read-only)</a></p>
       </section>
+      
+      <section>
+        <h2>Admins</h2>
+        <p><a routerLink="/admin">View Agents (admin — edit enabled)</a></p>
+        <p><a routerLink="/admin/queues">View Queues (admin — edit enabled)</a></p>
+      </section>
     </main>
   `
 })

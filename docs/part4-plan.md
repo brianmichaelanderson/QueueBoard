@@ -15,7 +15,12 @@ Purpose: deliver the minimal routing + module structure to support the app's MVP
         - [x] 1.1.1 Scaffold `AgentModule` and `AdminModule` folders and route files (`agent.routes.ts`, `admin.routes.ts`).
         - [x] 1.1.2 Add module barrels (`index.ts`) and export declarations in `client/src/app` routing.
         - [x] 1.1.3 Update root routes (`app.routes.ts`) with lazy imports and a small comment documenting the intent.
-      - [x] 1.1.4 Add root `LandingComponent` and route: `'' -> LandingComponent` with links to `/agents` and `/queues` (non-admin read-only entry points); add a small shallow spec verifying `routerLink` targets.
+      - [x] 1.1.4 Add root `LandingComponent` and route: `'' -> LandingComponent` with links to `/agents` and `/queues` (non-admin read-only entry points);
+         - [x] 1.1.4.1 Add a small shallow spec verifying `routerLink` targets (route-level spec to avoid NgZone fragility).
+         - [x] 1.1.4.2 Update `LandingComponent` registration and route to be the canonical app entry for non-admin flows.
+         - [x] 1.1.4.3 Add `Home` links to `AgentListComponent` and `QueuesListComponent` controls that route to `/` (Landing). Add shallow specs asserting the `Home` link exists and its `routerLink` target. (done for Agents; Queues task listed below)
+         - [x] 1.1.4.4 Apply the same Landing/Home/disabled-edit changes to Queues components: add `Home` link to `QueuesListComponent`, adjust `LandingComponent` links if needed, and add matching shallow route-level specs. (pending — no code changes yet)
+         - [ ] 1.1.4.5 
    - [x] 1.2 Verify `ng build` produces separate lazy chunks for the two modules.
       - [x] 1.2.1 Add a quick `ng build --configuration=development` smoke step and check generated chunk names.
    - [ ] 1.3 Add an optional `PreloadingStrategy` entry (documented but disabled for MVP).

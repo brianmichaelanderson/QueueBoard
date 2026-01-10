@@ -1,4 +1,5 @@
 import { adminRoutes } from './admin.routes';
+import { agentsResolver } from '../agent/agents.resolver';
 
 describe('Admin routes config (4.2.2 - smoke)', () => {
   it('has create and :id routes protected for admin', () => {
@@ -13,5 +14,19 @@ describe('Admin routes config (4.2.2 - smoke)', () => {
 
     expect(createRoute!.data && createRoute!.data['roles']).toContain('admin');
     expect(idRoute!.data && idRoute!.data['roles']).toContain('admin');
+  });
+
+  it('attaches agentsResolver as resolve.initialData for admin list and detail routes', () => {
+    const listRoute = adminRoutes.find(r => r.path === '');
+    const idRoute = adminRoutes.find(r => r.path === ':id');
+
+    expect(listRoute).toBeDefined();
+    expect(idRoute).toBeDefined();
+
+    expect((listRoute as any).resolve).toBeDefined();
+    expect((listRoute as any).resolve.initialData).toBe(agentsResolver);
+
+    expect((idRoute as any).resolve).toBeDefined();
+    expect((idRoute as any).resolve.initialData).toBe(agentsResolver);
   });
 });

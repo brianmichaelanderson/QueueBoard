@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { adminGuard } from './admin.guard';
 import { authGuard } from '../auth/auth.guard';
 import { AdminService } from '../services/admin.service';
+import { agentsResolver } from '../agent/agents.resolver';
 
 /**
  * Admin feature routes (wrapper pattern)
@@ -25,6 +26,7 @@ export const adminRoutes: Routes = [
     canActivate: [adminGuard, authGuard],
     // admin list is guarded; wrapper reuses AgentListComponent
     data: { roles: ['admin'] },
+    resolve: { initialData: agentsResolver },
     providers: [AdminService]
   },
   {
@@ -39,6 +41,7 @@ export const adminRoutes: Routes = [
     loadComponent: () => import('./admin-agent-detail.component').then(m => m.AdminAgentDetailComponent),
     canActivate: [adminGuard, authGuard],
     data: { roles: ['admin'], showEditButtons: true },
+    resolve: { initialData: agentsResolver },
     providers: [AdminService]
   }
 ];
